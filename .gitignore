@@ -1,0 +1,20 @@
+# macOS
+.DS_Store
+
+# LaTeX temporary / build files
+*.aux
+*.log
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.toc
+*.out
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
+
+# VS Code (Keep settings.json for project configuration)
+.vscode/*
+!.vscode/settings.json
