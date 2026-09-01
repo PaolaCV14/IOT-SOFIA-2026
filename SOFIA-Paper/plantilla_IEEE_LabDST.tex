@@ -1,4 +1,4 @@
-%=================================================================
+		%=================================================================
 % IEEE "RECIPE-STYLE" TEMPLATE -- LabDST
 %=================================================================
 % What this is:
@@ -48,13 +48,16 @@
 
 \usepackage{amsmath,amsfonts}
 \usepackage{array}
-\usepackage[caption=false,font=normalsize,labelfont=sf,textfont=sf]{subfig}
+\usepackage[caption=false,font=footnotesize]{subfig}
 \usepackage{textcomp}
 %\usepackage{stfloats}
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{xcolor}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+\graphicspath{{figures/}}
 \hyphenation{op-tical net-works semi-conduc-tor IEEE-Xplore}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
@@ -99,22 +102,6 @@ keyword 1, keyword 2, keyword 3 (3 to 6 terms specific to the
 topic of the paper, yet reasonably common within the discipline --
 they help other researchers find the work).
 \end{IEEEkeywords}
-
-%=================================================================
-\setcounter{section}{-1} %% Delete this section together with this line before submitting.
-\section{How to Use This Template}
-
-This section is instructional only: delete it completely (together
-with \texttt{\textbackslash setcounter\{section\}\{-1\}}) before the
-final submission, and start numbering from Section 1 (Introduction).
-
-The order and names of the following sections are the ones IEEE uses
-most often for technical and research papers, adapted so that each
-heading explicitly states what content belongs inside it -- so there
-is no need to guess what to write in each part. If your journal,
-conference, or course requires a different order, follow those
-specific instructions; the structure here is a starting point, not a
-rigid rule.
 
 %=================================================================
 \section{Introduction}
@@ -421,7 +408,7 @@ briefly here.
 
 \begin{quote}
 Example of a long quotation or of a highlighted note within the
-text (use this \texttt{quote} block sparingly).
+text (use this ``quote'' block sparingly).
 \end{quote}
 
 %=================================================================
@@ -448,80 +435,44 @@ Results section below.
 
 %=================================================================
 \section{Results}
+\label{sec:results}
 
-This section presents the findings concisely and precisely,
-without interpreting them in depth yet (that interpretation belongs in
-Discussion). It may be divided into subsections if the work covers
-several experiments or stages of results.
+\subsection{Kinematic Tracking Simulation}
+\label{sec:results_simulation}
 
-\subsection{Example subsection}
-\subsubsection{Example subsubsection}
+To validate the analytical kinematic model, a dynamic tracking simulation of the 16-module SOFIA robotic honeycomb array was conducted in a virtual 3D environment. The goal was to evaluate multi-unit coordination when orienting toward a moving target coordinate $\mathbf{p}(t) \in \mathbb{R}^3$. 
 
-Bulleted lists look like this:
-\begin{itemize}
-\item First point;
-\item Second point;
-\item Third point.
-\end{itemize}
+Algorithm~\ref{alg:sofia_ik} summarizes the inverse kinematics routine executed cyclically for each module $m_i$ ($i \in \{1, \dots, 16\}$) based on the unit base frame origin $\mathbf{r}_{0,2}^{(i)}$, solving for servo variables $(q_1, q_2)$ while clamping values within the permissible physical limits of the MG90S actuators ($[-90^\circ, 90^\circ]$). 
 
-Numbered lists look like this:
-\begin{enumerate}
-\item First item;
-\item Second item;
-\item Third item.
-\end{enumerate}
+Using this model, Figure~\ref{fig:sofia_simulation} depicts six sequential frames captured during target tracking across the array's workspace. As observed in Fig.~\ref{fig:sim_a}--\ref{fig:sim_c}, when the target enters the detection region, individual units initiate orientation adjustments according to their relative spatial displacement $\mathbf{r}_{2,p}$. In Fig.~\ref{fig:sim_d}--\ref{fig:sim_f}, the entire 16-module array demonstrates smooth, synchronized orientation, successfully keeping each platform normal vector $\hat{r}_{2,3}$ directed toward the dynamic target without kinematic singularities or unconstrained joint values.
 
-\subsection{Figures and Tables}
-
-All figures and tables must be cited in the text before they
-appear, for example: Figure~\ref{fig1} shows... or Table~\ref{tab1}
-summarizes...
+\begin{algorithm}[!t]
+\caption{SOFIA Module Inverse Kinematics}
+\label{alg:sofia_ik}
+\begin{algorithmic}[1]
+\Require Module base origin $\mathbf{r}_{0,2}$, target coordinate $\mathbf{p}$, joint angle bounds $[q_{1,\min}, q_{1,\max}]$ and $[q_{2,\min}, q_{2,\max}]$
+\Ensure Joint angles $q_1, q_2$
+\State $\mathbf{r}_{2,p} \gets \mathbf{p} - \mathbf{r}_{0,2}$
+\State $[u_x, u_y, u_z]^\top \gets \mathbf{r}_{2,p} / \lVert \mathbf{r}_{2,p} \rVert$
+\State $q_2 \gets \arcsin(u_x)$
+\State $q_1 \gets \operatorname{atan2}(-u_y, u_z)$
+\State $q_1 \gets \Call{ClampAngle}{q_1, q_{1,\min}, q_{1,\max}}$
+\State $q_2 \gets \Call{ClampAngle}{q_2, q_{2,\min}, q_{2,\max}}$
+\State \Return $q_1, q_2$
+\end{algorithmic}
+\end{algorithm}
 
 \begin{figure}[!t]
 \centering
-\includegraphics[width=2.5in]{fig1}
-\caption{Brief description of what the figure shows. The caption
-must be understandable without reading the main text.}
-\label{fig1}
+\subfloat[Frame $t_1$: Target entry.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_1}\label{fig:sim_a}}\hfil
+\subfloat[Frame $t_2$: Tracking initiation.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_2}\label{fig:sim_b}}\\
+\subfloat[Frame $t_3$: Intermediate convergence.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_3}\label{fig:sim_c}}\hfil
+\subfloat[Frame $t_4$: Peak coordinated deflection.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_4}\label{fig:sim_d}}\\
+\subfloat[Frame $t_5$: Trajectory transit.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_5}\label{fig:sim_e}}\hfil
+\subfloat[Frame $t_6$: Final target alignment.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_6}\label{fig:sim_f}}
+\caption{Simulation sequence of the 16-module SOFIA honeycomb array tracking a dynamic 3D target point. (a)--(c) Target enters the system workspace, prompting orientation convergence across proximal modules. (d)--(f) Synchronized multi-unit re-orientation maintaining normal vector $\hat{r}_{2,3}$ alignment toward $\mathbf{p}(t)$ under actuator saturation constraints.}
+\label{fig:sofia_simulation}
 \end{figure}
-
-\begin{table}[!t]
-\centering
-\caption{Brief description of what the table shows.}
-\label{tab1}
-\begin{tabular}{|c|c|c|}
-\hline
-\textbf{Title 1} & \textbf{Title 2} & \textbf{Title 3} \\
-\hline
-Data & Data & Data \\
-\hline
-Data & Data & Data \\
-\hline
-\end{tabular}
-\end{table}
-
-Example of a figure with several panels (a, b, c...), useful when
-several related images must be presented together:
-\begin{figure}[!t]
-\centering
-\subfloat[Description of panel (a).]{\includegraphics[width=1.1in]{fig1}}
-\hfil
-\subfloat[Description of panel (b).]{\includegraphics[width=1.1in]{fig1}}
-\caption{General description covering both panels. (a) Explanation
-of panel (a). (b) Explanation of panel (b).}
-\label{fig2}
-\end{figure}
-
-\subsection{Equations}
-
-Equations are numbered consecutively throughout the whole paper:
-(1), (2), (3)... Do not use roman numerals or section numbers to
-number them. Example:
-\begin{equation}
-\label{eq:example}
-y = \sum_{i=0}^{n} a_i x^i.
-\end{equation}
-To reference it in the text: see Eq.~(\ref{eq:example}).
 
 %=================================================================
 \section{Discussion}
