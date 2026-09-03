@@ -463,15 +463,66 @@ Using this model, Figure~\ref{fig:sofia_simulation} depicts six sequential frame
 \end{algorithm}
 
 \begin{figure}[!t]
-\centering
-\subfloat[Frame $t_1$: Target entry.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_1}\label{fig:sim_a}}\hfil
-\subfloat[Frame $t_2$: Tracking initiation.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_2}\label{fig:sim_b}}\\
-\subfloat[Frame $t_3$: Intermediate convergence.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_3}\label{fig:sim_c}}\hfil
-\subfloat[Frame $t_4$: Peak coordinated deflection.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_4}\label{fig:sim_d}}\\
-\subfloat[Frame $t_5$: Trajectory transit.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_5}\label{fig:sim_e}}\hfil
-\subfloat[Frame $t_6$: Final target alignment.]{\includegraphics[width=0.48\linewidth]{figures/fig_sim_6}\label{fig:sim_f}}
-\caption{Simulation sequence of the 16-module SOFIA honeycomb array tracking a dynamic 3D target point. (a)--(c) Target enters the system workspace, prompting orientation convergence across proximal modules. (d)--(f) Synchronized multi-unit re-orientation maintaining normal vector $\hat{r}_{2,3}$ alignment toward $\mathbf{p}(t)$ under actuator saturation constraints.}
-\label{fig:sofia_simulation}
+    \centering
+
+    \subfloat[Frame $t_1$: Target entry.]{
+        \begin{minipage}[t]{0.47\linewidth}
+            \centering
+            \includegraphics[
+            width=\linewidth,
+            trim=0.25in 0 0.25in 0,
+            clip]{figures/fig_sim_1}
+        \end{minipage}
+    }\hfill
+    \subfloat[Frame $t_2$: Tracking initiation.]{
+        \begin{minipage}[t]{0.47\linewidth}
+            \centering
+            \includegraphics[
+            width=\linewidth,
+            trim=0.25in 0 0.25in 0,
+            clip]{figures/fig_sim_2}
+        \end{minipage}
+    }\\[2mm]
+
+    \subfloat[Frame $t_3$: Intermediate convergence.]{
+        \begin{minipage}[t]{0.47\linewidth}
+            \centering
+            \includegraphics[width=\linewidth]{figures/fig_sim_3}
+        \end{minipage}
+    }\hfill
+\subfloat[Frame $t_4$: Peak coordinated deflection.]{
+    \begin{minipage}[t]{0.47\linewidth}
+        \centering
+        \includegraphics[
+            width=\linewidth,
+            trim=0.25in 0 0.25in 0,
+            clip]{figures/fig_sim_4}
+    \end{minipage}
+}\\[2mm]
+
+
+    \subfloat[Frame $t_5$: Trajectory transit.]{
+        \begin{minipage}[t]{0.47\linewidth}
+            \centering
+            \includegraphics[
+	width=\linewidth,
+            trim=0.25in 0 0.25in 0,
+            clip]{figures/fig_sim_5}
+        \end{minipage}
+    }\hfill
+    \subfloat[Frame $t_6$: Final target alignment.]{
+        \begin{minipage}[t]{0.47\linewidth}
+            \centering
+              \includegraphics[
+	width=\linewidth,
+            trim=0.25in 0 0.25in 0,
+            clip]{figures/fig_sim_6}
+        \end{minipage}
+    }
+
+    \caption{Simulation sequence of the 16-module SOFIA honeycomb array tracking a dynamic 3D target point. (a)--(c) Target enters the system workspace, prompting orientation convergence across proximal modules. (d)--(f) Synchronized multi-unit re-orientation maintaining normal vector $\hat{r}_{2,3}$ alignment toward $\mathbf{p}(t)$ under actuator saturation constraints.}
+
+    \label{fig:sofia_simulation}
 \end{figure}
 
 %=================================================================
