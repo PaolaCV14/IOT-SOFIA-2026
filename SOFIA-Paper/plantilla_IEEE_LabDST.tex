@@ -444,8 +444,6 @@ To validate the analytical kinematic model, a dynamic tracking simulation of the
 
 Algorithm~\ref{alg:sofia_ik} summarizes the inverse kinematics routine executed cyclically for each module $m_i$ ($i \in \{1, \dots, 16\}$) based on the unit base frame origin $\mathbf{r}_{0,2}^{(i)}$, solving for servo variables $(q_1, q_2)$ while clamping values within the permissible physical limits of the MG90S actuators ($[-90^\circ, 90^\circ]$). 
 
-Using this model, Figure~\ref{fig:sofia_simulation} depicts six sequential frames captured during target tracking across the array's workspace. As observed in Fig.~\ref{fig:sim_a}--\ref{fig:sim_c}, when the target enters the detection region, individual units initiate orientation adjustments according to their relative spatial displacement $\mathbf{r}_{2,p}$. In Fig.~\ref{fig:sim_d}--\ref{fig:sim_f}, the entire 16-module array demonstrates smooth, synchronized orientation, successfully keeping each platform normal vector $\hat{r}_{2,3}$ directed toward the dynamic target without kinematic singularities or unconstrained joint values.
-
 \begin{algorithm}[!t]
 \caption{SOFIA Module Inverse Kinematics}
 \label{alg:sofia_ik}
@@ -462,10 +460,20 @@ Using this model, Figure~\ref{fig:sofia_simulation} depicts six sequential frame
 \end{algorithmic}
 \end{algorithm}
 
+Figure~\ref{fig:sofia_simulation} presents the multi-body dynamic response across six key stages of the simulated tracking cycle:
+\begin{enumerate}[(a)]
+    \item \textit{Target Ingress:} As $\mathbf{p}(t)$ enters the workspace periphery, initial orientation is led by the closest boundary modules ($|q_1|, |q_2| < 15^\circ$), while distal cells remain in their nominal vertical orientation.
+    \item \textit{Cluster Propagation:} The continuous decrease in $|\mathbf{r}_{2,p}|$ triggers an inward cascade of servo commands across adjacent rows without phase lag.
+    \item \textit{Intermediate Convergence:} The entire 16-element array forms a focused directional field, uniformly tilting the normal vectors $\hat{r}_{2,3}^{(i)}$ toward the approaching coordinate.
+    \item \textit{Peak Deflection:} Central transit coincides with maximum angular excursion across the inner cluster, smoothly bounding within actuator limits without kinematic locking.
+    \item \textit{Quadrant Handover:} As the target traverses into the opposite quadrant, neighboring units execute continuous angular redistribution.
+    \item \textit{Terminal Alignment:} The full array converges into final steady-state tracking, verifying robust singularity-free coverage across the entire hemispherical workspace.
+\end{enumerate}
+
 \begin{figure}[!t]
     \centering
 
-    \subfloat[Frame $t_1$: Target entry.]{
+    \subfloat[]{
         \begin{minipage}[t]{0.47\linewidth}
             \centering
             \includegraphics[
@@ -474,7 +482,7 @@ Using this model, Figure~\ref{fig:sofia_simulation} depicts six sequential frame
             clip]{figures/fig_sim_1}
         \end{minipage}
     }\hfill
-    \subfloat[Frame $t_2$: Tracking initiation.]{
+    \subfloat[]{
         \begin{minipage}[t]{0.47\linewidth}
             \centering
             \includegraphics[
@@ -484,24 +492,23 @@ Using this model, Figure~\ref{fig:sofia_simulation} depicts six sequential frame
         \end{minipage}
     }\\[2mm]
 
-    \subfloat[Frame $t_3$: Intermediate convergence.]{
+    \subfloat[]{
         \begin{minipage}[t]{0.47\linewidth}
             \centering
             \includegraphics[width=\linewidth]{figures/fig_sim_3}
         \end{minipage}
     }\hfill
-\subfloat[Frame $t_4$: Peak coordinated deflection.]{
-    \begin{minipage}[t]{0.47\linewidth}
-        \centering
-        \includegraphics[
+    \subfloat[]{
+        \begin{minipage}[t]{0.47\linewidth}
+            \centering
+            \includegraphics[
             width=\linewidth,
             trim=0.25in 0 0.25in 0,
             clip]{figures/fig_sim_4}
-    \end{minipage}
-}\\[2mm]
+        \end{minipage}
+    }\\[2mm]
 
-
-    \subfloat[Frame $t_5$: Trajectory transit.]{
+    \subfloat[]{
         \begin{minipage}[t]{0.47\linewidth}
             \centering
             \includegraphics[
@@ -510,18 +517,17 @@ Using this model, Figure~\ref{fig:sofia_simulation} depicts six sequential frame
             clip]{figures/fig_sim_5}
         \end{minipage}
     }\hfill
-    \subfloat[Frame $t_6$: Final target alignment.]{
+    \subfloat[]{
         \begin{minipage}[t]{0.47\linewidth}
             \centering
-              \includegraphics[
+            \includegraphics[
 	width=\linewidth,
             trim=0.25in 0 0.25in 0,
             clip]{figures/fig_sim_6}
         \end{minipage}
     }
 
-    \caption{Simulation sequence of the 16-module SOFIA honeycomb array tracking a dynamic 3D target point. (a)--(c) Target enters the system workspace, prompting orientation convergence across proximal modules. (d)--(f) Synchronized multi-unit re-orientation maintaining normal vector $\hat{r}_{2,3}$ alignment toward $\mathbf{p}(t)$ under actuator saturation constraints.}
-
+    \caption{Kinematic tracking sequence of the 16-module SOFIA honeycomb array following a 3D target $\mathbf{p}(t)$. (a)--(c) Target boundary ingress and progressive orientation alignment across adjacent units. (d)--(f) Peak collective angular deflection and trajectory transit maintaining normal vector tracking under joint constraints.}
     \label{fig:sofia_simulation}
 \end{figure}
 
