@@ -2,11 +2,9 @@ using UnityEngine;
 
 /// <summary>
 /// Sigue un punto objetivo usando las ecuaciones del modelo cinemático
-/// inverso (Lab-DST): q2 = asin(ux), q1 = atan2(-uy, uz). Para evitar que
-/// el panel "gire como llanta" (roll parásito alrededor del eje de mira),
-/// la rotación final se arma con FromToRotation sobre el vector
-/// RECONSTRUIDO a partir de q1 y q2 (ec. 16) — igual que el script
-/// original, pero pasando explícitamente por las fórmulas.
+/// inverso (Lab-DST): q2 = asin(ux), q1 = atan2(-uy, uz).
+/// La dirección del módulo se reconstruye a partir de q1 y q2
+/// utilizando la ecuación (16) del modelo SOFIA.
 /// </summary>
 public class TrackerSofiaIK : MonoBehaviour
 {
@@ -14,8 +12,8 @@ public class TrackerSofiaIK : MonoBehaviour
     public Transform objetivo;
 
     [Header("Límite mecánico de los servos (grados)")]
-    [Tooltip("Grados máximos que puede inclinarse. Ejemplo: 45")]
-    public float limiteGrados = 45f;
+    [Tooltip("Límite máximo de cada servo. MG90S: ±90°")]
+    public float limiteGrados = 90f;
 
     [Header("Modo de operación")]
     public bool detectarPersona = true;
@@ -37,44 +35,89 @@ public class TrackerSofiaIK : MonoBehaviour
             return;
         }
 
-        // Bloqueo físico del piso (igual que antes)
+        // Bloqueo físico del piso
         if (objetivo.position.y <= transform.position.y)
         {
             transform.rotation = rotacionCero;
             return;
         }
 
-        // 1) Vector o2 -> p, en MUNDO (igual que tu script original)
+        // 1) Vector o2 -> p, en MUNDO
         Vector3 direccion = objetivo.position - transform.position;
+
+        // Evitar una dirección de magnitud cero
+        if (direccion.sqrMagnitude < 0.0001f)
+        {
+            transform.rotation = rotacionCero;
+            return;
+        }
+
         Vector3 u = direccion.normalized;
 
-        // 2) Mapeo de ejes: el eje "neutral" de la fórmula (z2,3 -> vector base (0,0,1))
-        //    corresponde aquí a Vector3.up del mundo, como en tu script original.
-        //    Los otros dos ejes de la fórmula (x, y) se mapean a x y z de Unity.
+        // 2) Mapeo de ejes entre el modelo SOFIA y Unity
         float ux = u.x;
         float uy = u.z;
         float uz = u.y;
 
-        // 3) ---------- ECUACIONES ----------
-        float q2 = Mathf.Asin(Mathf.Clamp(ux, -1f, 1f));   // (19) q2 = asin(ux)
-        float q1 = Mathf.Atan2(-uy, uz);                    // (21) q1 = atan2(-uy, uz)
-        // ------------------------------------
+        // 3) ECUACIONES DEL MODELO CINEMÁTICO INVERSO
+        // q2 = asin(ux)
+        // q1 = atan2(-uy, uz)
 
-        // 4) Reconstruir el vector unitario A PARTIR de q1 y q2 usando la
-        //    misma fórmula (16): [sin q2, -cos q2 sin q1, cos q1 cos q2]
+        float q2 = Mathf.Asin(
+            Mathf.Clamp(ux, -1f, 1f)
+        );
+
+        float q1 = Mathf.Atan2(
+            -uy,
+            uz
+        );
+
+        // 4) Convertir a grados para aplicar el límite mecánico
+        float q1Grados = q1 * Mathf.Rad2Deg;
+        float q2Grados = q2 * Mathf.Rad2Deg;
+
+        // 5) CLAMP de los ángulos de los servos
+        q1Grados = Mathf.Clamp(
+            q1Grados,
+            -limiteGrados,
+            limiteGrados
+        );
+
+        q2Grados = Mathf.Clamp(
+            q2Grados,
+            -limiteGrados,
+            limiteGrados
+        );
+
+        // 6) Regresar a radianes para las funciones trigonométricas
+        q1 = q1Grados * Mathf.Deg2Rad;
+        q2 = q2Grados * Mathf.Deg2Rad;
+
+        // 7) Reconstruir el vector unitario a partir de q1 y q2
+        //    r_hat_2,3 =
+        //    [ sin(q2),
+        //     -cos(q2) sin(q1),
+        //      cos(q1) cos(q2) ]
+
         float rx = Mathf.Sin(q2);
         float ry = -Mathf.Cos(q2) * Mathf.Sin(q1);
         float rz = Mathf.Cos(q1) * Mathf.Cos(q2);
 
-        // 5) Devolver ese vector reconstruido a coordenadas de Unity
-        //    (invirtiendo el mapeo del paso 2)
-        Vector3 direccionReconstruida = new Vector3(rx, rz, ry);
+        // 8) Regresar el vector reconstruido a coordenadas de Unity
+        Vector3 direccionReconstruida = new Vector3(
+            rx,
+            rz,
+            ry
+        );
 
-        // 6) Rotación SIN roll parásito: rota Vector3.up hacia la dirección
-        //    reconstruida (misma técnica robusta que tu script original)
-        Quaternion rotacionIdeal = Quaternion.FromToRotation(Vector3.up, direccionReconstruida);
+        // 9) Orientar el módulo hacia la dirección calculada
+        Quaternion rotacionIdeal =
+            Quaternion.FromToRotation(
+                Vector3.up,
+                direccionReconstruida
+            );
 
-        // 7) Tope mecánico del servo (igual que antes)
-        transform.rotation = Quaternion.RotateTowards(rotacionCero, rotacionIdeal, limiteGrados);
+        // 10) Aplicar la orientación
+        transform.rotation = rotacionIdeal;
     }
 }
