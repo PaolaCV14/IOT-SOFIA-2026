@@ -57,6 +57,8 @@
 \usepackage{xcolor}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
+\usepackage{enumitem}
+\usepackage{placeins}
 \graphicspath{{figures/}}
 \hyphenation{op-tical net-works semi-conduc-tor IEEE-Xplore}
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
@@ -440,94 +442,121 @@ Results section below.
 \subsection{Kinematic Tracking Simulation}
 \label{sec:results_simulation}
 
-To validate the analytical kinematic model, a dynamic tracking simulation of the 16-module SOFIA robotic honeycomb array was conducted in a virtual 3D environment. The goal was to evaluate multi-unit coordination when orienting toward a moving target coordinate $\mathbf{p}(t) \in \mathbb{R}^3$. 
+To validate the analytical kinematic model, a dynamic tracking
+simulation of the 16-module SOFIA robotic honeycomb array was
+conducted in a virtual 3D environment using the Unity game engine. The objective was to evaluate
+the coordinated orientation of the modules toward a moving target
+coordinate $\mathbf{p}(t) \in \mathbb{R}^3$.
 
-Algorithm~\ref{alg:sofia_ik} summarizes the inverse kinematics routine executed cyclically for each module $m_i$ ($i \in \{1, \dots, 16\}$) based on the unit base frame origin $\mathbf{r}_{0,2}^{(i)}$, solving for servo variables $(q_1, q_2)$ while clamping values within the permissible physical limits of the MG90S actuators ($[-90^\circ, 90^\circ]$). 
+For each module $m_i$, the inverse kinematics procedure determines
+the servo variables $(q_1,q_2)$ from the relative position of the
+target with respect to the module base frame. The resulting joint
+angles are constrained according to the permissible actuator range.
+The complete inverse kinematics procedure is summarized in
+Algorithm ~\ref{alg:sofia_ik}.
 
-\begin{algorithm}[!t]
+\begin{algorithm}[H]
 \caption{SOFIA Module Inverse Kinematics}
 \label{alg:sofia_ik}
+
 \begin{algorithmic}[1]
-\Require Module base origin $\mathbf{r}_{0,2}$, target coordinate $\mathbf{p}$, joint angle bounds $[q_{1,\min}, q_{1,\max}]$ and $[q_{2,\min}, q_{2,\max}]$
-\Ensure Joint angles $q_1, q_2$
+
+\Require Module base origin $\mathbf{r}_{0,2}$, target coordinate
+$\mathbf{p}$, joint angle limits
+$[q_{1,\min},q_{1,\max}]$ and
+$[q_{2,\min},q_{2,\max}]$
+
+\Ensure Joint angles $q_1,q_2$
+
 \State $\mathbf{r}_{2,p} \gets \mathbf{p} - \mathbf{r}_{0,2}$
-\State $[u_x, u_y, u_z]^\top \gets \mathbf{r}_{2,p} / \lVert \mathbf{r}_{2,p} \rVert$
+
+\State $[u_x,u_y,u_z]^\top \gets
+\mathbf{r}_{2,p}/\lVert\mathbf{r}_{2,p}\rVert$
+
 \State $q_2 \gets \arcsin(u_x)$
-\State $q_1 \gets \operatorname{atan2}(-u_y, u_z)$
-\State $q_1 \gets \Call{ClampAngle}{q_1, q_{1,\min}, q_{1,\max}}$
-\State $q_2 \gets \Call{ClampAngle}{q_2, q_{2,\min}, q_{2,\max}}$
-\State \Return $q_1, q_2$
+
+\State $q_1 \gets \operatorname{atan2}(-u_y,u_z)$
+
+\If{$q_1 < q_{1,\min}$}
+    \State $q_1 \gets q_{1,\min}$
+\ElsIf{$q_1 > q_{1,\max}$}
+    \State $q_1 \gets q_{1,\max}$
+\EndIf
+
+\If{$q_2 < q_{2,\min}$}
+    \State $q_2 \gets q_{2,\min}$
+\ElsIf{$q_2 > q_{2,\max}$}
+    \State $q_2 \gets q_{2,\max}$
+\EndIf
+
+\State \Return $q_1,q_2$
+
 \end{algorithmic}
 \end{algorithm}
 
-Figure~\ref{fig:sofia_simulation} presents the multi-body dynamic response across six key stages of the simulated tracking cycle:
-\begin{enumerate}[(a)]
-    \item \textit{Target Ingress:} As $\mathbf{p}(t)$ enters the workspace periphery, initial orientation is led by the closest boundary modules ($|q_1|, |q_2| < 15^\circ$), while distal cells remain in their nominal vertical orientation.
-    \item \textit{Cluster Propagation:} The continuous decrease in $|\mathbf{r}_{2,p}|$ triggers an inward cascade of servo commands across adjacent rows without phase lag.
-    \item \textit{Intermediate Convergence:} The entire 16-element array forms a focused directional field, uniformly tilting the normal vectors $\hat{r}_{2,3}^{(i)}$ toward the approaching coordinate.
-    \item \textit{Peak Deflection:} Central transit coincides with maximum angular excursion across the inner cluster, smoothly bounding within actuator limits without kinematic locking.
-    \item \textit{Quadrant Handover:} As the target traverses into the opposite quadrant, neighboring units execute continuous angular redistribution.
-    \item \textit{Terminal Alignment:} The full array converges into final steady-state tracking, verifying robust singularity-free coverage across the entire hemispherical workspace.
-\end{enumerate}
+Figure~\ref{fig:sofia_simulation} shows six representative frames
+of the simulated tracking process. As the target moves through the
+workspace, the modules progressively change their orientation,
+maintaining the direction of their normal vectors
+$\hat{r}_{2,3}^{(i)}$ toward the target position. The sequence
+illustrates the coordinated response of the 16-module array during
+different stages of the target trajectory.
 
-\begin{figure}[!t]
+\begin{figure}[!ht]
     \centering
 
+    % Row 1
     \subfloat[]{
-        \begin{minipage}[t]{0.47\linewidth}
-            \centering
-            \includegraphics[
-            width=\linewidth,
-            trim=0.25in 0 0.25in 0,
-            clip]{figures/fig_sim_1}
-        \end{minipage}
-    }\hfill
+        \includegraphics[
+            width=0.47\linewidth
+        ]{figures/fig_sim_1}
+    }
+    \hfill
     \subfloat[]{
-        \begin{minipage}[t]{0.47\linewidth}
-            \centering
-            \includegraphics[
-            width=\linewidth,
-            trim=0.25in 0 0.25in 0,
-            clip]{figures/fig_sim_2}
-        \end{minipage}
-    }\\[2mm]
-
-    \subfloat[]{
-        \begin{minipage}[t]{0.47\linewidth}
-            \centering
-            \includegraphics[width=\linewidth]{figures/fig_sim_3}
-        \end{minipage}
-    }\hfill
-    \subfloat[]{
-        \begin{minipage}[t]{0.47\linewidth}
-            \centering
-            \includegraphics[
-            width=\linewidth,
-            trim=0.25in 0 0.25in 0,
-            clip]{figures/fig_sim_4}
-        \end{minipage}
-    }\\[2mm]
-
-    \subfloat[]{
-        \begin{minipage}[t]{0.47\linewidth}
-            \centering
-            \includegraphics[
-	width=\linewidth,
-            trim=0.25in 0 0.25in 0,
-            clip]{figures/fig_sim_5}
-        \end{minipage}
-    }\hfill
-    \subfloat[]{
-        \begin{minipage}[t]{0.47\linewidth}
-            \centering
-            \includegraphics[
-	width=\linewidth,
-            trim=0.25in 0 0.25in 0,
-            clip]{figures/fig_sim_6}
-        \end{minipage}
+        \includegraphics[
+            width=0.47\linewidth
+        ]{figures/fig_sim_2}
     }
 
-    \caption{Kinematic tracking sequence of the 16-module SOFIA honeycomb array following a 3D target $\mathbf{p}(t)$. (a)--(c) Target boundary ingress and progressive orientation alignment across adjacent units. (d)--(f) Peak collective angular deflection and trajectory transit maintaining normal vector tracking under joint constraints.}
+    \par\vspace{2mm}
+
+    % Row 2
+    \subfloat[]{
+        \includegraphics[
+            width=0.47\linewidth
+        ]{figures/fig_sim_3}
+    }
+    \hfill
+    \subfloat[]{
+        \includegraphics[
+            width=0.47\linewidth,
+            trim=0.25in 0 0.25in 0,
+            clip
+        ]{figures/fig_sim_4}
+    }
+
+    \par\vspace{2mm}
+
+    % Row 3
+    \subfloat[]{
+        \includegraphics[
+            width=0.47\linewidth
+        ]{figures/fig_sim_5}
+    }
+    \hfill
+    \subfloat[]{
+        \includegraphics[
+            width=0.47\linewidth
+        ]{figures/fig_sim_6}
+    }
+
+    \caption{Representative frames of the SOFIA kinematic tracking
+    simulation. The six frames illustrate the progressive
+    reorientation of the 16-module honeycomb array as the target
+    coordinate $\mathbf{p}(t)$ moves through the workspace, with the
+    module normal vectors $\hat{r}_{2,3}^{(i)}$ oriented toward the
+    target.}
+
     \label{fig:sofia_simulation}
 \end{figure}
 
@@ -536,19 +565,23 @@ Figure~\ref{fig:sofia_simulation} presents the multi-body dynamic response acros
 
 This is where the results are interpreted, not just repeated. It
 should answer:
+
 \begin{itemize}
+
 \item What do the obtained results mean?
+
 \item How do they compare with the state of the art cited in the
 introduction? Do they confirm, contradict, or qualify previous work?
+
 \item What limitations does the work have (methodological, of scope,
 of validity)?
+
 \item What practical or theoretical implications does the finding
 have?
+
 \item What future work does this open up?
+
 \end{itemize}
-This section can be merged with Results if your journal/course prefers
-that (check the specific instructions), but keeping them separate is
-recommended to avoid mixing "what was found" with "what it means".
 
 %=================================================================
 \section{Conclusions}
