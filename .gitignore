@@ -18,3 +18,11 @@
 # VS Code (Keep settings.json for project configuration)
 .vscode/*
 !.vscode/settings.json
+
+*.venv
+.venv
+venv/
+env/
+ENV/
+__pycache__/
+*.py[cod]
