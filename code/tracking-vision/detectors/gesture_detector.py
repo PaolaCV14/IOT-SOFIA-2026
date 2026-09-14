@@ -5,6 +5,9 @@ class GestureDetector:
 
     def __init__(self):
         self.heart_frames = 0
+        self.scissors_frames = 0
+        self.paper_frames = 0
+        self.rock_frames = 0
 
     # ----------------------------------------
     # DISTANCIA ENTRE DOS LANDMARKS
@@ -19,12 +22,39 @@ class GestureDetector:
         ) ** 0.5
 
     # ----------------------------------------
+    # DETECTAR SI UN DEDO ESTÁ DOBLADO
+    # ----------------------------------------
+
+    @staticmethod
+    def dedo_doblado(mano, punta, articulacion):
+
+        distancia_punta = GestureDetector.distancia_3d(
+            mano[punta],
+            mano[0]
+        )
+
+        distancia_articulacion = GestureDetector.distancia_3d(
+            mano[articulacion],
+            mano[0]
+        )
+
+        return distancia_punta < distancia_articulacion
+
+    # ----------------------------------------
+    # DETECTAR SI UN DEDO ESTÁ EXTENDIDO
+    # ----------------------------------------
+
+    @staticmethod
+    def dedo_extendido(mano, punta, articulacion):
+
+        return mano[punta].y < mano[articulacion].y
+
+    # ----------------------------------------
     # DETECTAR CORAZÓN
     # ----------------------------------------
 
     def detectar_corazon(self, hand_results):
 
-        # Se requieren exactamente dos manos
         if (
             not hand_results.hand_landmarks or
             len(hand_results.hand_landmarks) != 2
@@ -35,19 +65,11 @@ class GestureDetector:
         mano1 = hand_results.hand_landmarks[0]
         mano2 = hand_results.hand_landmarks[1]
 
-        # ----------------------------------------
-        # LANDMARKS IMPORTANTES
-        # ----------------------------------------
-
         indice1 = mano1[8]
         pulgar1 = mano1[4]
 
         indice2 = mano2[8]
         pulgar2 = mano2[4]
-
-        # ----------------------------------------
-        # DISTANCIAS ENTRE LOS PUNTOS
-        # ----------------------------------------
 
         d_indices = self.distancia_3d(
             indice1,
@@ -69,49 +91,6 @@ class GestureDetector:
             pulgar2
         )
 
-        # ----------------------------------------
-        # IMPRIMIR COORDENADAS Y DISTANCIAS
-        # ----------------------------------------
-
-        print("\n" + "=" * 50)
-
-        print("MANOS DETECTADAS: 2")
-
-        print(
-            f"Índice 1: x={indice1.x:.3f}, "
-            f"y={indice1.y:.3f}, "
-            f"z={indice1.z:.3f}"
-        )
-
-        print(
-            f"Pulgar 1: x={pulgar1.x:.3f}, "
-            f"y={pulgar1.y:.3f}, "
-            f"z={pulgar1.z:.3f}"
-        )
-
-        print(
-            f"Índice 2: x={indice2.x:.3f}, "
-            f"y={indice2.y:.3f}, "
-            f"z={indice2.z:.3f}"
-        )
-
-        print(
-            f"Pulgar 2: x={pulgar2.x:.3f}, "
-            f"y={pulgar2.y:.3f}, "
-            f"z={pulgar2.z:.3f}"
-        )
-
-        print("\nDISTANCIAS:")
-
-        print(f"Índices:   {d_indices:.4f}")
-        print(f"Pulgares:  {d_pulgares:.4f}")
-        print(f"Mano 1:    {d_mano1:.4f}")
-        print(f"Mano 2:    {d_mano2:.4f}")
-
-        # ----------------------------------------
-        # UMBRALES ORIGINALES
-        # ----------------------------------------
-
         indices_juntos = d_indices < 0.12
 
         pulgares_juntos = d_pulgares < 0.12
@@ -121,34 +100,243 @@ class GestureDetector:
             d_mano2 < 0.25
         )
 
-        # ----------------------------------------
-        # MOSTRAR CONDICIONES
-        # ----------------------------------------
-
-        print("\nCONDICIONES:")
-
-        print(f"indices_juntos:    {indices_juntos}")
-        print(f"pulgares_juntos:   {pulgares_juntos}")
-        print(f"dedos_forman_arco: {dedos_forman_arco}")
-
         cumple = (
             indices_juntos and
             pulgares_juntos and
             dedos_forman_arco
         )
 
-        print(f"\n¿CUMPLE?: {cumple}")
-
-        # ----------------------------------------
-        # CONFIRMACIÓN TEMPORAL
-        # ----------------------------------------
-
         if cumple:
             self.heart_frames += 1
         else:
             self.heart_frames = 0
 
-        print(f"Heart frames: {self.heart_frames}")
-        print("=" * 50)
-
         return self.heart_frames >= 5
+    # ----------------------------------------
+    # DETECTAR TIJERA
+    # ----------------------------------------
+
+    def detectar_tijera(self, hand_results):
+
+        if not hand_results.hand_landmarks:
+            self.scissors_frames = 0
+            return False
+
+        for mano in hand_results.hand_landmarks:
+
+            # Índice y medio extendidos
+            indice_extendido = (
+                mano[8].y < mano[6].y
+            )
+
+            medio_extendido = (
+                mano[12].y < mano[10].y
+            )
+
+            # Anular y meñique doblados
+            anular_doblado = (
+                mano[16].y > mano[14].y
+            )
+
+            menique_doblado = (
+                mano[20].y > mano[18].y
+            )
+
+            # Distancia entre índice y medio
+            distancia_indice_medio = self.distancia_3d(
+                mano[8],
+                mano[12]
+            )
+
+            escala = self.distancia_3d(
+                mano[0],
+                mano[9]
+            )
+
+            if escala < 0.01:
+                continue
+
+            dedos_separados = (
+                distancia_indice_medio > escala * 0.18
+            )
+
+            cumple = (
+                indice_extendido and
+                medio_extendido and
+                anular_doblado and
+                menique_doblado and
+                dedos_separados
+            )
+
+            print(
+                f"TIJERA | "
+                f"Índice: {indice_extendido} | "
+                f"Medio: {medio_extendido} | "
+                f"Anular: {anular_doblado} | "
+                f"Meñique: {menique_doblado} | "
+                f"Separados: {dedos_separados} | "
+                f"Resultado: {cumple}"
+            )
+
+            if cumple:
+                self.scissors_frames += 1
+                return self.scissors_frames >= 4
+
+        self.scissors_frames = 0
+        return False
+    # ----------------------------------------
+    # DETECTAR PAPEL
+    # ----------------------------------------
+
+    def detectar_papel(self, hand_results):
+
+        if not hand_results.hand_landmarks:
+            self.paper_frames = 0
+            return False
+
+        for mano in hand_results.hand_landmarks:
+
+            # Índice extendido
+            indice_extendido = (
+                mano[8].y < mano[6].y
+            )
+
+            # Medio extendido
+            medio_extendido = (
+                mano[12].y < mano[10].y
+            )
+
+            # Anular extendido
+            anular_extendido = (
+                mano[16].y < mano[14].y
+            )
+
+            # Meñique extendido
+            menique_extendido = (
+                mano[20].y < mano[18].y
+            )
+
+            # Pulgar extendido
+            pulgar_extendido = (
+                self.distancia_3d(mano[4], mano[0])
+                >
+                self.distancia_3d(mano[3], mano[0])
+            )
+
+            cumple = (
+                indice_extendido and
+                medio_extendido and
+                anular_extendido and
+                menique_extendido and
+                pulgar_extendido
+            )
+
+            print(
+                f"PAPEL | "
+                f"Índice: {indice_extendido} | "
+                f"Medio: {medio_extendido} | "
+                f"Anular: {anular_extendido} | "
+                f"Meñique: {menique_extendido} | "
+                f"Pulgar: {pulgar_extendido} | "
+                f"Resultado: {cumple}"
+            )
+
+            if cumple:
+                self.paper_frames += 1
+                return self.paper_frames >= 3
+
+        self.paper_frames = 0
+
+        return False
+
+    # ----------------------------------------
+    # DETECTAR ROCA
+    # ----------------------------------------
+
+    # ----------------------------------------
+    # DETECTAR ROCA
+    # ----------------------------------------
+
+    def detectar_roca(self, hand_results):
+
+        if not hand_results.hand_landmarks:
+            self.rock_frames = 0
+            return False
+
+        for mano in hand_results.hand_landmarks:
+
+            # ----------------------------------------
+            # LOS CUATRO DEDOS DEBEN ESTAR DOBLADOS
+            # ----------------------------------------
+
+            indice_doblado = (
+                mano[8].y > mano[6].y
+            )
+
+            medio_doblado = (
+                mano[12].y > mano[10].y
+            )
+
+            anular_doblado = (
+                mano[16].y > mano[14].y
+            )
+
+            menique_doblado = (
+                mano[20].y > mano[18].y
+            )
+
+            # ----------------------------------------
+            # EL PULGAR DEBE ESTAR RECOGIDO
+            # ----------------------------------------
+
+            pulgar_retraido = (
+                self.distancia_3d(mano[4], mano[0])
+                <
+                self.distancia_3d(mano[3], mano[0]) * 1.15
+            )
+
+            # ----------------------------------------
+            # DISTANCIA ENTRE LAS PUNTAS DE LOS DEDOS
+            # ----------------------------------------
+
+            escala = self.distancia_3d(
+                mano[0],
+                mano[9]
+            )
+
+            if escala < 0.01:
+                continue
+
+            dedos_cerrados = (
+                self.distancia_3d(mano[8], mano[0]) < escala * 2.2 and
+                self.distancia_3d(mano[12], mano[0]) < escala * 2.2 and
+                self.distancia_3d(mano[16], mano[0]) < escala * 2.2 and
+                self.distancia_3d(mano[20], mano[0]) < escala * 2.2
+            )
+
+            cumple = (
+                indice_doblado and
+                medio_doblado and
+                anular_doblado and
+                menique_doblado and
+                pulgar_retraido and
+                dedos_cerrados
+            )
+
+            print(
+                f"ROCA | "
+                f"Índice: {indice_doblado} | "
+                f"Medio: {medio_doblado} | "
+                f"Anular: {anular_doblado} | "
+                f"Meñique: {menique_doblado} | "
+                f"Pulgar: {pulgar_retraido} | "
+                f"Cerrados: {dedos_cerrados} | "
+                f"Resultado: {cumple}"
+            )
+
+            if cumple:
+                self.rock_frames += 1
+                return self.rock_frames >= 4
+
+        self.rock_frames = 0
+        return False

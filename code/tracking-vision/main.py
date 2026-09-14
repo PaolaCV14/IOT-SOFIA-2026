@@ -109,7 +109,28 @@ try:
         # DETECTAR GESTOS
         # ----------------------------------------
 
-        if gesture_detector.detectar_corazon(hand_results):
+        corazon_detectado = gesture_detector.detectar_corazon(
+            hand_results
+        )
+
+        tijera_detectada = gesture_detector.detectar_tijera(
+            hand_results
+        )
+
+        papel_detectado = gesture_detector.detectar_papel(
+            hand_results
+        )
+
+        roca_detectada = gesture_detector.detectar_roca(
+            hand_results
+        )
+
+
+        # ----------------------------------------
+        # MOSTRAR GESTO EN PANTALLA
+        # ----------------------------------------
+
+        if corazon_detectado:
 
             cv2.putText(
                 frame,
@@ -121,6 +142,42 @@ try:
                 2
             )
 
+        elif tijera_detectada:
+
+            cv2.putText(
+                frame,
+                "TIJERA DETECTADA",
+                (30, 50),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (255, 0, 0),
+                2
+            )
+
+        elif papel_detectado:
+
+            cv2.putText(
+                frame,
+                "PAPEL DETECTADO",
+                (30, 50),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (0, 255, 0),
+                2
+            )
+
+        elif roca_detectada:
+
+            cv2.putText(
+                frame,
+                "ROCA DETECTADA",
+                (30, 50),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (128, 128, 128),
+                2
+            )
+  
         # ----------------------------------------
         # MOSTRAR CÁMARA
         # ----------------------------------------
