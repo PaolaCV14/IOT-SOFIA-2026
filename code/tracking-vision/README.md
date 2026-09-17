@@ -2,6 +2,7 @@
 
 Espacio destinado a los módulos de software en Python para percepción y control cinemático:
 - Procesamiento de imagen y visión por computadora (detección y tracking del objetivo/cuerpo en 3D).
+- Detección de gestos en tiempo real: Corazón, Saludo dinámico, Intención PPT (3 bombas con puño), Tijera, Papel y Roca.
 - Algoritmos de cinemática inversa y directa para el panal de 16 módulos.
 - Conexión y envío de comandos de orientación vía **Bluetooth / Wi-Fi** hacia el ESP32 maestro.
 - Scripts de simulación y visualización de trayectorias.
@@ -88,5 +89,5 @@ pip install -r requirements.txt
 ### 5. Ejecutar el script
 
 ```bash
-python tracking.py
+python main.py
 ```
