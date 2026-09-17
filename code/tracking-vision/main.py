@@ -21,10 +21,10 @@ def main():
     # 2. Conectamos con la cámara
     cap = cv2.VideoCapture(0)
     if not cap.isOpened():
-        print("❌ Error: No se pudo abrir la cámara web.")
+        print("Error: No se pudo abrir la cámara web.")
         return
 
-    print("🚀 Cámara iniciada. Muestra tus manos o presiona 'Q' para salir.")
+    print("Cámara iniciada. Muestra tus manos o presiona 'Q' para salir.")
     start_time = time.time()
 
     try:
@@ -82,7 +82,7 @@ def main():
         cv2.destroyAllWindows()
         hand_detector.close()
         pose_detector.close()
-        print("👋 Sistema cerrado correctamente.")
+        print("Sistema cerrado correctamente.")
 
 
 if __name__ == "__main__":
