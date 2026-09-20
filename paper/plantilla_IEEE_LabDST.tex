@@ -489,10 +489,35 @@ The SOFIA technological solution integrates physical modular hardware, distribut
 
 The physical and functional architecture of the SOFIA platform is organized into three primary interconnected subsystems:
 \begin{itemize}
-\item \textbf{Perception and High-Level Control:} A workstation executes an optimized Python tracking pipeline utilizing MediaPipe and OpenCV. It captures real-time video, tracks 3D upper-body pose landmarks and dual 21-point hand skeletons, classifies interaction gestures (dynamic waving, heart formations, rock-paper-scissors intent), and maps Cartesian targets $\mathbf{p}(t) \in \mathbb{R}^3$ into spatial trajectory coordinates.
-\item \textbf{Master Communication and Telemetry:} An ESP32-C3 master controller receives spatial setpoints via low-latency Wi-Fi / BLE communication and broadcasts synchronized module packets across an isolated RS-485 / Modbus serial bus.
+\item \textbf{Perception and High-Level Control:} A host workstation executes an optimized real-time vision pipeline running on Python. It captures live camera feeds, performs 3D upper-body pose estimation and dual 21-point hand topology tracking, recognizes static and dynamic interaction gestures, and translates user coordinates $\mathbf{p}(t) \in \mathbb{R}^3$ into spatial target orientations.
+\item \textbf{Master Communication and Telemetry:} An ESP32-C3 master microcontroller receives spatial setpoints via low-latency Wi-Fi / BLE communication and broadcasts synchronized module packets across an isolated RS-485 / Modbus serial bus.
 \item \textbf{Distributed Modular Honeycomb Array:} 16 independent 2-DOF modules receive target angular pairs $(q_1, q_2)$. Actuation pulses are generated locally via PCA9685 12-bit PWM controllers, driving 32 MG90S metal-gear servomotors.
 \end{itemize}
+
+\subsection{Computer Vision Tracking and Dynamic Gesture Pipeline}
+\label{sec:vision_pipeline}
+
+The perception layer is developed using Python 3.11 with MediaPipe Tasks and OpenCV, structured into a modular, low-latency architecture:
+\begin{enumerate}
+\item \textbf{Real-Time 3D Landmark Extraction:} Using Google MediaPipe's Landmarker models in video mode, the system extracts 33 holistic body landmarks and two sets of 21 3D hand coordinates ($x, y, z$) with millisecond-accurate timestamps, achieving stable 30~FPS throughput on host CPUs.
+\item \textbf{Rotation-Invariant Hand Topology:} Finger states are computed using 3D Euclidean distances between distal tips and the wrist base, normalized against palm scale $\lVert \mathbf{p}_{\text{wrist}} - \mathbf{p}_{\text{MCP}} \rVert$. This eliminates perspective distortion when fists face the camera.
+\item \textbf{Dynamic Gesture Recognition Engine:} A modular coordination layer (\textit{GestureDetector}) arbitrates between static and dynamic interactions with strict temporal priority:
+\begin{itemize}
+\item \textit{Dynamic Wave (Saludo):} Tracks lateral palm oscillations (landmark 9 $X$-coordinate); requires at least 3 direction reversals and amplitude $> 0.05$ normalized units, prioritizing greeting over static open-hand detection.
+\item \textit{Two-Handed RPS Game Intent (Intenci{\'o}n PPT):} Detects a horizontal flat palm as a reference plane and records 3 vertical fist-pump impacts using a finite-state machine ($d_{\text{contact}} < 0.17$ and $d_{\text{release}} > 0.20$ normalized units). A hysteresis hold filter prevents transient flickering with static rock or paper gestures.
+\item \textit{Static Postures:} Detects two-handed heart geometries, scissors, open paper, and closed fists.
+\end{itemize}
+\end{enumerate}
+
+\subsection{Preliminary Hardware and Custom PCB Design}
+\label{sec:pcb_design}
+
+In the current prototype stage (D-Lab corte 1), the system operates using breadboarded breakouts connecting the ESP32-C3 development board and dual PCA9685 driver modules. To satisfy the footprint, cabling density, and current capacity requirements of the 16-module kinetic honeycomb, preliminary PCB schematics and design criteria have been established:
+\begin{enumerate}
+\item \textbf{High-Current Power Distribution:} 32 simultaneous MG90S servomotors exhibit a collective peak stall current demand of up to $16\text{--}24\text{ A}$ at $5.0\text{ V}$. The preliminary custom carrier board incorporates wide copper power planes, dedicated terminal blocks, and bulk electrolytic decoupling capacitors ($4700\,\mu\text{F}$) to suppress inductive voltage transients and brownouts.
+\item \textbf{Industrial Bus Integration:} Onboard transceiver circuitry (MAX485 / SP3485) interfaces the ESP32-C3 UART pins with termination resistors for noise-immune RS-485 balanced transmission across the multi-drop module network.
+\item \textbf{Level Shifting and Logic Isolation:} Bidirectional I$^2$C level shifters protect the 3.3~V ESP32-C3 GPIOs when driving 5.0~V PCA9685 control rails.
+\end{enumerate}
 
 \subsection{Thermal Protection and Reliability Risk Mitigation}
 \label{sec:risk_mitigation}
