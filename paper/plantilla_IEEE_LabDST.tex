@@ -509,15 +509,10 @@ The perception layer is developed using Python 3.11 with MediaPipe Tasks and Ope
 \end{itemize}
 \end{enumerate}
 
-\subsection{Preliminary Hardware and Custom PCB Design}
-\label{sec:pcb_design}
+\subsection{Electronic Interconnection and Current Hardware Stage}
+\label{sec:hardware_stage}
 
-In the current prototype stage (D-Lab corte 1), the system operates using breadboarded breakouts connecting the ESP32-C3 development board and dual PCA9685 driver modules. To satisfy the footprint, cabling density, and current capacity requirements of the 16-module kinetic honeycomb, preliminary PCB schematics and design criteria have been established:
-\begin{enumerate}
-\item \textbf{High-Current Power Distribution:} 32 simultaneous MG90S servomotors exhibit a collective peak stall current demand of up to $16\text{--}24\text{ A}$ at $5.0\text{ V}$. The preliminary custom carrier board incorporates wide copper power planes, dedicated terminal blocks, and bulk electrolytic decoupling capacitors ($4700\,\mu\text{F}$) to suppress inductive voltage transients and brownouts.
-\item \textbf{Industrial Bus Integration:} Onboard transceiver circuitry (MAX485 / SP3485) interfaces the ESP32-C3 UART pins with termination resistors for noise-immune RS-485 balanced transmission across the multi-drop module network.
-\item \textbf{Level Shifting and Logic Isolation:} Bidirectional I$^2$C level shifters protect the 3.3~V ESP32-C3 GPIOs when driving 5.0~V PCA9685 control rails.
-\end{enumerate}
+In the current development stage (Corte 1, Discover $\to$ Learn), the physical electronic architecture is validated using commercial off-the-shelf (COTS) breakout boards on breadboards, directly interconnecting the ESP32-C3 microcontroller, dual PCA9685 PWM drivers, and external 5.0~V power rails. Custom printed circuit board (PCB) layout, routing, and fabrication remain open work for subsequent project phases (Make $\to$ Test), once the thermal boundaries and wiring constraints of the 16-module array are fully validated through the present prototype.
 
 \subsection{Thermal Protection and Reliability Risk Mitigation}
 \label{sec:risk_mitigation}
