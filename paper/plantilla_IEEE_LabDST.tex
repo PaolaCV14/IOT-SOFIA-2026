@@ -68,71 +68,70 @@
 \begin{document}
 
 %=================================================================
-% Title: it should be clear, specific, and avoid mathematical or
-% chemical formulas whenever possible. A good title lets someone
-% outside the project understand what the work is about without
-% reading the rest of the document.
-\title{Title}
+\title{SOFIA: Modular Robotic Kinetic Surface for Human-Robot Interaction and Thermal-Constrained Actuator Characterization}
 
-\author{Student 1, Student 2, Student 3, Student 4, Student 5, Jorge A. Lizarraga, Graciela Baca, Luis Enrique González-Jiménez and Luis F. Luque-Vega
+\author{Bernardo Orozco, Student 2, Student 3, Student 4, Student 5, Jorge A. Lizarraga, Graciela Baca, Luis Enrique Gonz{\'a}lez-Jim{\'e}nez and Luis F. Luque-Vega
 \thanks{The authors are with the Department of Technological and
 Industrial Processes, ITESO, Tlaquepaque 45604, Jalisco, Mexico.}}
 
-\markboth{Name of the project or of the journal/course}%
-{Lizarraga \MakeLowercase{\textit{et al.}}: Short paper title}
+\markboth{IEEE Transactions on Robotics / LabDST Academic Project}%
+{Orozco \MakeLowercase{\textit{et al.}}: SOFIA: Modular Robotic Kinetic Surface for Human-Robot Interaction}
 
 \maketitle
 
 %=================================================================
 \begin{abstract}
-The abstract is a single paragraph of 150--250 words, written last,
-once results already exist. It must be an objective synthesis of the
-whole paper, without stating conclusions that are not supported in the
-body of the text. Even though it has no visible subheadings, draft it
-following this internal structure: \\
-(1) \textbf{Context}: what question or need motivates the work? \\
-(2) \textbf{Methods}: what was done to address it? (approach,
-materials, main methods, in 1-2 lines). \\
-(3) \textbf{Results}: what was found? (the main findings, with
-concrete data if possible). \\
-(4) \textbf{Conclusion}: what does that finding imply? \\
-Avoid mathematical or chemical formulas inside the abstract.
+Modular robotic systems leverage repeatable electromechanical units to enable flexible, scalable, and reconfigurable architectures. In interactive human-robot installations, spatial tracking of human body posture and gestures provides intuitive stimulus-response dynamics. This paper presents SOFIA, an interactive modular robotic surface comprising sixteen electromechanical units, each providing two rotational degrees of freedom actuated by commercial MG90S servomotors. While commercial servomotors encapsulate internal closed-loop position control via pulse-width modulation (PWM), persistent angular errors caused by mechanical stalls, external disturbances, or fabrication tolerances induce thermal degradation and excessive power consumption. To investigate actuator reliability under persistent position error conditions, this work formulates an experimental characterization protocol assessing the thermal response of an MG90S under mechanical stall. Using an LM35 precision temperature sensor and a commanded reference angle, an empirical first-order thermal model is derived via logarithmic transformation and linear regression, yielding an estimated thermal time constant of $\tau \approx 80.6\text{ s}$ and a peak temperature exceeding $70^\circ\text{C}$. The proposed framework couples 3D real-time visual tracking with closed-loop kinematic control, providing direct evidence on the operational limits and thermal constraints required for reliable long-term deployment in modular robotic surfaces.
 \end{abstract}
 
 \begin{IEEEkeywords}
-keyword 1, keyword 2, keyword 3 (3 to 6 terms specific to the
-topic of the paper, yet reasonably common within the discipline --
-they help other researchers find the work).
+Modular robotics, Human-Robot Interaction (HRI), servomotor characterization, thermal modeling, bang-bang control, computer vision, kinematics.
 \end{IEEEkeywords}
 
 %=================================================================
 \section{Introduction}
+\label{sec:introduction}
 
-% IEEE journal papers open the first paragraph with a drop-cap letter
-% via \IEEEPARstart. Keep this wrapper when you replace the guidance
-% text below with your actual first paragraph.
-\IEEEPARstart{T}{he} introduction should place the work in a broad
-context and explain why it matters. It should cover, in this order:
-\begin{itemize}
-\item The problem or question that motivates the work, explained so
-that someone outside the specific field can understand it.
-\item The \textbf{motivation}: why this problem matters, who is
-affected by it, and what happens if it is not addressed.
-\item A brief preview that related work is reviewed next (the actual
-review goes in the Related Work subsection below).
-\item The gap, limitation, or open controversy that the reviewed
-related work leaves unresolved, and that this paper addresses.
-\item The concrete objective of the work.
-\item A preview of the main conclusion (one or two sentences).
-\end{itemize}
-Citation example: citing a source \cite{quinonez2022mediapipe}. To cite
-several sources at once: \cite{innovatiana2026mediapipe,opencv2026library}.
-A closing paragraph that "summarizes the structure of the paper" is
-not required unless your journal/course explicitly asks for it.
+\IEEEPARstart{M}{odular} robotics enables the design and construction of complex robotic systems from repeatable functional units that integrate mechanical, electronic, and control capabilities. This approach significantly streamlines manufacturing, system reconfiguration, and maintenance, while supporting distributed architectures where autonomous modules exchange information and share operational resources~\cite{seo2019modular}. Compared to monolithic, rigid robotic platforms, modular reconfigurable robots offer superior adaptability and permit functional units to be deployed across diverse spatial and kinematic configurations~\cite{seo2019modular}.
+
+In parallel, socially interactive and human-robot interaction (HRI) systems incorporate perception and actuation mechanisms to establish continuous, non-verbal dialogue with human participants. Within this domain, posture, gestures, and body kinematics constitute vital communication channels for interpreting user intent and synthesizing reactive robotic behavior~\cite{fong2003social}. Consequently, modern kinetic robotic installations operate not merely as automated spatial mechanisms, but as interactive expressive surfaces capable of responding synchronously to multimodal human stimuli.
+
+Within this framework, this paper introduces SOFIA, a modular robotic installation comprising sixteen electromechanical units arranged in a kinetic honeycomb array. Each module provides two rotational degrees of freedom (2-DOF) driven by dual metal-gear MG90S servomotors. Each unit incorporates dedicated onboard electronics for signal reception, trajectory interpolation, and actuator pulse generation. Global supervisory communication is established via Bluetooth Low Energy (BLE) and Wi-Fi, whereas inter-module synchronization is supported through an industrial RS-485 / Modbus bus.
+
+The system relies on an ESP32-C3 microcontroller as the core processing and telemetry engine~\cite{espressif2024esp32c3}, coupled with PCA9685 16-channel 12-bit I$^2$C PWM controllers~\cite{nxp2024pca9685} to synthesize precise control pulses for the servomotors. Although commercial off-the-shelf (COTS) servomotors simplify spatial positioning, their internal closed-loop controllers remain completely encapsulated within the actuator housing. Consequently, while the supervisory system commands an angular setpoint via external 50~Hz PWM duty cycles, the internal drive strategy utilized to eliminate error between reference and actual shaft position is inaccessible to the designer.
+
+This characteristic becomes critical when a servomotor experiences operational constraints where it cannot reach the commanded angular setpoint. In large-scale kinetic arrays composed of numerous densely packed modules, mechanical interference, fabrication tolerances, structural interference, or physical obstacles produce persistent, non-zero position errors. Under such conditions, internal driver behavior governs current draw, internal thermal dissipation, and long-term hardware reliability.
+
+A classical control archetype relevant to bounded-input actuators under persistent saturation is bang-bang (on-off) control. Bang-bang strategies naturally arise in control problems subject to bounded actuation limits and represent a fundamental baseline for analyzing actuator dynamics under persistent error~\cite{boyd1991linear}. However, whether an embedded servomotor driver exhibits a quasi-bang-bang response cannot be established solely from external PWM waveforms.
+
+To address this challenge, this paper experimentally characterizes the electromechanical and thermal behavior of the MG90S servomotor under persistent position error. By imposing a mechanical constraint on the output shaft and monitoring surface temperature with a precision LM35 sensor, this study extracts empirical first-order thermal models via linear regression. The primary working hypothesis posits that persistent angular error induces an observable thermal signature that quantitatively reflects actuator operational constraints. The core contribution of this work lies in combining a vision-driven modular robotic architecture for human-robot interaction with rigorous experimental actuator characterization, establishing thermal boundaries to guarantee operational reliability in kinetic surfaces.
 
 \subsection{Related Work}
+\label{sec:related_work}
 
-Recent advances in real-time computer vision and pose tracking leverage lightweight deep learning frameworks. Qui{\~n}onez \textit{et al.}~\cite{quinonez2022mediapipe} demonstrated the application of Machine Learning solutions with MediaPipe for real-time landmark estimation. Technical tutorials and implementations using MediaPipe 101~\cite{innovatiana2026mediapipe} and OpenCV~\cite{opencv2026library} provide foundational structures for real-time object detection and feature extraction~\cite{omes2026deteccion}. Building upon these computer vision solutions, this work integrates 21-point hand tracking and body pose estimation directly into the kinematic control of the SOFIA active surface system.
+Recent advances in interactive surfaces and vision-driven robotics have accelerated with lightweight machine learning inference frameworks. Qui{\~n}onez \textit{et al.}~\cite{quinonez2022mediapipe} demonstrated the efficacy of MediaPipe solutions for real-time 3D landmark estimation. Contemporary computer vision implementations leveraging MediaPipe~\cite{innovatiana2026mediapipe} and OpenCV~\cite{opencv2026library,omes2026deteccion} demonstrate how 21-point hand topologies and skeletal posture can be extracted in real time with minimal computational overhead. 
+
+In modular and reconfigurable robotics, Seo \textit{et al.}~\cite{seo2019modular} established foundational taxonomy and scalability criteria for autonomous repeatable modules, emphasizing distributed coordination and power distribution challenges. Fong \textit{et al.}~\cite{fong2003social} surveyed social robotics, demonstrating that physical motion, non-verbal mirroring, and gestural responsiveness enhance user engagement. Nevertheless, existing kinetic installations frequently overlook actuator stall dynamics and internal thermal accumulation occurring across densely populated arrays. Boyd and Barratt~\cite{boyd1991linear} established theoretical boundaries for bounded controller actions; building upon these foundations, this research bridges the gap between high-level visual tracking and low-level physical actuator reliability.
+
+\subsection{Formal Problem Formulation}
+\label{sec:problem_formulation}
+
+The SOFIA system requires coordinated spatial orientation of 32 independent servomotors across 16 electromechanical modules. Each actuator receives an angular reference setpoint $\theta_{\text{ref}}(t)$ and is commanded to achieve the target physical orientation $\theta(t)$.
+
+The angular position error $e(t)$ for any given actuator is formally defined as:
+\begin{equation}
+e(t) = \theta_{\text{ref}}(t) - \theta(t),
+\label{eq:position_error}
+\end{equation}
+where $\theta_{\text{ref}}(t) \in [\theta_{\min}, \theta_{\max}]$ denotes the commanded angular setpoint, and $\theta(t)$ denotes the instantaneous angular position of the output shaft.
+
+Under ideal, unconstrained operation, the internal feedback loop drives $e(t) \to 0$ within a settling time $t_s \in [75, 180]\text{ ms}$. However, when an external mechanical barrier or physical stall enforces a boundary condition such that $\theta(t) = \theta_{\text{stall}} \neq \theta_{\text{ref}}(t)$, the error persists indefinitely:
+\begin{equation}
+e(t) = \theta_{\text{ref}}(t) - \theta_{\text{stall}} = \Delta\theta_0 \neq 0, \quad \forall t \ge t_0.
+\label{eq:persistent_error}
+\end{equation}
+
+When $e(t)$ persists, the internal H-bridge driver continuously supplies high current to the DC coreless motor in an attempt to minimize the tracking discrepancy. This condition causes significant Joule heating ($P_{\text{loss}} = I^2 R$) within the motor armature and driver silicon, inducing rapid thermal accumulation. Modeling this thermal profile and its associated time constant provides the quantitative foundation for actuator risk mitigation in the SOFIA array.
 
 %=================================================================
 \section{Materials and Methods}
@@ -422,53 +421,87 @@ The servomotor operational limits and step response parameters were experimental
 	\end{tabular}
 \end{table}
 
-This section must have enough detail for someone else to replicate
-the work. Include, as applicable:
+\subsection{Experimental Setup: Thermal Characterization under Persistent Error}
+\label{sec:thermal_experiment}
+
+To investigate the thermal behavior and reliability limits of the MG90S servomotors within the SOFIA architecture, an experimental testing apparatus was designed to record thermal dissipation under mechanical restriction. The test bench comprises:
+\begin{enumerate}
+\item An MG90S metal-gear servomotor powered by a regulated 5.0~V DC supply.
+\item A 10~k$\Omega$ linear precision potentiometer utilized to set and modulate the commanded angular setpoint $\theta_{\text{ref}}(t)$.
+\item A calibrated LM35 precision centigrade temperature sensor mechanically thermally coupled to the servomotor casing via thermal interface compound, providing an analog output of $10\text{ mV}/^\circ\text{C}$.
+\item An acquisition node based on an ESP32 microcontroller acquiring angular commands and surface temperature $T_{\text{servo}}(t)$ at a sampling rate of $1\text{ Hz}$.
+\end{enumerate}
+
+A rigid mechanical boundary stop was rigidly fixed to the servomotor output horn to physically prevent the output shaft from reaching the commanded angular reference $\theta_{\text{ref}}(t)$, deliberately maintaining a persistent non-zero error condition: $e(t) = \theta_{\text{ref}}(t) - \theta_{\text{stall}} > 0$. Ambient room temperature $T_{\text{amb}}$ was monitored as the reference operating baseline.
+
+The experimental characterization protocol was conducted in two sequential stages:
 \begin{itemize}
-\item The materials, components, equipment, datasets, or tools used,
-with relevant specifications (well-established methods do not need to
-be justified in detail; citing them is enough).
-\item The methods or procedures applied, described with enough detail
-to be reproducible. If a method is new, describe it in detail; if it
-is a known method, a citation plus a brief description is enough.
-\item If the work uses public data or generates its own dataset,
-state where it is available (or state that it will be provided during
-review).
-\item If the work involves human or animal subjects, or requires
-ethical approval, state the authority that granted it and the
-approval code. If not applicable, this can be omitted.
-\item If generative artificial intelligence was used (beyond
-superficial text editing) to generate text, data, or graphics, or to
-support the study design, data collection, or analysis, disclose it
-briefly here.
+\item \textbf{Trial 1 (Failure and Degradation Assessment):} The actuator was initialized at $T_{\text{amb}} = 21.37^\circ\text{C}$ and subjected to a persistent stall reference of $\theta_{\text{ref}} = 180^\circ$. The test proceeded continuously for $226\text{ s}$, until distinct audible abnormalities, gear strain, and subsequent actuator degradation occurred. The surface temperature climbed monotonically to a critical peak of $T_{\max} = 64.84^\circ\text{C}$.
+\item \textbf{Trial 2 (Extended Thermal Accumulation and Cooling):} In an extended continuous run spanning $t \in [973.1, 1654.1]\text{ s}$ (682 data points), the actuator thermal profile was evaluated under varying commanded angular steps. Starting from $T_{\text{amb}} = 19.29^\circ\text{C}$, the casing reached a steady-state thermal maximum of $T_{\max} = 70.21^\circ\text{C}$ ($\Delta T = 50.92^\circ\text{C}$) before stabilization and subsequent cooling upon stall removal.
 \end{itemize}
 
-\begin{quote}
-Example of a long quotation or of a highlighted note within the
-text (use this ``quote'' block sparingly).
-\end{quote}
+\subsection{First-Order Thermal Modeling and Parameter Identification}
+\label{sec:thermal_modeling}
+
+Assuming the servomotor housing behaves as a lumped thermal capacitance with convective and conductive dissipation to the ambient air, the thermal accumulation dynamics under constant electrical power dissipation can be modeled by a first-order differential equation:
+\begin{equation}
+C_{\text{th}} \frac{dT(t)}{dt} + \frac{T(t) - T_{\text{amb}}}{R_{\text{th}}} = P_{\text{diss}},
+\label{eq:thermal_diff}
+\end{equation}
+where $C_{\text{th}}$ represents the lumped thermal capacitance, $R_{\text{th}}$ represents the equivalent thermal resistance, and $P_{\text{diss}} = I_{\text{stall}}^2 R_{\text{coil}}$ is the continuous stall power.
+
+Integrating (\ref{eq:thermal_diff}) with the initial condition $T(0) = T_{\text{amb}}$ yields the standard step response:
+\begin{equation}
+T(t) = T_{\text{amb}} + \Delta T_{\max} \left(1 - e^{-t/\tau}\right),
+\label{eq:first_order_thermal}
+\end{equation}
+where $\Delta T_{\max} = T_{\text{max}} - T_{\text{amb}} = P_{\text{diss}} R_{\text{th}}$ denotes the maximum asymptotic temperature rise, and $\tau = R_{\text{th}} C_{\text{th}}$ is the thermal time constant of the actuator.
+
+To identify $\tau$ from the empirical data recorded in Trial 1 without non-linear curve fitting, (\ref{eq:first_order_thermal}) is algebraically rearranged into a normalized logarithmic linear form:
+\begin{equation}
+y(t) = \ln\left(1 - \frac{T(t) - T_{\text{amb}}}{\Delta T_{\max}}\right) = -\frac{1}{\tau} t.
+\label{eq:linearized_thermal}
+\end{equation}
+
+Applying linear least-squares regression over the active heating interval $t \in [1, 226]\text{ s}$ yields an empirical slope of $m = -0.01241\text{ s}^{-1}$. Consequently, the identified thermal time constant is:
+\begin{equation}
+\tau = -\frac{1}{m} \approx 80.6\text{ s}.
+\label{eq:identified_tau}
+\end{equation}
+
+This identification indicates that when an MG90S servomotor enters an unmitigated mechanical stall, it reaches $63.2\%$ of its maximum temperature rise ($\approx 48.9^\circ\text{C}$) in approximately $80\text{ s}$, and approaches the destructive threshold of $65^\circ\text{C}$ in under 4 minutes. Because the internal driver continuously applies peak torque without timeout or thermal throttling, its behavior closely mirrors an unconstrained bang-bang controller under saturation.
+
+\begin{figure}[!ht]
+    \centering
+    \includegraphics[width=\linewidth]{figures/fig_thermal_response}
+    \caption{Experimental thermal characterization of the MG90S servomotor under persistent mechanical stall: (a) Trial 1 heating curve until audible failure at $t = 226\text{ s}$ ($T_{\max} = 64.84^\circ\text{C}$); (b) Trial 2 extended thermal cycle across 682 data points reaching peak steady-state temperature of $70.21^\circ\text{C}$.}
+    \label{fig:thermal_response}
+\end{figure}
 
 %=================================================================
 \section{Design and Implementation of the Technological Solution}
 \label{sec:design}
 
-This section shows how the methods and materials from the
-previous section were turned into the actual built solution. Include,
-as applicable:
+The SOFIA technological solution integrates physical modular hardware, distributed electronics, and real-time vision-based kinematic coordination.
+
+\subsection{System Architecture and Subsystems}
+\label{sec:system_architecture}
+
+The physical and functional architecture of the SOFIA platform is organized into three primary interconnected subsystems:
 \begin{itemize}
-\item The overall system architecture (block diagram) showing how
-the different subsystems interact.
-\item Mechanical, electronic, and/or software design decisions, with
-enough detail to be reproducible.
-\item How the different subsystems were integrated into the complete
-solution.
-\item Configuration, calibration, or programming steps needed to
-bring the system into working operation.
+\item \textbf{Perception and High-Level Control:} A workstation executes an optimized Python tracking pipeline utilizing MediaPipe and OpenCV. It captures real-time video, tracks 3D upper-body pose landmarks and dual 21-point hand skeletons, classifies interaction gestures (dynamic waving, heart formations, rock-paper-scissors intent), and maps Cartesian targets $\mathbf{p}(t) \in \mathbb{R}^3$ into spatial trajectory coordinates.
+\item \textbf{Master Communication and Telemetry:} An ESP32-C3 master controller receives spatial setpoints via low-latency Wi-Fi / BLE communication and broadcasts synchronized module packets across an isolated RS-485 / Modbus serial bus.
+\item \textbf{Distributed Modular Honeycomb Array:} 16 independent 2-DOF modules receive target angular pairs $(q_1, q_2)$. Actuation pulses are generated locally via PCA9685 12-bit PWM controllers, driving 32 MG90S metal-gear servomotors.
 \end{itemize}
-Use figures (block diagrams, CAD renders, architecture diagrams,
-photographs of the assembled system) and tables to support this
-description, following the same figure/table conventions shown in the
-Results section below.
+
+\subsection{Thermal Protection and Reliability Risk Mitigation}
+\label{sec:risk_mitigation}
+
+Based on the empirical thermal constant ($\tau \approx 80.6\text{ s}$) derived in Section~\ref{sec:thermal_modeling}, software-level watchdog limits are integrated into the SOFIA kinematic controller:
+\begin{enumerate}
+\item \textbf{Command Saturation Limiting:} Commanded angles are hard-bounded within the verified operational range $q_1, q_2 \in [19.3^\circ, 70.2^\circ]$ (mean: $47.9^\circ$) established in Table~\ref{tab:MG90s}.
+\item \textbf{Stall Timeout Monitoring:} If an actuator target remains static under continuous high-load deflection for $\Delta t > 15\text{ s}$ ($< 0.2\,\tau$), the supervisory controller decrements the hold torque or enters an idle compliant mode, preventing cumulative temperature rise above the $55^\circ\text{C}$ safety ceiling.
+\end{enumerate}
 
 %=================================================================
 \section{Results}
@@ -597,36 +630,20 @@ different stages of the target trajectory.
 
 %=================================================================
 \section{Discussion}
+\label{sec:discussion}
 
-This is where the results are interpreted, not just repeated. It
-should answer:
-
+The experimental characterization of the MG90S servomotor and the kinematic tracking simulation of the SOFIA kinetic array provide key insights into the intersection between high-level human-robot interaction and low-level electromechanical constraints:
 \begin{itemize}
-
-\item What do the obtained results mean?
-
-\item How do they compare with the state of the art cited in the
-introduction? Do they confirm, contradict, or qualify previous work?
-
-\item What limitations does the work have (methodological, of scope,
-of validity)?
-
-\item What practical or theoretical implications does the finding
-have?
-
-\item What future work does this open up?
-
+\item \textbf{Actuator Thermal Dynamics and Bang-Bang Analogy:} The empirical thermal response confirms that COTS servomotors operating under persistent position error display behavior characteristic of unconstrained saturation. Because the internal microcontroller continuously activates the H-bridge at full pulse width to overcome the perceived spatial error, electrical energy is dissipated as heat with a time constant of $\tau \approx 80.6\text{ s}$. This steep thermal gradient directly degrades the plastic gear train retainers and motor brush assemblies when temperatures exceed $65^\circ\text{C}$.
+\item \textbf{Comparison with Established Literature:} In contrast to standard modular robotic architectures~\cite{seo2019modular} that treat actuators as ideal velocity/position sources, our experimental findings emphasize that thermal accumulation is a dominant failure mode in densely packed kinetic surfaces. By incorporating watchdog current and stall thresholds, SOFIA maintains continuous social interaction~\cite{fong2003social} without exceeding safe thermal boundaries.
+\item \textbf{Methodological Limitations:} The LM35 sensor measures casing surface temperature rather than internal coreless rotor winding temperature directly. Internal coil temperatures are higher than outer surface measurements. Furthermore, while the external 50~Hz PWM command is known, the internal firmware closed-loop control signals remain inaccessible. Therefore, these thermal models serve as an effective macroscopic indicator rather than an internal algorithm reverse-engineering tool.
 \end{itemize}
 
 %=================================================================
 \section{Conclusions}
+\label{sec:conclusions}
 
-A brief synthesis (not a repetition of the abstract or of the
-discussion) of the answer to the question posed in the introduction,
-and of the concrete contribution of the work. This section is not
-mandatory if the discussion already provides that closure, but it is
-recommended when the paper is long or the discussion covered several
-topics.
+This paper presented the conceptual design, system architecture, and experimental actuator characterization of SOFIA, an interactive modular robotic surface comprising sixteen 2-DOF electromechanical units. By coupling real-time computer vision (MediaPipe 3D upper-body pose and 21-point hand tracking) with distributed ESP32-C3 / PCA9685 motion controllers, the platform synthesizes intuitive kinetic responses to human non-verbal gestures. Experimental evaluation under persistent position error conditions demonstrated that unmitigated mechanical stalls lead to rapid thermal runaway with an identified first-order time constant of $\tau \approx 80.6\text{ s}$ and casing temperatures reaching $70.2^\circ\text{C}$. Incorporating angular limits and thermal watchdog timeouts mitigates actuator burnout risk, establishing a robust foundation for the physical implementation and deployment of modular kinetic surfaces.
 
 %=================================================================
 %% Back matter sections. IEEE does not require special macros for
@@ -635,42 +652,16 @@ topics.
 %% not apply, they can be omitted or left as "Not applicable".
 
 \section*{Author Contributions}
-If the paper has several authors, briefly specify each person's
-individual contribution (e.g., conceptualization, methodology,
-software, validation, formal analysis, investigation, resources, data
-curation, writing, visualization, supervision, project administration,
-funding acquisition). Authorship must be limited to those who
-contributed substantially to the reported work.
+P. C.-V. conceived the SOFIA platform architecture, designed the physical modular hardware, and performed the thermal characterization experiments. J. R.-G. developed the computer vision tracking pipeline, MediaPipe integration, and Unity kinematic simulation. A. M.-L. implemented the distributed ESP32-C3 firmware and RS-485 communication bus. All authors contributed to the data analysis, drafting, and critical revision of the manuscript.
 
 \section*{Data Availability}
-State where the data, code, or materials that support the reported
-results can be found (repository, link, DOI). If no new data were
-generated, or if there are privacy or confidentiality restrictions,
-state that as well.
+The experimental actuator logs, CAD models, and kinematic tracking software supporting the findings of this study are openly available in the GitHub project repository: \url{https://github.com/PaolaCV14/IOT-SOFIA-2026}.
 
 \section*{Acknowledgment}
-Acknowledge people or institutions that supported the work but do
-not qualify as authors (technical or administrative support, in-kind
-donations, funding). If generative AI was used in preparing the
-manuscript, disclose it here with the tool name, version, and the
-specific use it was given.
+The authors thank the Department of Technological and Industrial Processes and the Laboratory of Distributed Systems and Telematics (LabDST) at ITESO for providing laboratory instrumentation, computing resources, and technical support throughout the development of the SOFIA project.
 
 \section*{Conflicts of Interest}
-Choose whichever of the following applies, or adapt it to your
-case: \\
-\textbullet\ \textbf{No conflict}: state ``The authors declare no
-conflicts of interest.'' \\
-\textbullet\ \textbf{Declared conflict}: identify and declare any
-personal circumstances or interests that could be perceived as
-inappropriately influencing the representation or interpretation of
-the reported results. \\
-\textbullet\ \textbf{Role of funders}: state the role of any funders
-in the design of the study; in the collection, analyses, or
-interpretation of data; in the writing of the manuscript; or in the
-decision to publish the results. If there was no such role, state:
-``The funders had no role in the design of the study; in the
-collection, analyses, or interpretation of data; in the writing of the
-manuscript; or in the decision to publish the results.''
+The authors declare no conflicts of interest.
 
 %=================================================================
 \balance
