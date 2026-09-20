@@ -120,14 +120,14 @@ The SOFIA system requires coordinated spatial orientation of 32 independent serv
 
 The angular position error $e(t)$ for any given actuator is formally defined as:
 \begin{equation}
-e(t) = \theta_{\text{ref}}(t) - \theta(t),
+e(t) = \theta_d(t) - \theta(t),
 \label{eq:position_error}
 \end{equation}
-where $\theta_{\text{ref}}(t) \in [\theta_{\min}, \theta_{\max}]$ denotes the commanded angular setpoint, and $\theta(t)$ denotes the instantaneous angular position of the output shaft.
+where $\theta_d(t) \in [\theta_{\min}, \theta_{\max}]$ corresponds to the desired (commanded) angular position, and $\theta(t)$ denotes the instantaneous actual angular position of the output shaft.
 
-Under ideal, unconstrained operation, the internal feedback loop drives $e(t) \to 0$ within a settling time $t_s \in [75, 180]\text{ ms}$. However, when an external mechanical barrier or physical stall enforces a boundary condition such that $\theta(t) = \theta_{\text{stall}} \neq \theta_{\text{ref}}(t)$, the error persists indefinitely:
+Under ideal, unconstrained operation, the internal feedback loop drives $e(t) \to 0$ within a settling time $t_s \in [75, 180]\text{ ms}$. However, when an external mechanical constraint prevents the actuator from reaching $\theta_d(t)$ such that $\theta(t) = \theta_{\text{stall}} \neq \theta_d(t)$, the error persists indefinitely:
 \begin{equation}
-e(t) = \theta_{\text{ref}}(t) - \theta_{\text{stall}} = \Delta\theta_0 \neq 0, \quad \forall t \ge t_0.
+e(t) = \theta_d(t) - \theta_{\text{stall}} = \Delta\theta_0 \neq 0, \quad \forall t \ge t_0.
 \label{eq:persistent_error}
 \end{equation}
 
@@ -443,33 +443,36 @@ The experimental characterization protocol was conducted in two sequential stage
 \subsection{First-Order Thermal Modeling and Parameter Identification}
 \label{sec:thermal_modeling}
 
-Assuming the servomotor housing behaves as a lumped thermal capacitance with convective and conductive dissipation to the ambient air, the thermal accumulation dynamics under constant electrical power dissipation can be modeled by a first-order differential equation:
-\begin{equation}
-C_{\text{th}} \frac{dT(t)}{dt} + \frac{T(t) - T_{\text{amb}}}{R_{\text{th}}} = P_{\text{diss}},
-\label{eq:thermal_diff}
-\end{equation}
-where $C_{\text{th}}$ represents the lumped thermal capacitance, $R_{\text{th}}$ represents the equivalent thermal resistance, and $P_{\text{diss}} = I_{\text{stall}}^2 R_{\text{coil}}$ is the continuous stall power.
+For the experimental characterization, the commanded angular position acts as the system input, $u(t) = \theta_d(t)$, while the recorded servomotor casing temperature represents the measured system output, $y(t) = T_s(t)$. Room ambient temperature is denoted as $T_a$.
 
-Integrating (\ref{eq:thermal_diff}) with the initial condition $T(0) = T_{\text{amb}}$ yields the standard step response:
+In accordance with first-order thermal dynamics, the system is modeled in the Laplace domain by the empirical transfer function:
 \begin{equation}
-T(t) = T_{\text{amb}} + \Delta T_{\max} \left(1 - e^{-t/\tau}\right),
-\label{eq:first_order_thermal}
+G_T(s) = \frac{T_s(s)}{\Theta_d(s)} = \frac{K_T}{\tau_T s + 1},
+\label{eq:transfer_function}
 \end{equation}
-where $\Delta T_{\max} = T_{\text{max}} - T_{\text{amb}} = P_{\text{diss}} R_{\text{th}}$ denotes the maximum asymptotic temperature rise, and $\tau = R_{\text{th}} C_{\text{th}}$ is the thermal time constant of the actuator.
+where $K_T$ represents the thermal steady-state gain ($^\circ\text{C}/\text{rad}$ or $^\circ\text{C}/^\circ$), and $\tau_T$ is the thermal time constant of the actuator.
 
-To identify $\tau$ from the empirical data recorded in Trial 1 without non-linear curve fitting, (\ref{eq:first_order_thermal}) is algebraically rearranged into a normalized logarithmic linear form:
+In the time domain, the step response of this first-order system to a persistent commanded step input $\theta_d(t)$ is expressed as:
 \begin{equation}
-y(t) = \ln\left(1 - \frac{T(t) - T_{\text{amb}}}{\Delta T_{\max}}\right) = -\frac{1}{\tau} t.
+T_s(t) = T_a + (T_{ss} - T_a)\left(1 - e^{-t/\tau_T}\right),
+\label{eq:first_order_time}
+\end{equation}
+where $T_{ss}$ represents the asymptotic steady-state temperature reached under continuous stall.
+
+Following the identification methodology presented in the LabDST course lectures, the non-linear exponential response is transformed into a linear relationship:
+\begin{equation}
+\ln\left(T_{ss} - T_s(t)\right) = -\frac{1}{\tau_T} t + C,
 \label{eq:linearized_thermal}
 \end{equation}
-
-Applying linear least-squares regression over the active heating interval $t \in [1, 226]\text{ s}$ yields an empirical slope of $m = -0.01241\text{ s}^{-1}$. Consequently, the identified thermal time constant is:
+where $C = \ln(T_{ss} - T_a)$ is a constant. Applying linear least-squares regression between $\ln(T_{ss} - T_s(t))$ and time $t$, the slope of the fitted line $m = -1/\tau_T$ provides the estimate of the thermal time constant:
 \begin{equation}
-\tau = -\frac{1}{m} \approx 80.6\text{ s}.
+\tau_T = -\frac{1}{m}.
 \label{eq:identified_tau}
 \end{equation}
 
-This identification indicates that when an MG90S servomotor enters an unmitigated mechanical stall, it reaches $63.2\%$ of its maximum temperature rise ($\approx 48.9^\circ\text{C}$) in approximately $80\text{ s}$, and approaches the destructive threshold of $65^\circ\text{C}$ in under 4 minutes. Because the internal driver continuously applies peak torque without timeout or thermal throttling, its behavior closely mirrors an unconstrained bang-bang controller under saturation.
+Evaluating the empirical data from Trial 1 ($t \in [1, 226]\text{ s}$, $T_a = 21.37^\circ\text{C}$, $T_{ss} \approx 64.84^\circ\text{C}$) yields a regression slope of $m = -0.01241\text{ s}^{-1}$, corresponding to an identified thermal time constant of $\tau_T \approx 80.6\text{ s}$.
+
+This quantitative identification confirms that when an MG90S servomotor enters an unmitigated mechanical stall, it reaches $63.2\%$ of its maximum thermal rise in approximately $80\text{ s}$, approaching destructive casing temperatures ($> 65^\circ\text{C}$) within 4 minutes. Because the internal driver continuously applies peak torque without internal thermal throttling, its behavior closely mirrors an unconstrained bang-bang controller under saturation.
 
 \begin{figure}[!ht]
     \centering
