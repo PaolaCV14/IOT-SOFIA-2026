@@ -1,20 +1,22 @@
+# ==============================================================
+# GESTO DINÁMICO: DESLIZAR LA MANO (SWIPE)
+# Detecta si el usuario mueve la mano abierta rápido a los lados
+# para cambiar de página o diapositiva.
+# ==============================================================
+
 import time
 from .finger_utils import es_mano_abierta, distancia_3d
 
 class SwipeGesture:
-    """
-    Gesto Dinámico 3: Deslizamiento lateral rápido (Swipe / Cambio de página).
-    Detecta un desplazamiento horizontal unidireccional y veloz de la mano abierta.
-    Retorna (detectado, dirección: "IZQUIERDA" | "DERECHA").
-    """
+    """Reconoce un movimiento horizontal rápido de la mano abierta."""
 
     def __init__(self, min_dx=0.20, max_duration=0.50):
-        self.min_dx = min_dx              # Distancia mínima normalizada (~20% del ancho)
-        self.max_duration = max_duration  # Tiempo máximo para considerarlo un swipe rápido
-        self.tracking = False             # Si estamos rastreando un movimiento
+        self.min_dx = min_dx              # Distancia mínima que debe recorrer (20% de la pantalla)
+        self.max_duration = max_duration  # Tiempo máximo: si tarda más de medio segundo, no es swipe
+        self.tracking = False             # Indica si ya empezó a registrar el movimiento
         self.x_inicio = None
         self.t_inicio = 0
-        self.hold = 0                     # Frames para mantener el letrero activo
+        self.hold = 0                     # Cuadros para dejar el letrero fijo en pantalla
         self.ultimo_resultado = ""
 
     def detect(self, hand_results):

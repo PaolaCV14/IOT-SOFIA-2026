@@ -28,13 +28,13 @@ def main():
         print("Error: No se pudo abrir la cámara web.")
         return
 
-    print("=" * 60)
-    print("SOFÍA VISION SYSTEM - 5 POSTURAS + SUAVIZADO + BENCHMARKING")
-    print("Controles:")
-    print("  'q' - Salir")
-    print("  's' - Alternar Suavizado (Smoothing ON/OFF)")
-    print("  'l' - Iniciar/Detener Registro CSV de Métricas")
-    print("=" * 60)
+    print("=" * 55)
+    print("  SOFÍA - Sistema de Visión y Reconocimiento de Gestos")
+    print("  Controles del teclado:")
+    print("    's' -> Activar / desactivar filtro de suavizado")
+    print("    'l' -> Empezar / detener guardado de métricas en CSV")
+    print("    'q' -> Salir del programa")
+    print("=" * 55)
 
     start_time = time.time()
     prev_frame_time = time.time()

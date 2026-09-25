@@ -1,11 +1,16 @@
 # ==============================================================
-# FILTRO DE SUAVIZADO (SMOOTHING) - EMA (Exponential Moving Average)
-# Reduce el jitter/vibración de landmarks de MediaPipe en tiempo real
-# Basado en: y[k] = alpha * x[k] + (1 - alpha) * y[k-1]
+# FILTRO DE SUAVIZADO (SMOOTHING) - PROYECTO SOFÍA
+# Este archivo ayuda a quitarle el temblor o "ruido" a los puntos
+# de la mano y del cuerpo que nos da la cámara web.
+#
+# ¿Cómo funciona?
+# En vez de saltar de golpe a la nueva coordenada, calculamos:
+# punto_filtrado = (alpha * nuevo) + ((1 - alpha) * anterior)
+# Así el esqueleto se mueve fluido y no parece que tiembla la mano.
 # ==============================================================
 
 class LandmarkPoint:
-    """Representa un landmark con coordenadas normalizadas x, y, z."""
+    """Guarda un punto tridimensional simple con coordenadas x, y, z."""
     __slots__ = ("x", "y", "z")
     def __init__(self, x, y, z):
         self.x = x
@@ -14,7 +19,11 @@ class LandmarkPoint:
 
 
 class SmoothedHandResult:
-    """Wrapper para mantener compatibilidad 100% con .hand_landmarks."""
+    """
+    Guarda los puntos de las manos ya suavizados.
+    Tiene los métodos mágicos (__getitem__, __len__, etc.) para que se pueda
+    usar como una lista normal o acceder mediante .hand_landmarks sin errores.
+    """
     def __init__(self, hand_landmarks):
         self.hand_landmarks = hand_landmarks
 
@@ -32,7 +41,7 @@ class SmoothedHandResult:
 
 
 class SmoothedPoseResult:
-    """Wrapper para mantener compatibilidad 100% con .pose_landmarks."""
+    """Guarda los puntos del cuerpo ya suavizados con soporte de lista y atributo."""
     def __init__(self, pose_landmarks):
         self.pose_landmarks = pose_landmarks
 
@@ -51,16 +60,12 @@ class SmoothedPoseResult:
 
 class LandmarkSmoother:
     """
-    Filtro paso-bajo de primer orden (IIR / EMA) para estabilizar
-    las coordenadas 3D de articulaciones de manos y cuerpo.
+    Filtro paso-bajo sencillo (EMA) para manos y cuerpo.
     """
 
     def __init__(self, alpha=0.35):
-        """
-        alpha: Factor de suavizado entre 0.0 y 1.0
-               - Valores pequeños (0.1 - 0.3): Mayor suavizado, menor temblor.
-               - Valores moderados (0.35 - 0.5): Balance óptimo velocidad-suavidad.
-        """
+        # alpha controla qué tanto peso le damos a la medición actual vs la anterior:
+        # - alpha = 0.35: buen balance entre no tener lag y que no vibre.
         self.alpha = alpha
         self.manos_previas = []
         self.pose_previa = None
