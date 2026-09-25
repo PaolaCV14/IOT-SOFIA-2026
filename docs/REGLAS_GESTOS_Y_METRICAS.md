@@ -11,15 +11,15 @@
 
 ## 1. ¿De qué se trata esta entrega?
 
-En este avance conectamos la detección de puntos corporales (landmarks de MediaPipe) con la lógica para reconocer **5 posturas diseñadas para interactuar con SOFÍA**.
+En este avance conectamos la detección de puntos corporales (landmarks de MediaPipe) con la lógica para reconocer un repertorio completo de **7 posturas diseñadas para interactuar con SOFÍA** (cumpliendo y superando el requerimiento inicial de 5).
 
-El reto principal fue que no queríamos que el robot solo reconociera fotos estáticas de una mano quieta, sino gestos reales que usamos las personas al comunicarnos. Por eso, **3 de las 5 posturas son dinámicas** (analizan el movimiento a lo largo de varios cuadros de video consecutivos) y **2 son estáticas** (reconocen la forma o configuración de los dedos en un instante).
+El reto principal fue que no queríamos que el robot solo reconociera fotos estáticas de una mano quieta, sino gestos reales que usamos las personas al comunicarnos. Por eso, **3 de las posturas son dinámicas** (analizan el movimiento a lo largo de varios cuadros de video consecutivos) y **4 son estáticas** (reconocen la forma o configuración de los dedos en un instante).
 
 Además, agregamos un **algoritmo de suavizado** para quitar el temblor característico de la cámara y un **panel de métricas en vivo** (FPS y milisegundos de respuesta) que permite exportar las mediciones a un archivo `.csv` para graficar los resultados.
 
 ---
 
-## 2. Las 5 Posturas Seleccionadas
+## 2. Las 7 Posturas Implementadas
 
 ```
                         CÁMARA WEB
@@ -38,7 +38,8 @@ Además, agregamos un **algoritmo de suavizado** para quitar el temblor caracter
      (Revisan varios frames)       (Revisan forma actual)
       1. Saludo ("Hola")            4. Corazón (2 manos)
       2. Intención PPT (3 golpes)   5. Tijera / Paz (1 mano)
-      3. Swipe (Cambio de página)
+      3. Swipe (Cambio de página)   6. Papel / Mano abierta
+                                    7. Roca / Puño cerrado
 ```
 
 ### 1. Saludo con la mano (Dinámica)
