@@ -9,7 +9,8 @@ from gestures import (
     RpsIntentGesture,
     ScissorsGesture,
     PaperGesture,
-    RockGesture
+    RockGesture,
+    SwipeGesture
 )
 
 class GestureDetector:
@@ -19,6 +20,7 @@ class GestureDetector:
         self.heart = HeartGesture()
         self.wave = WaveGesture()
         self.rps_intent = RpsIntentGesture()
+        self.swipe = SwipeGesture()
         self.scissors = ScissorsGesture()
         self.paper = PaperGesture()
         self.rock = RockGesture()
@@ -32,6 +34,9 @@ class GestureDetector:
 
     def detectar_intencion_ppt(self, hand_results):
         return self.rps_intent.detect(hand_results)
+
+    def detectar_swipe(self, hand_results):
+        return self.swipe.detect(hand_results)
 
     def detectar_tijera(self, hand_results):
         return self.scissors.detect(hand_results)
