@@ -17,17 +17,23 @@ class SwipeGesture:
         self.hold = 0                     # Frames para mantener el letrero activo
         self.ultimo_resultado = ""
 
-    def detect(self, hand_landmarks_list):
+    def detect(self, hand_results):
         # 1. Si ya se activó, mantener en pantalla unos frames
         if self.hold > 0:
             self.hold -= 1
             return True, self.ultimo_resultado
 
-        if not hand_landmarks_list:
+        if not hand_results:
             self._reset()
             return False, ""
 
-        mano = hand_landmarks_list[0]
+        # Extraemos la lista de manos (sea resultado MediaPipe, SmoothedHandResult o lista directa)
+        hand_landmarks = getattr(hand_results, "hand_landmarks", hand_results)
+        if not hand_landmarks:
+            self._reset()
+            return False, ""
+
+        mano = hand_landmarks[0]
         ahora = time.time()
 
         # Solo evaluamos si la mano está abierta

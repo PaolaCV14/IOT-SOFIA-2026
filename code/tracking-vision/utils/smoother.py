@@ -18,11 +18,35 @@ class SmoothedHandResult:
     def __init__(self, hand_landmarks):
         self.hand_landmarks = hand_landmarks
 
+    def __getitem__(self, idx):
+        return self.hand_landmarks[idx]
+
+    def __len__(self):
+        return len(self.hand_landmarks)
+
+    def __bool__(self):
+        return bool(self.hand_landmarks)
+
+    def __iter__(self):
+        return iter(self.hand_landmarks)
+
 
 class SmoothedPoseResult:
     """Wrapper para mantener compatibilidad 100% con .pose_landmarks."""
     def __init__(self, pose_landmarks):
         self.pose_landmarks = pose_landmarks
+
+    def __getitem__(self, idx):
+        return self.pose_landmarks[idx]
+
+    def __len__(self):
+        return len(self.pose_landmarks)
+
+    def __bool__(self):
+        return bool(self.pose_landmarks)
+
+    def __iter__(self):
+        return iter(self.pose_landmarks)
 
 
 class LandmarkSmoother:
