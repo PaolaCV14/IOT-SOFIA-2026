@@ -88,17 +88,23 @@ pip install -r requirements.txt
 
 ## Reconocimiento de Posturas y Suavizado (Avance Actual)
 
-El sistema ahora reconoce las **5 posturas diseñadas** (3 dinámicas y 2 estáticas), cuenta con un **filtro de suavizado (EMA)** para eliminar el temblor de la cámara y un panel en pantalla con FPS, latencia y exportador a CSV.
+El sistema cuenta con un repertorio completo de **7 posturas implementadas y funcionales** (3 dinámicas y 4 estáticas), superando el mínimo requerido de 5. Además, incorpora un **filtro de suavizado (EMA)** para eliminar el temblor de la cámara y un panel interactivo con métricas de FPS, latencia y guardado a CSV.
 
-* **5 Posturas Implementadas:**
-  1. **Saludo / Wave (Dinámica):** Sacudir la mano abierta de lado a lado.
-  2. **Intención PPT (Dinámica):** Golpear 3 veces con el puño sobre la palma abierta.
-  3. **Swipe / Deslizar (Dinámica):** Desplazar la mano abierta rápido hacia la izquierda o derecha.
-  4. **Corazón (Estática):** Juntar las dos manos curvando índices y pulgares.
-  5. **Tijera / Paz (Estática):** Dedos índice y medio abiertos en "V" con los demás doblados.
+### Catálogo de Posturas Activas en el Sistema:
 
-* **Documento de Reglas y Métricas:**
-  Consulta la explicación completa de reglas, variables, umbrales y pruebas en:  
+* **Posturas Dinámicas (Analizan movimiento en varios cuadros):**
+  1. **Saludo / Wave (`WaveGesture`):** Sacudir la mano abierta de lado a lado (inversiones de velocidad horizontal).
+  2. **Intención PPT (`RpsIntentGesture`):** Golpear rítmicamente 3 veces con el puño sobre la palma abierta ("1, 2, 3...").
+  3. **Swipe / Deslizar (`SwipeGesture`):** Desplazar la mano abierta rápidamente hacia la izquierda o derecha para cambiar de diapositiva o menú.
+
+* **Posturas Estáticas (Analizan la configuración geométrica de los dedos):**
+  4. **Corazón (`HeartGesture`):** Juntar ambas manos doblando índices y pulgares para formar la silueta de un corazón.
+  5. **Tijera / Paz (`ScissorsGesture`):** Dedos índice y medio extendidos en forma de "V" con los demás doblados.
+  6. **Papel / Mano Abierta (`PaperGesture`):** Mano quieta con los 5 dedos completamente extendidos.
+  7. **Roca / Puño Cerrado (`RockGesture`):** Mano cerrada en puño compacto sostenido.
+
+* **Documento de Reglas Geométricas y Pruebas Experimentales:**
+  Consulta la explicación detallada de reglas, variables, umbrales y resultados en:  
   👉 **[`docs/REGLAS_GESTOS_Y_METRICAS.md`](../../docs/REGLAS_GESTOS_Y_METRICAS.md)**
 
 ---

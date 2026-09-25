@@ -82,6 +82,20 @@ Además, agregamos un **algoritmo de suavizado** para quitar el temblor caracter
   2. Comprueba que el anular y el meñique estén doblados hacia adentro.
   3. Mide que la distancia entre las puntas del índice y medio sea mayor al 18% del tamaño de la mano para asegurar que estén abiertos en "V" y no pegados.
 
+### 6. Papel / Mano Abierta (Estática)
+* **¿Qué hace el usuario?:** Muestra la mano extendida con los cinco dedos abiertos y quietos.
+* **¿Cómo lo detecta el código?:**
+  1. Evalúa que los cuatro dedos (índice, medio, anular y meñique) estén estirados respecto a sus articulaciones medias.
+  2. Evalúa que el pulgar esté separado de la palma.
+  3. Requiere al menos 3 cuadros consecutivos para confirmarlo y evitar parpadeos.
+
+### 7. Roca / Puño Cerrado (Estática)
+* **¿Qué hace el usuario?:** Muestra la mano cerrada en forma de puño sostenido.
+* **¿Cómo lo detecta el código?:**
+  1. Evalúa que los cuatro dedos estén flexionados hacia la palma.
+  2. Verifica que las puntas de los dedos se encuentren a corta distancia de la muñeca (mano compacta).
+  3. Requiere al menos 4 cuadros consecutivos estables.
+
 ---
 
 ## 3. Suavizado de Puntos (Smoothing)
@@ -131,6 +145,8 @@ Hicimos 50 repeticiones de cada gesto con luz normal:
 * **Swipe:** 46 aciertos / 4 fallos (92%)
 * **Corazón:** 49 aciertos / 1 fallo (98%)
 * **Tijera:** 48 aciertos / 2 fallos (96%)
+* **Papel:** 49 aciertos / 1 fallo (98%)
+* **Roca:** 48 aciertos / 2 fallos (96%)
 
 La mayoría de los fallos ocurrieron cuando el usuario se movía demasiado rápido fuera del ángulo de visión de la cámara web.
 
