@@ -86,8 +86,31 @@ pip install -r requirements.txt
 
 ---
 
-### 5. Ejecutar el script
+## Reconocimiento de Posturas y Suavizado (Avance Actual)
 
+El sistema ahora reconoce las **5 posturas diseñadas** (3 dinámicas y 2 estáticas), cuenta con un **filtro de suavizado (EMA)** para eliminar el temblor de la cámara y un panel en pantalla con FPS, latencia y exportador a CSV.
+
+* **5 Posturas Implementadas:**
+  1. **Saludo / Wave (Dinámica):** Sacudir la mano abierta de lado a lado.
+  2. **Intención PPT (Dinámica):** Golpear 3 veces con el puño sobre la palma abierta.
+  3. **Swipe / Deslizar (Dinámica):** Desplazar la mano abierta rápido hacia la izquierda o derecha.
+  4. **Corazón (Estática):** Juntar las dos manos curvando índices y pulgares.
+  5. **Tijera / Paz (Estática):** Dedos índice y medio abiertos en "V" con los demás doblados.
+
+* **Documento de Reglas y Métricas:**
+  Consulta la explicación completa de reglas, variables, umbrales y pruebas en:  
+  👉 **[`docs/REGLAS_GESTOS_Y_METRICAS.md`](../../docs/REGLAS_GESTOS_Y_METRICAS.md)**
+
+---
+
+### 5. Ejecutar el script en vivo
+
+Con el entorno activado, corre:
 ```bash
 python main.py
 ```
+
+**Controles en vivo durante el video:**
+* **`S`** -> Activar / desactivar el suavizado de esqueleto (para comparar en vivo el temblor).
+* **`L`** -> Iniciar / detener el guardado de métricas (FPS y latencia en ms) en un archivo `.csv` dentro de `benchmark_logs/`.
+* **`Q`** -> Salir y apagar la cámara.
