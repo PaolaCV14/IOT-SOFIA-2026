@@ -1,11 +1,17 @@
+# ==============================================================
+# GESTO DINÁMICO: SALUDO CON LA MANO (WAVE)
+# Detecta cuando el usuario levanta la mano abierta y la mueve
+# de un lado al otro como saludando a la cámara.
+# ==============================================================
+
 from .finger_utils import es_mano_abierta
 
 class WaveGesture:
-    """Detecta saludo con la mano abierta oscilando de lado a lado."""
+    """Detecta oscilaciones laterales de la mano abierta."""
 
     def __init__(self):
-        self.posiciones = []  # Historial X de la mano
-        self.hold = 0         # Anti-parpadeo del cartel
+        self.posiciones = []  # Historial de posiciones X de la palma
+        self.hold = 0         # Cuadros para dejar el texto visible sin parpadear
 
     def detect(self, hand_results):
         if not hand_results.hand_landmarks:
@@ -17,7 +23,7 @@ class WaveGesture:
 
         mano = hand_results.hand_landmarks[0]
         if es_mano_abierta(mano):
-            # Guardamos la posición horizontal de la palma (landmark 9)
+            # Guardamos la posición horizontal de la palma (punto 9)
             self.posiciones.append(mano[9].x)
             if len(self.posiciones) > 16:
                 self.posiciones.pop(0)

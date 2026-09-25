@@ -1,16 +1,18 @@
 # ==============================================================
-# HELPERS GEOMÉTRICOS Y ANATÓMICOS PARA GESTOS
+# FUNCIONES AUXILIARES PARA MANOS Y DEDOS
+# Aquí calculamos distancias y revisamos si un dedo está estirado
+# o doblado para saber qué gesto está haciendo el usuario.
 # ==============================================================
 
 def distancia_3d(p1, p2):
-    """Distancia euclidiana 3D entre dos landmarks de MediaPipe."""
+    """Calcula la distancia real en 3D entre dos puntos (x, y, z)."""
     return ((p1.x - p2.x)**2 + (p1.y - p2.y)**2 + (p1.z - p2.z)**2) ** 0.5
 
 
 def dedo_extendido(mano, punta, pip, mcp):
     """
-    Un dedo está extendido si su punta está significativamente más lejos 
-    de la muñeca que su articulación media (PIP). Invariante a la rotación.
+    Un dedo está estirado si la punta está más lejos de la muñeca
+    que su nudillo del medio (articulación PIP).
     """
     d_punta = distancia_3d(mano[punta], mano[0])
     d_pip = distancia_3d(mano[pip], mano[0])
@@ -19,8 +21,7 @@ def dedo_extendido(mano, punta, pip, mcp):
 
 def dedo_doblado(mano, punta, pip, mcp):
     """
-    Un dedo está doblado si su punta está más cerca de la muñeca que el PIP 
-    o muy cerca de los nudillos (puño).
+    Un dedo está doblado si la punta se acerca a la muñeca o a la palma.
     """
     d_punta = distancia_3d(mano[punta], mano[0])
     d_pip = distancia_3d(mano[pip], mano[0])
@@ -28,22 +29,24 @@ def dedo_doblado(mano, punta, pip, mcp):
 
 
 def es_mano_abierta(mano):
-    """Verifica si los dedos están extendidos (mano abierta)."""
+    """Revisa si los 5 dedos están estirados (mano abierta)."""
     # 8: Índice, 12: Medio, 16: Anular, 20: Meñique
     indices = [(8, 6, 5), (12, 10, 9), (16, 14, 13), (20, 18, 17)]
-    cuatro = all(dedo_extendido(mano, punta, pip, mcp) for punta, pip, mcp in indices)
+    cuatro_dedos = all(dedo_extendido(mano, punta, pip, mcp) for punta, pip, mcp in indices)
+    
+    # El pulgar se mide comparando la punta (4) contra la base (2)
     pulgar = distancia_3d(mano[4], mano[0]) > distancia_3d(mano[2], mano[0]) * 1.2
-    return cuatro and pulgar
+    return cuatro_dedos and pulgar
 
 
 def es_puno(mano):
-    """Verifica si los 4 dedos están doblados hacia adentro formando un puño."""
+    """Revisa si la mano está cerrada en forma de puño."""
     indices = [(8, 6, 5), (12, 10, 9), (16, 14, 13), (20, 18, 17)]
     cuatro_doblados = all(dedo_doblado(mano, punta, pip, mcp) for punta, pip, mcp in indices)
     
-    # En un puño, las puntas de los dedos están recogidas hacia la base
-    escala = distancia_3d(mano[0], mano[9])
-    if escala < 0.01:
+    # Además de doblados, checamos que las puntas estén recogidas hacia la base
+    tamano_mano = distancia_3d(mano[0], mano[9])
+    if tamano_mano < 0.01:
         return False
-    compacto = all(distancia_3d(mano[t], mano[0]) < (escala * 1.6) for t in [8, 12, 16, 20])
+    compacto = all(distancia_3d(mano[t], mano[0]) < (tamano_mano * 1.6) for t in [8, 12, 16, 20])
     return cuatro_doblados and compacto

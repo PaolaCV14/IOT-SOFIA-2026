@@ -1,11 +1,16 @@
+# ==============================================================
+# GESTO ESTÁTICO: PIEDRA / PUÑO CERRADO
+# Detecta cuando el usuario tiene la mano cerrada en forma de puño.
+# ==============================================================
+
 from .finger_utils import es_puno
 
 class RockGesture:
-    """Gesto de Roca (puño cerrado estático)."""
+    """Detecta puño cerrado sostenido."""
 
     def __init__(self, min_frames=4):
         self.frames = 0
-        self.min_frames = min_frames
+        self.min_frames = min_frames  # Mínimo de cuadros seguidos para confirmar
 
     def detect(self, hand_results):
         if not hand_results.hand_landmarks:

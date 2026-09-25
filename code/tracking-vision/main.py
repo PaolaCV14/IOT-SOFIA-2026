@@ -75,24 +75,24 @@ def main():
                 hands = raw_hands
                 pose = raw_pose
 
-            # 4. Dibujamos los esqueletos sobre el video
+            # 4. Dibujamos los puntos y conexiones sobre el video
             dibujar_pose(frame, pose, w, h)
             dibujar_manos(frame, hands, w, h)
 
-            # 5. Reconocimiento de gestos dinámicos y estáticos
+            # 5. Revisamos qué gesto está haciendo el usuario
+            # Los gestos que llevan movimiento van primero para no confundirlos
             ppt_detectado, ppt_texto = gesture_detector.detectar_intencion_ppt(hands)
             saludo_detectado = gesture_detector.detectar_saludo(hands)
             swipe_detectado, swipe_texto = gesture_detector.detectar_swipe(hands)
 
-            # Prioridad de gestos: Dinámicos (temporales) antes que estáticos
             gestos = [
-                (gesture_detector.detectar_corazon(hands), "CORAZON DETECTADO", (0, 0, 255)),     # Rojo (Estático 1)
-                (ppt_detectado,                            ppt_texto,            (255, 0, 255)),   # Magenta (Dinámico 1)
-                (saludo_detectado,                         "HOLA! SALUDO",       (255, 255, 0)),   # Cyan (Dinámico 2)
-                (swipe_detectado,                          swipe_texto,          (0, 165, 255)),   # Naranja (Dinámico 3)
-                (gesture_detector.detectar_tijera(hands),  "TIJERA DETECTADA",   (255, 0, 0)),     # Azul (Estático 2)
-                (gesture_detector.detectar_papel(hands),   "PAPEL DETECTADO",    (0, 255, 0)),     # Verde
-                (gesture_detector.detectar_roca(hands),    "ROCA DETECTADA",     (0, 140, 255))    # Ámbar
+                (gesture_detector.detectar_corazon(hands), "CORAZON DETECTADO", (0, 0, 255)),     # Rojo (Corazón)
+                (ppt_detectado,                            ppt_texto,            (255, 0, 255)),   # Rosa mexicano (Golpes PPT)
+                (saludo_detectado,                         "HOLA! SALUDO",       (255, 255, 0)),   # Cyan (Saludo)
+                (swipe_detectado,                          swipe_texto,          (0, 165, 255)),   # Naranja (Swipe)
+                (gesture_detector.detectar_tijera(hands),  "TIJERA DETECTADA",   (255, 0, 0)),     # Azul (Tijera)
+                (gesture_detector.detectar_papel(hands),   "PAPEL DETECTADO",    (0, 255, 0)),     # Verde (Papel)
+                (gesture_detector.detectar_roca(hands),    "ROCA DETECTADA",     (0, 140, 255))    # Ámbar (Piedra)
             ]
 
             gesto_activo = "NINGUNO"
@@ -106,13 +106,13 @@ def main():
             t_infer_end = time.perf_counter()
             latencia_ms = (t_infer_end - t_infer_start) * 1000
 
-            # Cálculo de FPS instantáneo y suavizado
+            # Calculamos los FPS del video
             current_time = time.time()
             fps_instant = 1.0 / max(current_time - prev_frame_time, 1e-5)
             prev_frame_time = current_time
             fps_smooth = 0.9 * fps_smooth + 0.1 * fps_instant
 
-            # 6. HUD / Panel de Métricas en Pantalla (Card semitransparente)
+            # 6. Cuadro de métricas en la esquina de la pantalla
             overlay = frame.copy()
             cv2.rectangle(overlay, (15, 15), (380, 160), (20, 20, 20), -1)
             cv2.addWeighted(overlay, 0.7, frame, 0.3, 0, frame)
@@ -133,14 +133,14 @@ def main():
             cv2.putText(frame, f"Log: {log_status}", (25, 135),
                         cv2.FONT_HERSHEY_SIMPLEX, 0.55, log_col, 1)
 
-            # Banner del Gesto Activo
+            # Letrero abajo cuando hay una postura reconocida
             if gesto_activo != "NINGUNO":
                 cv2.rectangle(frame, (15, h - 70), (450, h - 20), (30, 30, 30), -1)
                 cv2.rectangle(frame, (15, h - 70), (450, h - 20), color_activo, 2)
                 cv2.putText(frame, f"POSTURA: {gesto_activo}", (25, h - 35),
                             cv2.FONT_HERSHEY_SIMPLEX, 0.8, color_activo, 2)
 
-            # 7. Registro de métricas a CSV si está activo
+            # 7. Si activamos el log con 'L', guardamos la fila en el CSV
             if logging_active and csv_writer is not None:
                 csv_writer.writerow([
                     round(timestamp_ms / 1000.0, 3),
@@ -150,14 +150,14 @@ def main():
                     gesto_activo
                 ])
 
-            # 8. Renderizamos la ventana interactiva
-            cv2.imshow("SOFIA - Vision & Benchmark", frame)
+            # 8. Mostramos el video en la ventana
+            cv2.imshow("SOFIA - Vision", frame)
             key = cv2.waitKey(1) & 0xFF
             if key == ord("q"):
                 break
             elif key == ord("s"):
                 use_smoothing = not use_smoothing
-                print(f"[CONFIG] Suavizado EMA: {'ACTIVADO' if use_smoothing else 'DESACTIVADO'}")
+                print(f"[Filtro] Suavizado EMA: {'ACTIVADO' if use_smoothing else 'DESACTIVADO'}")
             elif key == ord("l"):
                 logging_active = not logging_active
                 if logging_active:
@@ -166,23 +166,23 @@ def main():
                     log_file = open(log_filename, mode="w", newline="")
                     csv_writer = csv.writer(log_file)
                     csv_writer.writerow(["time_sec", "fps", "latency_ms", "smoothing_enabled", "detected_gesture"])
-                    print(f"[BENCHMARK] Registro iniciado en '{log_filename}'")
+                    print(f"[Log] Grabando métricas en '{log_filename}'")
                 else:
                     if log_file:
                         log_file.close()
                         log_file = None
                         csv_writer = None
-                    print("[BENCHMARK] Registro detenido y guardado.")
+                    print("[Log] Archivo guardado correctamente.")
 
     finally:
-        # Limpieza ordenada de recursos
+        # Cerramos todo en orden
         if log_file:
             log_file.close()
         cap.release()
         cv2.destroyAllWindows()
         hand_detector.close()
         pose_detector.close()
-        print("Sistema cerrado correctamente.")
+        print("Programa terminado correctamente.")
 
 
 if __name__ == "__main__":

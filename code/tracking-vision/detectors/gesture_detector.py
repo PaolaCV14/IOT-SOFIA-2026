@@ -1,6 +1,7 @@
 # ==============================================================
-# COORDINADOR DE GESTOS - SOFIA VISION
-# Agrupa los detectores individuales del paquete 'gestures/'
+# COORDINADOR DE GESTOS - PROYECTO SOFÍA
+# Aquí juntamos todos los detectores de gestos para que desde
+# el archivo main.py solo tengamos que llamar una función limpia.
 # ==============================================================
 
 from gestures import (
@@ -14,9 +15,10 @@ from gestures import (
 )
 
 class GestureDetector:
-    """Coordinador modular de gestos para SOFIA."""
+    """Clase principal que contiene las instancias de cada gesto."""
 
     def __init__(self):
+        # Inicializamos cada detector individual
         self.heart = HeartGesture()
         self.wave = WaveGesture()
         self.rps_intent = RpsIntentGesture()
@@ -25,7 +27,7 @@ class GestureDetector:
         self.paper = PaperGesture()
         self.rock = RockGesture()
 
-    # Métodos limpios y directos (compatibilidad 100% con main.py)
+    # Métodos directos para consultar cada postura desde el ciclo principal
     def detectar_corazon(self, hand_results):
         return self.heart.detect(hand_results)
 

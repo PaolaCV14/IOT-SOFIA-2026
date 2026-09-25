@@ -1,28 +1,30 @@
+# ==============================================================
+# GESTO DINÁMICO: INTENCIÓN DE JUGAR PPT (3 GOLPES)
+# El usuario pone una mano plana abajo como base y golpea 3 veces
+# con el puño encima para empezar la partida ("Piedra, papel o tijera").
+# ==============================================================
+
 import time
 from .finger_utils import es_mano_abierta, es_puno, distancia_3d
 
 class RpsIntentGesture:
-    """
-    Detecta intención de jugar PPT:
-    Colocar una mano plana horizontal (base) y golpear con el puño 3 veces sobre ella.
-    """
+    """Detecta el conteo de 3 golpes rítmicos entre puño y palma abierta."""
 
     def __init__(self):
         self.pumps = 0          # Conteo de golpes completados (0 a 3)
-        self.fase = "ARRIBA"    # Estado del puño respecto a la palma
-        self.ultimo_tiempo = 0  # Timestamp del último golpe
-        self.hold = 0           # Frames para mantener el mensaje final visible
-        self.ultimo_texto = ""  # Último texto activo para estabilizar
-        self.feedback_hold = 0  # Anti-parpadeo entre frames
+        self.fase = "ARRIBA"    # Saber si el puño está arriba o ya bajó a la palma
+        self.ultimo_tiempo = 0  # Momento en que ocurrió el último golpe
+        self.hold = 0           # Cuadros para dejar el letrero final en pantalla
+        self.ultimo_texto = ""  # Texto del conteo actual (1/3, 2/3, etc.)
+        self.feedback_hold = 0  # Evita que parpadee si se pierde la mano 1 frame
 
     def detect(self, hand_results):
-        # 1. Si ya se confirmaron los 3 golpes, mantener cartel de victoria ~2 segundos
+        # 1. Si ya se dieron los 3 golpes, dejamos el mensaje unos segundos en pantalla
         if self.hold > 0:
             self.hold -= 1
             return True, "¡LISTO PARA JUGAR PPT!"
 
-        # Si no hay al menos 2 manos, o se perdió el tracking por 1 o 2 frames,
-        # mantenemos el estado brevemente para evitar parpadeos
+        # Si no se ven 2 manos, o la cámara pierde una un instante, no borramos el progreso de golpe
         if not hand_results.hand_landmarks or len(hand_results.hand_landmarks) < 2:
             if self.feedback_hold > 0 and self.pumps > 0:
                 self.feedback_hold -= 1
