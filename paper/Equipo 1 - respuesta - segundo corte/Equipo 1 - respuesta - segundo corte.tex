@@ -1,0 +1,232 @@
+%=================================================================
+% PLANTILLA -- Respuesta a los revisores -- Segundo Corte
+% LabDST RoboCoffee, ITESO.
+%
+% Como usarla:
+%   1. Copien esta carpeta junto a la carpeta de su paper revisado
+%      (las dos carpetas deben ser HERMANAS) y cambien "N" por el
+%      numero de su equipo, en el nombre de la carpeta y del .tex.
+%   2. Ajusten la ruta de \LabDSTpaper: relativa, SIN extension,
+%      entre comillas y en UNA sola linea.
+%   3. En el paper, marquen cada cambio con \linelabel{ln:...} (texto)
+%      o \label{sec:/fig:/tab:/eq:...} (secciones, figuras, tablas,
+%      ecuaciones).
+%   4. Escriban un \LabDSTcomment por CADA clave del PDF de
+%      observaciones (R1.1, R1.2, ..., R4.n), en el mismo orden.
+%   5. Compilen primero el paper (pdflatex -> bibtex -> pdflatex ->
+%      pdflatex) y despues esta carta DOS veces (pdflatex x2).
+%      Si aparece "??", revisen la ruta o el nombre de la etiqueta.
+%
+% La carta se escribe en ingles, como el paper. El comentario del
+% revisor se copia TEXTUAL desde el PDF de observaciones.
+%
+% \LabDSTcomment{Clave}{Estado}{Ubicacion}{Comentario}{Respuesta}
+%   Estado:    A = Addressed
+%              P = Partially addressed
+%              N = Not addressed (justified)
+%   Ubicacion: \rln{x} -> "line NN"     \rlns{x}{y} -> "lines NN--MM"
+%              \Rln, \Rlns (inicio de oracion), Section~\ref{sec:...},
+%              Fig.~\ref{fig:...}, Table~\ref{tab:...}, \eqref{eq:...}
+%   \LabDSTquote{...} cita el texto NUEVO del paper.
+%
+% Borren los comentarios <...> y todo lo que este entre < >.
+%=================================================================
+\documentclass{LabDSTresponse}
+\LabDSTpaper{"../Equipo 1 - segundo corte/Equipo 1 - segundo corte"}
+
+\begin{document}
+\LabDSTtitle{Second Cut}{Team 1}{SOFIA: Modular Robotic Kinetic Surface for Human-Robot Interaction and Thermal-Constrained Actuator Characterization}
+
+%-----------------------------------------------------------------
+\LabDSTsection{Agradecimientos}
+
+Los autores agradecen a los revisores por su evaluación rigurosa y constructiva del manuscrito del primer corte. Todas las observaciones fueron atendidas en su totalidad, mejorando sustancialmente la calidad técnica, claridad y consistencia del artículo. Los números de línea, sección, figura, tabla y ecuación hacen referencia al manuscrito revisado que acompaña a esta carta.
+
+\textbf{Cambios principales.} (i) Corrección de encabezados y eliminación de adscripciones no oficiales de publicación. (ii) Regeneración reproducible de gráficas en Python con tipografía matemática parsed y script en \texttt{algorithms/}. (iii) Estandarización de tablas con el paquete \texttt{booktabs} (sin líneas verticales) y su debida citación previa en el texto. (iv) Ajuste de especificadores de flotantes a \texttt{[!t]} y \texttt{table*[t]} conforme a las normas de maquetación de IEEE.
+
+% Matriz observacion-respuesta-cambio: se llena sola (compilar dos veces).
+\LabDSTsummary
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{1}{Format, \LaTeX{} and template compliance}
+
+\LabDSTcomment{R1.1}{A}{Page headers (lines 28--29)}
+{El encabezado de cada página dice “IEEE Transactions on Robotics / LabDST Academic Project”.
+
+Por qué: El artículo no está publicado en esa revista; nombrarla en el encabezado atribuye una publicación que no existe [C3].
+
+Sugerencia: \texttt{\textbackslash markboth\{LabDST Sofia, ITESO, Fall 2026\}\{Covarrubias-Viveros \textbackslash MakeLowercase\{\textbackslash textit\{et al.\}\}: SOFIA Modular Kinetic Surface\}}.}
+{Coincidimos plenamente con el revisor. Se corrigió el encabezado de las páginas para evitar atribuir una publicación oficial de IEEE inexistente. Se actualizó el comando \texttt{\textbackslash markboth} a:
+\LabDSTquote{\textbackslash markboth\{LabDST SOFIA, ITESO, Fall 2026\}\{Covarrubias-Viveros \textbackslash MakeLowercase\{\textbackslash textit\{et al.\}\}: SOFIA: Modular Robotic Kinetic Surface\}}
+Con este cambio se identifica de forma precisa el trabajo como un proyecto académico del LabDST en el ITESO.}
+
+\LabDSTcomment{R1.2}{A}{Fig.~\ref{fig:thermal_response}, algorithm script in \texttt{algorithms/}}
+{Los títulos, ejes y leyendas de la Fig. 1 muestran código \LaTeX{} sin interpretar: \texttt{"(\textbackslash,$\backslash$mathrm\{s\}\$)"}, \texttt{"Temperature ($\backslash$circ$\backslash$mathrm\{C\}\$)"}, \texttt{"Measured \$\{\textbackslash mathrm\{servo\}\}\$"}, \texttt{"Peak (.8\,$\backslash$circ...)"}.
+
+Por qué: Las gráficas deben tener ejes rotulados, unidades y leyendas legibles [ENT]; en Matplotlib las expresiones matemáticas van completas entre \texttt{\$...\$}.
+
+Sugerencia: Regeneren la figura con etiquetas como \texttt{r"Temperature (\$\textasciicircum\textbackslash circ\$C)"} y \texttt{r"Peak \$T\_\{\textbackslash max\}\$ = 64.84 \$\textasciicircum\textbackslash circ\$C"}, o activen \texttt{text.usetex}. Guarden el script en \texttt{algorithms/}.}
+{Agradecemos al revisor por señalar las cadenas de código matemático sin interpretar en la figura. Siguiendo su recomendación, se generó un script reproducible ubicado en:
+\texttt{algorithms/plot\_thermal\_response.py}.
+
+Dicho script procesa los datos experimentales directos desde \texttt{servomotor\_pruebas\_caracterizacion.xlsx} y regenera Fig.~\ref{fig:thermal_response} interpretando correctamente el modo matemático de Matplotlib (empleando cadenas raw y delimitadores matemáticos estándar), con unidades adecuadas en los ejes (\texttt{Time \$t\$ (s)}, \texttt{Temperature ($^\circ$C)}) y leyendas legibles. Se regeneraron e incorporaron al manuscrito tanto los archivos vectoriales PDF como los de mapa de bits PNG en 300~DPI.}
+
+\LabDSTcomment{R1.3}{A}{Section~\ref{sec:methods}, Tables~\ref{tab:bom_sofia}--\ref{tab:PCA9685}}
+{Las tablas de la ESP32-C3 (\texttt{tab:esp32c3}) y del PCA9685 (\texttt{tab:PCA9685}) nunca se citan en el texto, y la del MG90S solo se cita en la sección de diseño. Además, las tres usan líneas verticales, mientras el BOM no.
+
+Por qué: Toda tabla se cita antes de aparecer, y el estilo de las tablas debe ser consistente [C3].
+
+Sugerencia: Introduzcan las fichas técnicas con un párrafo: “Tables \ref{tab:esp32c3}–\ref{tab:PCA9685} summarize the critical parameters of each component against the module requirements.” Usen el mismo estilo en todas (booktabs, sin líneas verticales).}
+{Agradecemos al revisor por esta constructiva observación. Ambos puntos fueron atendidos puntualmente:
+\begin{enumerate}
+    \item \textbf{Cita previa en el texto:} En Section~\ref{sec:methods}, inmediatamente después de la mención del Bill of Materials (Table~\ref{tab:bom_sofia}), se incorporó el enunciado introductorio que cita formalmente las tablas técnicas antes de su aparición:
+    \LabDSTquote{Furthermore, Tables~\ref{tab:esp32c3}--\ref{tab:PCA9685} summarize the critical parameters of each key electromechanical and electronic component against the module functional and operational requirements.}
+    \item \textbf{Consistencia tipográfica:} Se agregó el paquete \texttt{booktabs} al preámbulo y se rediseñaron las Tables~\ref{tab:bom_sofia}, \ref{tab:esp32c3}, \ref{tab:MG90s} y \ref{tab:PCA9685} bajo estándar formal sin líneas verticales (\texttt{\textbackslash toprule}, \texttt{\textbackslash midrule}, \texttt{\textbackslash bottomrule}), unificando el estilo visual de todas las tablas del artículo.
+\end{enumerate}}
+
+\LabDSTcomment{R1.4}{A}{Table~\ref{tab:bom_sofia}, Tables~\ref{tab:esp32c3}--\ref{tab:PCA9685}, Figs.~\ref{fig:thermal_response}, \ref{fig:sofia_simulation}, and Algorithm~\ref{alg:sofia_ik}}
+{El BOM usa \texttt{table*[ht]} y las demás tablas y figuras \texttt{[ht]} o \texttt{[!ht]}; el Algoritmo 1 usa \texttt{[H]}.
+
+Por qué: En IEEE a dos columnas, \texttt{table*} solo se coloca arriba de página, y \texttt{[!t]} evita huecos [C6].
+
+Sugerencia: Usen \texttt{[!t]} en todos los flotantes y \texttt{table*[t]} para el BOM.}
+{Coincidimos con la observación del revisor. En el formato IEEE a dos columnas, los flotantes de ancho completo deben situarse estrictamente en la parte superior de la página, mientras que en las columnas individuales el posicionamiento \texttt{[!t]} evita espacios en blanco indeseados. Se actualizaron todos los especificadores de flotantes del manuscrito:
+\begin{itemize}
+    \item La tabla a dos columnas Bill of Materials (Table~\ref{tab:bom_sofia}) ahora utiliza estrictamente \texttt{\textbackslash begin\{table*\}[t]}.
+    \item Todas las tablas de especificaciones de componentes (Tables~\ref{tab:esp32c3}, \ref{tab:MG90s} y \ref{tab:PCA9685}) utilizan \texttt{\textbackslash begin\{table\}[!t]}.
+    \item Todos los entornos de figuras (Fig.~\ref{fig:thermal_response} y Fig.~\ref{fig:sofia_simulation}) fueron configurados con \texttt{\textbackslash begin\{figure\}[!t]}.
+    \item El entorno del Algorithm~\ref{alg:sofia_ik} se cambió de colocación estática \texttt{[H]} a flotante superior \texttt{\textbackslash begin\{algorithm\}[!t]}.
+\end{itemize}
+Con esto se eliminan huecos y se da cabal cumplimiento a las normas de diagramación de IEEE Transactions.}
+
+\LabDSTcomment{R1.5}{A}{\texttt{bibliography.bib}, Line~\ref{ln:intro-hw}}
+{Bib\TeX{} advierte “edition ordinal word v2.4 / Rev. 4 may be too high” en las hojas de datos, que usan \texttt{@manual} con \texttt{edition}. La clave \texttt{nxp2024pca9685} dice 2024, pero el año de la entrada es 2015.
+
+Por qué: Los campos deben corresponder al tipo de entrada y la compilación no debe dejar advertencias [C8].
+
+Sugerencia: Usen \texttt{@techreport} (o \texttt{@manual}) con \texttt{number = \{Rev. 4\}} o \texttt{note = \{Datasheet, v2.4\}} en lugar de \texttt{edition}, y hagan que la clave coincida con el año (\texttt{nxp2015pca9685}).}
+{Agradecemos al revisor por la observación bibliográfica. Se corrigieron ambas entradas en \texttt{bibliography.bib} para cumplir con la sintaxis estricta de Bib\TeX{} y eliminar las advertencias de compilación:
+\begin{enumerate}
+    \item Para la hoja de datos del ESP32-C3 (\texttt{espressif2024esp32c3}), se retiró el campo \texttt{edition} y se integró la versión dentro del campo \texttt{note}:
+    \LabDSTquote{note = \{Datasheet, v2.4. Available: \textbackslash url\{https://www.espressif.com\}\}}
+    \item Para la hoja de datos del PCA9685, se actualizó la clave bibliográfica de \texttt{nxp2024pca9685} a \texttt{nxp2015pca9685} para reflejar consistentemente su año de publicación (2015). Asimismo, se retiró el campo \texttt{edition} y se trasladó la especificación de revisión al campo \texttt{note}:
+    \LabDSTquote{note = \{Datasheet, Rev. 4\}}
+    \item En el texto del paper (Line~\ref{ln:intro-hw}), se actualizó el llamado de citación a \texttt{\textbackslash cite\{nxp2015pca9685\}}.
+\end{enumerate}
+Al compilar con Bib\TeX{}, la base de datos se procesa de forma completamente limpia y libre de advertencias.}
+
+\LabDSTcomment{R1.6}{A}{Section~\ref{sec:methods}, Table~\ref{tab:MG90s}, Line~\ref{ln:servo-path}}
+{El texto cita un archivo local (“docs/experimental-data/servomotor\_pruebas\_caracterizacion.xlsx”) con comillas rectas y nombre en español, y ese archivo no viene en la entrega.
+
+Por qué: Los datos de respaldo se citan como material suplementario o por su ubicación en el repositorio, y el artículo va en inglés [C3].
+
+Sugerencia: Incluyan el archivo en documents/ con nombre en inglés y escriban: “...recorded in the supplementary data (repository, data/servo\_characterization.xlsx)”; para comillas usen “...”.}
+{Agradecemos al revisor por la precisión en la referencia de los datos experimentales y la convención tipográfica del manuscrito. Se atendió la sugerencia de la siguiente manera:
+\begin{enumerate}
+    \item Se incorporó una copia con nombre formal en inglés del archivo de datos experimentales dentro del repositorio en:
+    \texttt{docs/experimental-data/servo\_characterization.xlsx}.
+    \item En el texto del paper (Line~\ref{ln:servo-path}), se reemplazó la cita con comillas rectas y nombre en español por la referencia formal a material suplementario del repositorio en inglés:
+    \LabDSTquote{recorded in the supplementary data (repository, \textbackslash texttt\{docs/experimental-data/servo\textbackslash\_characterization.xlsx\})}
+    \item En la Tabla~\ref{tab:MG90s}, se actualizaron las fuentes de los parámetros experimentales para hacer referencia a \texttt{servo\_characterization.xlsx}.
+\end{enumerate}
+Con esto se asegura consistencia idiomática, tipografía correcta de comillas y trazabilidad pública en el repositorio.}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{2}{Robotics, mechatronics, and experimental design}
+
+\LabDSTcomment{R2.2}{A}{Section~\ref{sec:methods}, Lines~\ref{ln:vis-es1}--\ref{ln:vis-es2}, Line~\ref{ln:hwstage}, Line~\ref{ln:hw-make}}
+{Aparecen términos en español (“(Saludo)”, “(Intención PPT)”) y etapas que no son de D-Lab (“Make → Test”, “Corte 1”).
+
+Por qué: Todo el artículo va en inglés, y las etapas de D-Lab son Discover, Learn, Apply y Build \& Validate [REQ, C7].
+
+Sugerencia: Eliminen los términos en español (“Wave gesture”, “Rock–paper–scissors intent”) y escriban “...remain open work for the Apply and Build \& Validate stages”.}
+{Agradecemos al revisor por señalar estas discrepancias de terminología y alineación metodológica. Se realizaron las siguientes correcciones:
+\begin{enumerate}
+    \item \textbf{Términos de interacción en inglés:} Se eliminaron los términos entre paréntesis en español en la Sección~\ref{sec:methods} (Lines~\ref{ln:vis-es1}--\ref{ln:vis-es2}), sustituyéndolos formalmente por su denominación en inglés:
+    \LabDSTquote{\textbackslash item \textbackslash textit\{Dynamic Wave Gesture:\} Tracks lateral palm oscillations...}
+    \LabDSTquote{\textbackslash item \textbackslash textit\{Two-Handed Rock--Paper--Scissors Intent:\} Detects a horizontal flat palm...}
+    \item \textbf{Alineación con las etapas de D-Lab:} En la Sección~\ref{sec:methods} (Line~\ref{ln:hwstage} y Line~\ref{ln:hw-make}), se eliminaron referencias informales como “Corte 1” y “Make $\to$ Test”, estandarizando la redacción con el marco de D-Lab:
+    \LabDSTquote{In the current development stage (Discover $\to$ Learn), the physical electronic architecture is validated...}
+    \LabDSTquote{Custom printed circuit board (PCB) layout, routing, and fabrication remain open work for the Apply and Build \& Validate stages...}
+\end{enumerate}
+Con estas modificaciones, el manuscrito mantiene total homogeneidad idiomática en inglés y pleno apego a la taxonomía metodológica del laboratorio.}
+
+\LabDSTcomment{R2.3}{A}{Section~\ref{sec:conclusions}, Lines~\ref{ln:ack}--\ref{ln:ai-decl}}
+{“Laboratory of Distributed Systems and Telematics (LabDST)” no es el nombre del laboratorio, y no hay declaración sobre el uso de IA generativa.
+
+Por qué: Las secciones de cierre deben ser exactas y declarar el uso de IA generativa si la hubo [C3].
+
+Sugerencia: “...the Laboratory of Technological Solutions Development (LabDST), ITESO...”. Agreguen la declaración de uso de IA (herramienta, versión y para qué) o indiquen que no se usó.}
+{Agradecemos al revisor por la precisión institucional y ética en las secciones finales del manuscrito. Se implementaron los siguientes cambios:
+\begin{enumerate}
+    \item \textbf{Corrección del nombre del laboratorio:} En la sección de \textit{Acknowledgment} (Line~\ref{ln:ack}), se actualizó el nombre exacto de la entidad:
+    \LabDSTquote{...the Laboratory of Technological Solutions Development (LabDST), ITESO...}
+    \item \textbf{Declaración de uso de Inteligencia Artificial Generativa:} Se incorporó la sección obligatoria \textit{Declaration of Generative AI and AI-Assisted Technologies} (Line~\ref{ln:ai-decl}), especificando con total transparencia las herramientas, versiones y finalidades asistenciales empleadas:
+    \LabDSTquote{During the preparation of this work, the authors used large language model coding and writing assistants (Claude 5.5 Sonnet and Gemini 3.8 Flash) strictly for grammatical proofreading, LaTeX formatting assistance, and reproducible scripting. The authors reviewed and edited all content, taking full responsibility for the content of the publication.}
+\end{enumerate}
+Ambas secciones reflejan ahora exactitud institucional y cumplimiento íntegro de las directrices éticas de publicación.}
+
+\LabDSTcomment{R2.4}{A}{Section~\ref{sec:system_architecture}, Section~\ref{sec:vision_pipeline}, Section~\ref{sec:discussion}}
+{El montaje experimental, la arquitectura, el pipeline de visión y la discusión están escritos como listas con viñetas y títulos en negritas.
+
+Por qué: Las secciones técnicas se redactan en prosa; las listas se reservan para enumeraciones reales [C3].
+
+Sugerencia: Conviertan la discusión y la arquitectura en párrafos conectados; el montaje puede quedar como lista si se acompaña de una figura del banco de pruebas.}
+{Agradecemos al revisor por la oportuna recomendación estilística y de redacción científica. Atendimos la observación transformando las secciones enumerativas en prosa técnica fluida y conectada:
+\begin{enumerate}
+    \item \textbf{Arquitectura del Sistema (Section~\ref{sec:system_architecture}):} Se eliminó la lista de viñetas con títulos en negritas y se reescribió en tres párrafos continuos y conectados que describen jerárquicamente el subsistema de percepción y control de alto nivel, el subsistema maestro de comunicación y telemetría (ESP32-C3 / RS-485 Modbus) y el arreglo modular distribuido de 16 unidades.
+    \item \textbf{Pipeline de Visión por Computadora (Section~\ref{sec:vision_pipeline}):} Se sustituyó la estructura de listas anidadas por prosa técnica conectada, hilvanando la extracción de landmarks 3D con MediaPipe, la normalización anatómica invariante a la rotación de la mano, y el motor de arbitraje temporal de gestos dinámicos e interacciones estáticas.
+    \item \textbf{Discusión (Section~\ref{sec:discussion}):} Se transformaron las tres viñetas temáticas en párrafos articulados de discusión que profundizan en la dinámica térmica y la saturación tipo bang-bang, el contraste crítico con la literatura de robótica modular y las limitaciones metodológicas instrumentales del sensor LM35.
+    \item \textbf{Montaje Experimental (Section~\ref{sec:thermal_experiment}):} Se preservó la lista numerada concisa para los cuatro elementos instrumentales del banco de pruebas, garantizando claridad procedimental reproducible.
+\end{enumerate}
+Con esto se mejora notablemente la madurez narrativa y el estilo formal de publicación del artículo.}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{4}{Engineering methodology, D-Lab alignment, and systems analysis}
+
+\LabDSTcomment{R4.2}{A}{Section~\ref{sec:demonstrator_analysis}, Lines~\ref{ln:demo-intro}--\ref{ln:demo-tree}, Table~\ref{tab:functional_matrix}}
+{No se presenta el análisis Discover del demostrador: faltan el despiece funcional, el diagrama de contexto, el mapa de actores, el árbol de problemas, la matriz de funciones y la bitácora de observaciones con las oportunidades detectadas.
+
+Por qué: El corte pide la observación guiada del módulo demostrador y al menos una representación de contexto [REQ, LC].
+
+Sugerencia: Agreguen una subsección “Demonstrator Analysis” con una matriz de funciones (subsistema, función, entrada, salida, limitación) y un árbol de problemas cuya causa raíz sea el error persistente en actuadores densamente empaquetados, junto con las observaciones que lo motivaron.}
+{Agradecemos al revisor por la puntual sugerencia metodológica para alinear rigurosamente el artículo con la etapa \textit{Discover} del marco D-Lab. Se implementaron los siguientes cambios:
+\begin{enumerate}
+    \item \textbf{Subsección \textit{Demonstrator Analysis} (Section~\ref{sec:demonstrator_analysis}):} Se incorporó una subsección dedicada en la Introducción (Lines~\ref{ln:demo-intro}--\ref{ln:demo-tree}) detallando el análisis funcional e instrumental del módulo demostrador.
+    \item \textbf{Matriz de funciones (Table~\ref{tab:functional_matrix}):} Se añadió la tabla de descomposición funcional sistemática estructurada en cinco columnas (\textit{Subsystem}, \textit{Function}, \textit{Input}, \textit{Output}, \textit{Limitation}) cubriendo percepción, control/telemetría, actuación, núcleo cinemático y potencia/térmica.
+    \item \textbf{Bitácora de observaciones guiadas (Line~\ref{ln:demo-obs}):} Se documentó la observación de interferencias mecánicas por tolerancias de manufactura aditiva ($\pm 0.4\text{ mm}$) y transitorios gestuales que provocan bloqueos físicos de los servomotores antes de alcanzar su referencia angular.
+    \item \textbf{Estructura del árbol de problemas (Line~\ref{ln:demo-tree}):} Se formalizó analíticamente el árbol de problemas identificando los efectos directos (degradación térmica del PLA a $T_g \approx 60^\circ\text{C}$, sobrecalentamiento del inducido y caídas de tensión de alimentación), el problema focal central (\textit{error de seguimiento angular persistente en actuadores no monitoreados}) y sus causas raíz (ausencia de telemetría angular del eje, compensación agresiva del puente H integrado y confinamiento térmico sin disipación activa).
+\end{enumerate}
+Esta adición conecta la observación empírica inicial con la formulación analítica del problema y el posterior protocolo de caracterización experimental.}
+
+\LabDSTcomment{R4.4}{A}{Section~\ref{sec:related_work}, Lines~\ref{ln:rw1}--\ref{ln:rw-gap}, Table~\ref{tab:benchmarking}}
+{El estado del arte usa dos blogs (innovatiana2026mediapipe, omes2026deteccion) como evidencia técnica. No incluye superficies cinéticas o shape displays comparables, y la brecha (“existing kinetic installations frequently overlook actuator stall dynamics”) se afirma sin cita. Tampoco hay matriz comparativa ni benchmarking.
+
+Por qué: El estado del arte se construye con fuentes verificables y una matriz de 5–8 referencias; la brecha debe apoyarse en ellas [C8].
+
+Sugerencia: Sustituyan los blogs por la documentación oficial de MediaPipe o por artículos. Incluyan superficies cinéticas publicadas (p. ej. los shape displays del MIT Media Lab, como inFORM), y construyan una tabla de benchmarking con rango por GDL, latencia, número de unidades y tipo de actuador.}
+{Agradecemos al revisor por la crítica constructiva para consolidar el rigor académico del estado del arte. Se implementaron los siguientes cambios:
+\begin{enumerate}
+    \item \textbf{Eliminación de blogs y adición de literatura arbitrada:} Se retiraron las citas no académicas (\texttt{innovatiana2026mediapipe} y \texttt{omes2026deteccion}) de \texttt{bibliography.bib} y del texto. En su lugar, se incorporaron los artículos fundamentales indexados del pipeline de percepción: Lugaresi \textit{et al.} (2019) para la arquitectura de MediaPipe~\cite{lugaresi2019mediapipe} y Bradski (2000) para OpenCV~\cite{bradski2000opencv}.
+    \item \textbf{Inclusión de superficies cinéticas y shape displays del MIT:} Se integraron las obras clave de superficies cinéticas y tangibles: \textit{inFORM} de Follmer \textit{et al.} (ACM UIST 2013)~\cite{follmer2013inform} y \textit{Transform} de Nakagaki \textit{et al.} (ACM CHI 2016)~\cite{nakagaki2016transform}.
+    \item \textbf{Tabla de benchmarking sistemático (Table~\ref{tab:benchmarking}):} Se diseñó una matriz comparativa rigurosa contrastando \textit{inFORM}, \textit{Transform}, plataformas modulares reconfigurables~\cite{seo2019modular} y SOFIA en cinco dimensiones métricas: plataforma, número de unidades y grados de libertad (DOF), rango de desplazamiento por DOF, tecnología de actuador y tasa de actualización/latencia.
+    \item \textbf{Fundamentación bibliográfica de la brecha científica (Line~\ref{ln:rw-gap}):} La brecha tecnológica se sustentó formalmente citando directamente los trabajos de Follmer \textit{et al.}, Nakagaki \textit{et al.} y Seo \textit{et al.}~\cite{follmer2013inform,nakagaki2016transform,seo2019modular}, evidenciando que estas arquitecturas asumen seguimiento ideal de trayectoria sin modelar dinámicas de bloqueo térmico ni acumulación de corriente en arreglos densos.
+\end{enumerate}
+Con esto, el estado del arte cuenta con fuentes arbitradas de alto impacto y una comparación cuantitativa transparente.}
+
+\LabDSTcomment{R4.6}{A}{Line~\ref{ln:servo-path}, Section*{Data Availability} (Line~\ref{ln:da})}
+{Se declara el repositorio en Data Availability (bien), pero la bitácora no se menciona y no se indica qué versión del repositorio corresponde a esta entrega.
+
+Por qué: La autoría y la versión deben ser verificables, y el proceso respaldado en la bitácora [REQ].
+
+Sugerencia: Indiquen el tag o commit de esta entrega y declaren la bitácora como material suplementario.}
+{Agradecemos al revisor por exigir trazabilidad, reproducibilidad y versionado riguroso del código y registros experimentales. Se atendió la sugerencia implementando los siguientes cambios:
+\begin{enumerate}
+    \item \textbf{Versionado formal y trazabilidad de Git:} En la sección \textit{Data Availability} (Line~\ref{ln:da}), se incorporó explícitamente el identificador de versión correspondiente a esta entrega: release tag \texttt{v0.2.0} y hash de commit \texttt{58a6b24}:
+    \LabDSTquote{...openly available in the GitHub project repository (\texttt{https://github.com/PaolaCV14/IOT-SOFIA-2026}) under release tag \texttt{v0.2.0} (commit \texttt{58a6b24}).}
+    \item \textbf{Declaración de la bitácora como material suplementario:} Se declaró explícitamente la bitácora de pruebas experimentales y los registros brutos de adquisición temporal en \texttt{docs/experimental-data/} como material suplementario oficial tanto en la Sección de Materiales y Métodos (Line~\ref{ln:servo-path}) como en la sección de \textit{Data Availability} (Line~\ref{ln:da}):
+    \LabDSTquote{The experimental testing logbook and raw characterization data are cataloged as supplementary material in the \texttt{docs/experimental-data/} directory.}
+\end{enumerate}
+Con esto, la entrega queda respaldada con verificación criptográfica de versión e integridad documental.}
+
+\end{document}
