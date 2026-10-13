@@ -2,7 +2,7 @@
 ==============================================================
 CLIENTE BLE ASÍNCRONO MULTIHILO - SOFIA ESP32-C3
 Driver de radio Bluetooth puro (GATT Write).
-Responsabilidad única: Conexión y envío por radio sin bloquear la app.
+Notifica cambios de estado de conexión (conectado/desconectado).
 ==============================================================
 """
 
@@ -26,9 +26,10 @@ class SofiaBleClient:
     Driver de bajo nivel para comunicación Bluetooth con el ESP32.
     Corre en un hilo secundario con asyncio y cola no bloqueante.
     """
-    def __init__(self, mac_address=ESP32_DEFAULT_MAC, status_callback=None):
+    def __init__(self, mac_address=ESP32_DEFAULT_MAC, status_callback=None, connection_callback=None):
         self.mac_address = mac_address
         self.status_callback = status_callback or (lambda msg: None)
+        self.connection_callback = connection_callback or (lambda is_connected: None)
         self.cmd_queue = queue.Queue()
         self.is_connected = False
         self._running = False
@@ -47,19 +48,23 @@ class SofiaBleClient:
     def _log(self, msg):
         self.status_callback(f"[BLE] {msg}")
 
+    def _notify_connection(self, state):
+        self.is_connected = state
+        self.connection_callback(state)
+
     def _run_event_loop(self):
         asyncio.run(self._worker())
 
     async def _worker(self):
-        self._log(f"Conectando con {self.mac_address}...")
+        self._log(f"Buscando dispositivo {self.mac_address}...")
         try:
-            async with BleakClient(self.mac_address, timeout=12.0) as client:
+            async with BleakClient(self.mac_address, timeout=10.0) as client:
                 if not client.is_connected:
-                    self._log("No se pudo conectar al ESP32.")
-                    self.is_connected = False
+                    self._log("No se pudo conectar al ESP32 (dispositivo fuera de rango o apagado).")
+                    self._notify_connection(False)
                     return
 
-                self.is_connected = True
+                self._notify_connection(True)
                 self._log("Conectado exitosamente al robot SOFIA.")
 
                 while self._running:
@@ -85,16 +90,20 @@ class SofiaBleClient:
                         self.cmd_queue.task_done()
 
         except Exception as e:
-            self._log(f"Desconectado o error: {e}")
+            self._log(f"Fallo de conexión: {e}")
         finally:
-            self.is_connected = False
-            self._log("Sesión BLE finalizada.")
+            self._notify_connection(False)
+            self._running = False
+            self._log("Sesión BLE cerrada.")
 
     def send_command(self, cmd_str):
         """
         Encola un comando de texto para el robot (ej. '90,90').
         Aplica control de tasa para proteger la antena.
         """
+        if not self.is_connected:
+            return False
+
         now = time.time()
         if now - self._last_send_time < self._min_interval:
             return False
@@ -106,5 +115,6 @@ class SofiaBleClient:
         """Detiene la conexión y libera el hilo."""
         self._running = False
         self.cmd_queue.put(None)
+        self._notify_connection(False)
         if self._thread and self._thread.is_alive():
             self._thread.join(timeout=1.5)

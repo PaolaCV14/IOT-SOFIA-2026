@@ -22,10 +22,11 @@ class SofiaCommDispatcher:
     MODE_UDP = "UDP"
     MODE_BLE = "BLE"
 
-    def __init__(self, target_ip="127.0.0.1", target_port=5005, log_callback=None):
+    def __init__(self, target_ip="127.0.0.1", target_port=5005, log_callback=None, ble_state_callback=None):
         self.target_ip = target_ip
         self.target_port = target_port
         self.log = log_callback or (lambda msg: None)
+        self.ble_state_callback = ble_state_callback or (lambda is_connected: None)
 
         self.current_channel = self.MODE_UDP
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
@@ -36,6 +37,19 @@ class SofiaCommDispatcher:
         self.current_channel = channel_type
         self.log(f"Canal de transmisión activo: {channel_type}")
 
+    def set_udp_target(self, ip_port_str):
+        """Configura la IP y puerto para la simulación UDP (ej. '127.0.0.1:5005')."""
+        try:
+            if ":" in ip_port_str:
+                ip, port = ip_port_str.split(":", 1)
+                self.target_ip = ip.strip()
+                self.target_port = int(port.strip())
+            else:
+                self.target_ip = ip_port_str.strip()
+            self.log(f"Destino UDP configurado: {self.target_ip}:{self.target_port}")
+        except Exception as e:
+            self.log(f"Error al configurar IP/Puerto UDP: {e}")
+
     # -------------------------------------------------------------
     # GESTIÓN BLE (ESP32 FÍSICO)
     # -------------------------------------------------------------
@@ -44,7 +58,11 @@ class SofiaCommDispatcher:
         if self.ble_client and self.ble_client.is_connected:
             return True
 
-        self.ble_client = SofiaBleClient(mac_address=mac_address, status_callback=self.log)
+        self.ble_client = SofiaBleClient(
+            mac_address=mac_address,
+            status_callback=self.log,
+            connection_callback=self.ble_state_callback
+        )
         self.ble_client.start()
         return True
 
@@ -54,9 +72,13 @@ class SofiaCommDispatcher:
             self.ble_client.stop()
             self.ble_client = None
             self.log("Enlace BLE desconectado.")
+        self.ble_state_callback(False)
 
     def is_ble_connected(self):
         return bool(self.ble_client and self.ble_client.is_connected)
+
+    def is_ble_active_or_trying(self):
+        return bool(self.ble_client and self.ble_client._running)
 
     # -------------------------------------------------------------
     # TRANSMISIÓN UNIFICADA DE COMANDOS
@@ -66,7 +88,6 @@ class SofiaCommDispatcher:
         Envía los ángulos (q1, q2) al canal que esté seleccionado.
         Aplica los límites mecánicos del robot.
         """
-        # Aseguramos límites seguros de servomotores (60° a 120°)
         q1_clamped = max(ANGULO_MIN, min(ANGULO_MAX, int(q1)))
         q2_clamped = max(ANGULO_MIN, min(ANGULO_MAX, int(q2)))
 

@@ -7,7 +7,7 @@ Interfaz gráfica modular: Desacoplada de lógica de video y comunicaciones
 
 import sys
 import os
-from PySide6.QtCore import Qt, Slot
+from PySide6.QtCore import Qt, Slot, Signal, QObject
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QPushButton,
@@ -31,6 +31,12 @@ from ble_sender import ANGULO_MIN, ANGULO_MAX, ESP32_DEFAULT_MAC
 from styles import MODERN_DARK_THEME
 
 
+class BleStateBridge(QObject):
+    """Puente thread-safe de señales Qt para eventos BLE."""
+    state_changed = Signal(bool)
+    log_received = Signal(str)
+
+
 class SofiaDashboard(QMainWindow):
     """Ventana principal del panel de control de SOFÍA."""
 
@@ -40,8 +46,16 @@ class SofiaDashboard(QMainWindow):
         self.resize(1200, 760)
         self.setStyleSheet(MODERN_DARK_THEME)
 
+        # Puente de eventos entre hilos
+        self.ble_bridge = BleStateBridge()
+        self.ble_bridge.state_changed.connect(self._set_ble_button_state)
+        self.ble_bridge.log_received.connect(self.log_event)
+
         # 1. Módulos Desacoplados
-        self.comm = SofiaCommDispatcher(log_callback=self.log_event)
+        self.comm = SofiaCommDispatcher(
+            log_callback=self.ble_bridge.log_received.emit,
+            ble_state_callback=self.ble_bridge.state_changed.emit
+        )
         self.models_dir = os.path.join(TRACKING_DIR, "models")
         self.worker = None
 
@@ -137,22 +151,25 @@ class SofiaDashboard(QMainWindow):
         self.radio_ble = QRadioButton("Robot Físico (ESP32 / BLE)")
         self.radio_udp.setChecked(True)
 
-        self.radio_udp.toggled.connect(lambda: self.comm.set_channel(SofiaCommDispatcher.MODE_UDP))
-        self.radio_ble.toggled.connect(lambda: self.comm.set_channel(SofiaCommDispatcher.MODE_BLE))
+        self.radio_udp.toggled.connect(self._on_channel_radio_toggled)
+        self.radio_ble.toggled.connect(self._on_channel_radio_toggled)
 
         row_radio.addWidget(self.radio_udp)
         row_radio.addWidget(self.radio_ble)
         layout.addLayout(row_radio)
 
-        row_ble = QHBoxLayout()
-        self.txt_mac = QLineEdit(ESP32_DEFAULT_MAC)
-        self.txt_mac.setPlaceholderText("MAC del ESP32")
-        self.btn_connect_ble = QPushButton("Conectar BLE")
-        self.btn_connect_ble.clicked.connect(self._handle_toggle_ble)
+        row_dest = QHBoxLayout()
+        self.txt_destination = QLineEdit()
+        self.txt_destination.setPlaceholderText("127.0.0.1:5005")
+        self.txt_destination.setText("127.0.0.1:5005")
+        self.txt_destination.textChanged.connect(self._on_destination_text_changed)
 
-        row_ble.addWidget(self.txt_mac)
-        row_ble.addWidget(self.btn_connect_ble)
-        layout.addLayout(row_ble)
+        self.btn_action = QPushButton("Guardar Destino")
+        self.btn_action.clicked.connect(self._handle_action_click)
+
+        row_dest.addWidget(self.txt_destination)
+        row_dest.addWidget(self.btn_action)
+        layout.addLayout(row_dest)
 
         return group
 
@@ -227,16 +244,57 @@ class SofiaDashboard(QMainWindow):
     def log_event(self, text):
         self.log_terminal.append(f"> {text}")
 
-    def _handle_toggle_ble(self):
-        if self.comm.is_ble_connected():
-            self.comm.disconnect_ble()
-            self.btn_connect_ble.setText("Conectar BLE")
-            self.btn_connect_ble.setStyleSheet("")
+    def _on_channel_radio_toggled(self):
+        """Alterna el placeholder y el texto del botón al cambiar entre UDP y BLE."""
+        if self.radio_udp.isChecked():
+            self.comm.set_channel(SofiaCommDispatcher.MODE_UDP)
+            self.txt_destination.setPlaceholderText("127.0.0.1:5005")
+            self.txt_destination.setText("127.0.0.1:5005")
+            self.btn_action.setText("Guardar Destino")
+            self.btn_action.setStyleSheet("")
+            self.btn_action.setEnabled(True)
         else:
-            mac = self.txt_mac.text().strip()
-            self.comm.connect_ble(mac)
-            self.btn_connect_ble.setText("Desconectar")
-            self.btn_connect_ble.setStyleSheet("background-color: #065F46; border: 1px solid #10B981;")
+            self.comm.set_channel(SofiaCommDispatcher.MODE_BLE)
+            self.txt_destination.setPlaceholderText(ESP32_DEFAULT_MAC)
+            self.txt_destination.setText(ESP32_DEFAULT_MAC)
+            self._set_ble_button_state(self.comm.is_ble_connected())
+
+    def _on_destination_text_changed(self, text):
+        """Si es UDP y el usuario edita la IP/puerto, se guarda de inmediato."""
+        if self.radio_udp.isChecked():
+            val = text.strip() or self.txt_destination.placeholderText()
+            self.comm.set_udp_target(val)
+
+    def _handle_action_click(self):
+        """Maneja el clic del botón según el canal activo."""
+        if self.radio_udp.isChecked():
+            val = self.txt_destination.text().strip() or self.txt_destination.placeholderText()
+            self.comm.set_udp_target(val)
+            self.log_event(f"Destino UDP guardado: {val}")
+        else:
+            # Canal BLE
+            if self.comm.is_ble_active_or_trying() or self.comm.is_ble_connected():
+                self.comm.disconnect_ble()
+                self._set_ble_button_state(False)
+            else:
+                mac = self.txt_destination.text().strip() or self.txt_destination.placeholderText()
+                self.btn_action.setText("Conectando...")
+                self.btn_action.setEnabled(True)
+                self.comm.connect_ble(mac)
+
+    @Slot(bool)
+    def _set_ble_button_state(self, is_connected):
+        """Actualiza la apariencia del botón BLE según el estado real."""
+        if not self.radio_ble.isChecked():
+            return
+
+        self.btn_action.setEnabled(True)
+        if is_connected:
+            self.btn_action.setText("Desconectar")
+            self.btn_action.setStyleSheet("background-color: #065F46; border: 1px solid #10B981;")
+        else:
+            self.btn_action.setText("Conectar BLE")
+            self.btn_action.setStyleSheet("")
 
     @Slot()
     def _handle_start_vision(self):

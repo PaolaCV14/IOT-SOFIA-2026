@@ -9,22 +9,26 @@ Repositorio oficial para el desarrollo, modelado, simulación y documentación c
 ```text
 IOT-SOFIA-2026/
 ├── paper/                       # Manuscrito científico en LaTeX (Formato IEEEtran)
-│   ├── figures/                 # Figuras y capturas del paper
-│   ├── IEEEtran.cls             # Clase oficial de documento IEEE
-│   ├── bibliography.bib         # Referencias bibliográficas (BibTeX)
-│   ├── plantilla_IEEE_LabDST.tex# Archivo fuente principal del artículo
-│   └── plantilla_IEEE_LabDST.pdf# Manuscrito compilado en PDF
+│   ├── Equipo 1 - segundo corte/# Archivos fuente del artículo académico del equipo
+│   └── figures/                 # Figuras y capturas del paper
 │
-├── code/                        # Código fuente de ingeniería
-│   └── tracking-vision/         # Módulo Python para visión 3D, cinemática inversa y tracking
+├── code/                        # Código fuente modular de ingeniería
+│   ├── tracking-vision/         # Pipeline de visión 3D, MediaPipe, gestos y filtro EMA
+│   │   └── GUIA_VISION_Y_POSTURAS.md # Manual universitario de cinemática, landmarks y filtrado
+│   ├── communication/           # Enlace inalámbrico BLE (ESP32-C3) y sockets UDP (Unity)
+│   ├── gui-control/             # Estación de control de escritorio (PySide6 / .exe)
+│   ├── firmware-mecatronica/    # Firmware embebido para microcontroladores
+│   └── CODE.md                  # Mapa integral de arquitectura y guía operativa de conexión
 │
-├── unity-simulation/            # Simulación 3D en Unity (Escenario y panal de 16 módulos)
+├── WEBOT SOFIA/                 # Gemelo digital en Webots (Mundo .wbt, modelos CAD 3D y pruebas BLE)
+│
+├── unity-simulation/            # Simulación 3D en Unity (Escenario y panal de módulos en C#)
 │
 └── docs/                        # Documentación central, clases, entregables y datos
-    ├── class-slides/            # Diapositivas de clase (Hardware, Cinemática, LaTeX, D-Lab) + Guía de estudio
+    ├── class-slides/            # Diapositivas de clase (Hardware, Cinemática, LaTeX, D-Lab)
     ├── catalog/                 # Catálogo de entregables documentales
-    ├── prototype-cad/           # Planos y especificaciones del prototipo demostrador (SOFIA003)
-    └── experimental-data/       # Registros y pruebas de caracterización de actuadores (Excel)
+    ├── prototype-cad/           # Planos y especificaciones del prototipo demostrador
+    └── experimental-data/       # Registros y pruebas de caracterización de actuadores
 ```
 
 ---
