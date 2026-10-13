@@ -1,7 +1,44 @@
-# Interfaz Gráfica de Operación y Control (Python GUI)
+# Estación de Control y Monitoreo SOFIA (PySide6 GUI)
 
-Interfaz gráfica de escritorio desarrollada en Python (e.g., PyQt / PySide / Tkinter / CustomTkinter / Dear PyGui / OpenCV) para la gestión y monitoreo del sistema SOFIA:
+Interfaz gráfica de escritorio moderna, intuitiva y optimizada para el monitoreo de visión por computadora en tiempo real y el control cinemático de los módulos robóticos del proyecto **SOFIA 2026**.
 
-- **Modos de operación:** Modo seguimiento automático (visión 3D), modo manual, modo interactivo, modo reposo y calibración.
-- **Visualización en tiempo real:** Estado de conexión de los 16 módulos, orientación calculada ($q_1, q_2$), telemetría del enlace inalámbrico (BT/Wi-Fi).
-- **Consola de comandos:** Envío directo de tramas de control hacia el ESP32 maestro.
+---
+
+## 🚀 Características Principales
+
+1. **Visor de Cámara a 60 FPS:** Renderizado en tiempo real con superposición de landmarks (manos, postura corporal y gestos).
+2. **Arquitectura Multihilo (`QThread`):** El procesamiento de MediaPipe y OpenCV se ejecuta en un hilo separado para garantizar que los controles nunca se congelen.
+3. **Modos de Operación:**
+   - **Seguimiento Automático 3D:** Envío continuo de ángulos calculados ($q_1, q_2$) por UDP.
+   - **Control Manual:** Sliders interactivos para fijar ángulos articulares.
+   - **Calibración y Reposo:** Para mantenimiento del hardware.
+4. **Telemetría y Logs:** Métricas de FPS, latencia en ms y terminal integrada de eventos.
+
+---
+
+## 🛠️ Instalación de Dependencias
+
+```bash
+cd code/gui-control
+pip install -r requirements.txt
+```
+
+---
+
+## ▶️ Ejecución en Desarrollo
+
+```bash
+python main_gui.py
+```
+
+---
+
+## 📦 Generación del Ejecutable (`.exe`) para Windows
+
+Para compilar todo en un único archivo ejecutable portátil:
+
+```bash
+pyinstaller build_exe.spec
+```
+
+El ejecutable resultante se generará en la carpeta `dist/SOFIA_Control_Station.exe`, listo para operar sin necesidad de tener Python instalado.
