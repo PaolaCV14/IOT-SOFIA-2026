@@ -1,189 +1,249 @@
 """
 ==============================================================
-ESTACIÓN DE CONTROL Y MONITOREO SOFIA
-Interfaz gráfica integrada (PySide6) para Tracking de Visión + Control
+ESTACIÓN DE CONTROL Y MONITOREO SOFIA (PySide6)
+Interfaz gráfica modular: Desacoplada de lógica de video y comunicaciones
 ==============================================================
 """
 
 import sys
 import os
-import socket
 from PySide6.QtCore import Qt, Slot
-from PySide6.QtGui import QPixmap, QIcon
+from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QLabel, QPushButton,
     QVBoxLayout, QHBoxLayout, QGridLayout, QGroupBox, QSlider,
-    QComboBox, QTextEdit, QFrame
+    QComboBox, QTextEdit, QFrame, QRadioButton, QButtonGroup, QLineEdit
 )
 
-# Ajuste de path para importar módulos de tracking-vision
+# Inclusión de rutas de módulos hermanos
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-TRACKING_DIR = os.path.abspath(os.path.join(CURRENT_DIR, "..", "tracking-vision"))
-if TRACKING_DIR not in sys.path:
-    sys.path.append(TRACKING_DIR)
+CODE_DIR = os.path.abspath(os.path.join(CURRENT_DIR, ".."))
+TRACKING_DIR = os.path.join(CODE_DIR, "tracking-vision")
+COMM_DIR = os.path.join(CODE_DIR, "communication")
+
+for path in (TRACKING_DIR, COMM_DIR):
+    if path not in sys.path:
+        sys.path.append(path)
 
 from vision_worker import VisionWorker
+from dispatcher import SofiaCommDispatcher
+from ble_sender import ANGULO_MIN, ANGULO_MAX, ESP32_DEFAULT_MAC
 from styles import MODERN_DARK_THEME
 
 
 class SofiaDashboard(QMainWindow):
+    """Ventana principal del panel de control de SOFÍA."""
+
     def __init__(self):
         super().__init__()
-        self.setWindowTitle("SOFÍA 2026 - Centro de Control y Visión 3D")
-        self.resize(1180, 720)
+        self.setWindowTitle("SOFÍA 2026 - Centro de Control, Visión 3D y Telemetría")
+        self.resize(1200, 760)
         self.setStyleSheet(MODERN_DARK_THEME)
 
-        # Configuración de Sockets para Unity / Hardware
-        self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.target_ip = "127.0.0.1"
-        self.target_port = 5005
-
-        # Rutas de modelos
+        # 1. Módulos Desacoplados
+        self.comm = SofiaCommDispatcher(log_callback=self.log_event)
         self.models_dir = os.path.join(TRACKING_DIR, "models")
         self.worker = None
 
-        self._init_ui()
+        self._build_ui()
 
-    def _init_ui(self):
+    # -------------------------------------------------------------
+    # CONSTRUCCIÓN VISUAL (UI LAYOUT)
+    # -------------------------------------------------------------
+    def _build_ui(self):
         main_widget = QWidget()
         main_layout = QHBoxLayout(main_widget)
         main_layout.setSpacing(16)
         main_layout.setContentsMargins(16, 16, 16, 16)
         self.setCentralWidget(main_widget)
 
-        # -------------------------------------------------------------
-        # PANEL IZQUIERDO: VISUALIZADOR DE VIDEO (STREAM EN TIEMPO REAL)
-        # -------------------------------------------------------------
-        left_panel = QFrame()
-        left_panel.setObjectName("card")
-        left_layout = QVBoxLayout(left_panel)
+        # Panel de Cámara (Izquierda)
+        left_panel = self._build_video_panel()
+        main_layout.addWidget(left_panel, stretch=6)
 
-        # Encabezado Video
-        video_header = QHBoxLayout()
-        title_cam = QLabel("🎥 Transmisión en Tiempo Real")
-        title_cam.setStyleSheet("font-size: 15px; font-weight: bold; color: #F8FAFC;")
+        # Panel de Mandos y Telemetría (Derecha)
+        right_panel = self._build_controls_panel()
+        main_layout.addWidget(right_panel, stretch=4)
+
+        self.log_event("Sistema inicializado. Selecciona canal de destino e inicia la cámara.")
+
+    def _build_video_panel(self):
+        panel = QFrame()
+        panel.setObjectName("card")
+        layout = QVBoxLayout(panel)
+
+        header = QHBoxLayout()
+        title = QLabel("🎥 Transmisión en Tiempo Real")
+        title.setStyleSheet("font-size: 15px; font-weight: bold; color: #F8FAFC;")
         self.lbl_fps_badge = QLabel("FPS: --")
         self.lbl_fps_badge.setObjectName("badge")
         self.lbl_latency_badge = QLabel("Latencia: -- ms")
         self.lbl_latency_badge.setObjectName("badge")
 
-        video_header.addWidget(title_cam)
-        video_header.addStretch()
-        video_header.addWidget(self.lbl_fps_badge)
-        video_header.addWidget(self.lbl_latency_badge)
-        left_layout.addLayout(video_header)
+        header.addWidget(title)
+        header.addStretch()
+        header.addWidget(self.lbl_fps_badge)
+        header.addWidget(self.lbl_latency_badge)
+        layout.addLayout(header)
 
-        # Visor de la cámara
-        self.video_view = QLabel()
+        # Viewport de video
+        self.video_view = QLabel("Cámara inactiva.\nPresiona 'Iniciar Cámara' para activar el tracking.")
         self.video_view.setAlignment(Qt.AlignCenter)
         self.video_view.setMinimumSize(640, 440)
-        self.video_view.setStyleSheet(
-            "background-color: #0A0C0F; border: 2px dashed #2A303C; border-radius: 8px;"
-        )
-        self.video_view.setText("Cámara no iniciada.\nPresiona 'Iniciar Sistema' para comenzar.")
-        left_layout.addWidget(self.video_view, stretch=1)
+        self.video_view.setStyleSheet("background-color: #0A0C0F; border: 2px dashed #2A303C; border-radius: 8px;")
+        layout.addWidget(self.video_view, stretch=1)
 
-        # Barra de Estado Inferior de Gestos
+        # Barra inferior de gestos
         gesture_box = QHBoxLayout()
-        lbl_g_title = QLabel("Gesto Detectado:")
-        lbl_g_title.setStyleSheet("font-weight: 600; color: #94A3B8;")
+        lbl_title = QLabel("Gesto Detectado:")
+        lbl_title.setStyleSheet("font-weight: 600; color: #94A3B8;")
         self.lbl_gesture_val = QLabel("NINGUNO")
         self.lbl_gesture_val.setObjectName("badge")
         self.lbl_gesture_val.setStyleSheet("font-size: 14px; font-weight: bold; color: #38BDF8; padding: 6px 12px;")
 
-        gesture_box.addWidget(lbl_g_title)
+        gesture_box.addWidget(lbl_title)
         gesture_box.addWidget(self.lbl_gesture_val)
         gesture_box.addStretch()
-        left_layout.addLayout(gesture_box)
+        layout.addLayout(gesture_box)
 
-        main_layout.addWidget(left_panel, stretch=6)
+        return panel
 
-        # -------------------------------------------------------------
-        # PANEL DERECHO: CONTROLES, TELEMETRÍA Y LOGS
-        # -------------------------------------------------------------
-        right_panel = QFrame()
-        right_panel.setObjectName("card")
-        right_layout = QVBoxLayout(right_panel)
-        right_layout.setSpacing(12)
+    def _build_controls_panel(self):
+        panel = QFrame()
+        panel.setObjectName("card")
+        layout = QVBoxLayout(panel)
+        layout.setSpacing(12)
 
-        # 1. Operación y Dispositivos
-        group_op = QGroupBox("Control de Ejecución")
-        op_layout = QVBoxLayout(group_op)
+        # 1. Sección de Conectividad (BLE / UDP)
+        layout.addWidget(self._build_network_section())
 
-        btn_row = QHBoxLayout()
-        self.btn_start = QPushButton("▶ Iniciar Sistema")
+        # 2. Control de Cámara y Modos
+        layout.addWidget(self._build_mode_section())
+
+        # 3. Orientación Articular
+        layout.addWidget(self._build_joints_section())
+
+        # 4. Consola de Logs
+        layout.addWidget(self._build_console_section(), stretch=1)
+
+        return panel
+
+    def _build_network_section(self):
+        group = QGroupBox("Destino de Comunicación")
+        layout = QVBoxLayout(group)
+
+        row_radio = QHBoxLayout()
+        self.radio_udp = QRadioButton("Simulación (Unity / UDP)")
+        self.radio_ble = QRadioButton("Robot Físico (ESP32 / BLE)")
+        self.radio_udp.setChecked(True)
+
+        self.radio_udp.toggled.connect(lambda: self.comm.set_channel(SofiaCommDispatcher.MODE_UDP))
+        self.radio_ble.toggled.connect(lambda: self.comm.set_channel(SofiaCommDispatcher.MODE_BLE))
+
+        row_radio.addWidget(self.radio_udp)
+        row_radio.addWidget(self.radio_ble)
+        layout.addLayout(row_radio)
+
+        row_ble = QHBoxLayout()
+        self.txt_mac = QLineEdit(ESP32_DEFAULT_MAC)
+        self.txt_mac.setPlaceholderText("MAC del ESP32")
+        self.btn_connect_ble = QPushButton("Conectar BLE")
+        self.btn_connect_ble.clicked.connect(self._handle_toggle_ble)
+
+        row_ble.addWidget(self.txt_mac)
+        row_ble.addWidget(self.btn_connect_ble)
+        layout.addLayout(row_ble)
+
+        return group
+
+    def _build_mode_section(self):
+        group = QGroupBox("Control de Operación")
+        layout = QVBoxLayout(group)
+
+        row_btn = QHBoxLayout()
+        self.btn_start = QPushButton("▶ Iniciar Cámara")
         self.btn_start.setObjectName("btn-start")
-        self.btn_start.clicked.connect(self.start_vision)
+        self.btn_start.clicked.connect(self._handle_start_vision)
 
         self.btn_stop = QPushButton("⏹ Detener")
         self.btn_stop.setObjectName("btn-stop")
         self.btn_stop.setEnabled(False)
-        self.btn_stop.clicked.connect(self.stop_vision)
+        self.btn_stop.clicked.connect(self._handle_stop_vision)
 
-        btn_row.addWidget(self.btn_start)
-        btn_row.addWidget(self.btn_stop)
-        op_layout.addLayout(btn_row)
+        row_btn.addWidget(self.btn_start)
+        row_btn.addWidget(self.btn_stop)
+        layout.addLayout(row_btn)
 
-        combo_row = QHBoxLayout()
-        combo_row.addWidget(QLabel("Modo:"))
+        row_combo = QHBoxLayout()
+        row_combo.addWidget(QLabel("Modo:"))
         self.combo_mode = QComboBox()
-        self.combo_mode.addItems(["Seguimiento Automático 3D", "Control Manual", "Calibración", "Reposo"])
-        combo_row.addWidget(self.combo_mode)
-        op_layout.addLayout(combo_row)
-        right_layout.addWidget(group_op)
+        self.combo_mode.addItems(["Seguimiento Automático 3D", "Control Manual", "Calibración (Home)", "Reposo"])
+        self.combo_mode.currentIndexChanged.connect(self._handle_mode_changed)
+        row_combo.addWidget(self.combo_mode)
+        layout.addLayout(row_combo)
 
-        # 2. Telemetría de Servomotores (q1, q2)
-        group_angles = QGroupBox("Orientación Articular (Servos)")
-        angles_layout = QGridLayout(group_angles)
+        return group
 
-        angles_layout.addWidget(QLabel("q1 (Yaw / Horizontal):"), 0, 0)
-        self.lbl_q1_val = QLabel("0.0°")
+    def _build_joints_section(self):
+        group = QGroupBox("Articulaciones (q1: Yaw, q2: Pitch)")
+        layout = QGridLayout(group)
+
+        layout.addWidget(QLabel("q1 (Horizontal):"), 0, 0)
+        self.lbl_q1_val = QLabel("90.0°")
         self.lbl_q1_val.setStyleSheet("font-weight: bold; color: #38BDF8;")
-        angles_layout.addWidget(self.lbl_q1_val, 0, 1)
+        layout.addWidget(self.lbl_q1_val, 0, 1)
 
         self.slider_q1 = QSlider(Qt.Horizontal)
-        self.slider_q1.setRange(-90, 90)
-        self.slider_q1.setValue(0)
-        self.slider_q1.valueChanged.connect(self.on_slider_manual)
-        angles_layout.addWidget(self.slider_q1, 1, 0, 1, 2)
+        self.slider_q1.setRange(ANGULO_MIN, ANGULO_MAX)
+        self.slider_q1.setValue(90)
+        self.slider_q1.valueChanged.connect(self._handle_manual_slider)
+        layout.addWidget(self.slider_q1, 1, 0, 1, 2)
 
-        angles_layout.addWidget(QLabel("q2 (Pitch / Vertical):"), 2, 0)
-        self.lbl_q2_val = QLabel("0.0°")
+        layout.addWidget(QLabel("q2 (Vertical):"), 2, 0)
+        self.lbl_q2_val = QLabel("90.0°")
         self.lbl_q2_val.setStyleSheet("font-weight: bold; color: #38BDF8;")
-        angles_layout.addWidget(self.lbl_q2_val, 2, 1)
+        layout.addWidget(self.lbl_q2_val, 2, 1)
 
         self.slider_q2 = QSlider(Qt.Horizontal)
-        self.slider_q2.setRange(-90, 90)
-        self.slider_q2.setValue(0)
-        self.slider_q2.valueChanged.connect(self.on_slider_manual)
-        angles_layout.addWidget(self.slider_q2, 3, 0, 1, 2)
+        self.slider_q2.setRange(ANGULO_MIN, ANGULO_MAX)
+        self.slider_q2.setValue(90)
+        self.slider_q2.valueChanged.connect(self._handle_manual_slider)
+        layout.addWidget(self.slider_q2, 3, 0, 1, 2)
 
-        right_layout.addWidget(group_angles)
+        return group
 
-        # 3. Consola de Telemetría y Eventos
-        group_log = QGroupBox("Terminal de Eventos y Telemetría")
-        log_layout = QVBoxLayout(group_log)
+    def _build_console_section(self):
+        group = QGroupBox("Terminal de Telemetría")
+        layout = QVBoxLayout(group)
         self.log_terminal = QTextEdit()
         self.log_terminal.setObjectName("logTerminal")
         self.log_terminal.setReadOnly(True)
-        log_layout.addWidget(self.log_terminal)
-        right_layout.addWidget(group_log, stretch=1)
+        layout.addWidget(self.log_terminal)
+        return group
 
-        main_layout.addWidget(right_panel, stretch=4)
-
-        self.log_event("Sistema inicializado. Listo para operar.")
-
+    # -------------------------------------------------------------
+    # CONTROLADORES DE EVENTOS Y ACCIONES (HANDLERS)
+    # -------------------------------------------------------------
     def log_event(self, text):
-        """Muestra mensajes con formato en la terminal de la GUI."""
         self.log_terminal.append(f"> {text}")
 
+    def _handle_toggle_ble(self):
+        if self.comm.is_ble_connected():
+            self.comm.disconnect_ble()
+            self.btn_connect_ble.setText("Conectar BLE")
+            self.btn_connect_ble.setStyleSheet("")
+        else:
+            mac = self.txt_mac.text().strip()
+            self.comm.connect_ble(mac)
+            self.btn_connect_ble.setText("Desconectar")
+            self.btn_connect_ble.setStyleSheet("background-color: #065F46; border: 1px solid #10B981;")
+
     @Slot()
-    def start_vision(self):
-        """Inicia el worker en segundo plano para procesar la cámara."""
+    def _handle_start_vision(self):
         self.worker = VisionWorker(camera_id=0, models_dir=self.models_dir)
-        self.worker.frame_ready.connect(self.update_video_frame)
-        self.worker.metrics_ready.connect(self.update_metrics)
-        self.worker.angles_ready.connect(self.update_angles)
+        self.worker.frame_ready.connect(self._on_frame_ready)
+        self.worker.metrics_ready.connect(self._on_metrics_ready)
+        self.worker.angles_ready.connect(self._on_angles_ready)
         self.worker.status_message.connect(self.log_event)
 
         self.worker.start()
@@ -191,67 +251,67 @@ class SofiaDashboard(QMainWindow):
         self.btn_stop.setEnabled(True)
 
     @Slot()
-    def stop_vision(self):
-        """Detiene el worker de cámara."""
+    def _handle_stop_vision(self):
         if self.worker:
             self.worker.stop()
             self.worker = None
         self.btn_start.setEnabled(True)
         self.btn_stop.setEnabled(False)
-        self.video_view.setText("Sistema detenido.")
+        self.video_view.setText("Cámara detenida.")
 
-    @Slot(QPixmap)
-    def update_video_frame(self, q_img):
-        """Renderiza el cuadro procesado en la pantalla."""
+    @Slot(object)
+    def _on_frame_ready(self, q_img):
         pixmap = QPixmap.fromImage(q_img)
-        scaled_pixmap = pixmap.scaled(
-            self.video_view.size(),
-            Qt.KeepAspectRatio,
-            Qt.SmoothTransformation
-        )
-        self.video_view.setPixmap(scaled_pixmap)
+        scaled = pixmap.scaled(self.video_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.video_view.setPixmap(scaled)
 
     @Slot(float, float, str)
-    def update_metrics(self, fps, latency, gesto):
-        """Actualiza etiquetas de rendimiento y gestos."""
+    def _on_metrics_ready(self, fps, latency, gesto):
         self.lbl_fps_badge.setText(f"FPS: {fps:.1f}")
         self.lbl_latency_badge.setText(f"Lat: {latency:.1f} ms")
         self.lbl_gesture_val.setText(gesto)
 
     @Slot(float, float)
-    def update_angles(self, q1, q2):
-        """Actualiza telemetría y envía paquetes si estamos en modo automático."""
+    def _on_angles_ready(self, q1_raw, q2_raw):
         if self.combo_mode.currentText() == "Seguimiento Automático 3D":
-            self.lbl_q1_val.setText(f"{q1:.1f}°")
-            self.lbl_q2_val.setText(f"{q2:.1f}°")
-            self.slider_q1.blockSignals(True)
-            self.slider_q2.blockSignals(True)
-            self.slider_q1.setValue(int(q1))
-            self.slider_q2.setValue(int(q2))
-            self.slider_q1.blockSignals(False)
-            self.slider_q2.blockSignals(False)
-            self.send_udp(q1, q2)
+            # Normalizar a rango seguro (60 a 120, centro 90)
+            q1 = int(max(ANGULO_MIN, min(ANGULO_MAX, 90 + int(q1_raw * (30.0 / 90.0)))))
+            q2 = int(max(ANGULO_MIN, min(ANGULO_MAX, 90 + int(q2_raw * (30.0 / 90.0)))))
 
-    def on_slider_manual(self):
-        """Envía ángulos en modo manual."""
+            self._update_joint_display(q1, q2)
+            self.comm.send_angles(q1, q2)
+
+    def _handle_manual_slider(self):
         if self.combo_mode.currentText() == "Control Manual":
-            q1 = float(self.slider_q1.value())
-            q2 = float(self.slider_q2.value())
-            self.lbl_q1_val.setText(f"{q1:.1f}°")
-            self.lbl_q2_val.setText(f"{q2:.1f}°")
-            self.send_udp(q1, q2)
+            q1 = self.slider_q1.value()
+            q2 = self.slider_q2.value()
+            self._update_joint_display(q1, q2)
+            self.comm.send_angles(q1, q2)
 
-    def send_udp(self, q1, q2):
-        """Transmite coordenadas a Unity o ESP32."""
-        try:
-            msg = f"{q1:.2f},{q2:.2f}".encode("utf-8")
-            self.sock.sendto(msg, (self.target_ip, self.target_port))
-        except Exception:
-            pass
+    def _handle_mode_changed(self, idx):
+        mode = self.combo_mode.currentText()
+        if mode == "Calibración (Home)":
+            self._update_joint_display(90, 90)
+            self.comm.send_angles(90, 90)
+            self.log_event("Calibración: Servomotores centrados a 90°, 90°.")
+        elif mode == "Reposo":
+            self._update_joint_display(90, 60)
+            self.comm.send_angles(90, 60)
+            self.log_event("Reposo: Postura de descanso y bajo consumo activada.")
+
+    def _update_joint_display(self, q1, q2):
+        self.lbl_q1_val.setText(f"{q1}°")
+        self.lbl_q2_val.setText(f"{q2}°")
+        self.slider_q1.blockSignals(True)
+        self.slider_q2.blockSignals(True)
+        self.slider_q1.setValue(q1)
+        self.slider_q2.setValue(q2)
+        self.slider_q1.blockSignals(False)
+        self.slider_q2.blockSignals(False)
 
     def closeEvent(self, event):
-        """Asegura liberar la cámara al cerrar la ventana."""
-        self.stop_vision()
+        self._handle_stop_vision()
+        self.comm.close()
         event.accept()
 
 

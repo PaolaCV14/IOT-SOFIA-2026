@@ -11,10 +11,10 @@ added_files = [
 
 a = Analysis(
     ['main_gui.py'],
-    pathex=['.', '../tracking-vision'],
+    pathex=['.', '../tracking-vision', '../communication'],
     binaries=[],
     datas=added_files,
-    hiddenimports=['mediapipe', 'cv2', 'PySide6'],
+    hiddenimports=['mediapipe', 'cv2', 'PySide6', 'bleak', 'dispatcher', 'ble_sender'],
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
