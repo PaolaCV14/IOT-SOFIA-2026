@@ -72,9 +72,10 @@ class SofiaDashboard(QMainWindow):
         self.models_dir = os.path.join(TRACKING_DIR, "models")
         self.worker = None
 
-        # Estado de la rutina de saludo
-        self.rutina_saludo_activa = False
+        # Estado de las rutinas ejecutadas en el ESP32
+        self.rutina_esp32_activa = False
         self.hola_detectado = False
+        self.corazon_detectado = False
         self.ciclo_saludo = 0
 
         self._build_ui()
@@ -257,7 +258,7 @@ class SofiaDashboard(QMainWindow):
             self.comm.set_udp_target(value)
 
     def _handle_action_click(self):
-        if self.rutina_saludo_activa:
+        if self.rutina_esp32_activa:
             self.log_event("No se puede cambiar la conexión durante la rutina de saludo.")
             return
 
@@ -331,32 +332,49 @@ class SofiaDashboard(QMainWindow):
         )
         self.video_view.setPixmap(scaled)
 
+
     @Slot(float, float, str)
     def _on_metrics_ready(self, fps, latency, gesto):
         self.lbl_fps_badge.setText(f"FPS: {fps:.1f}")
         self.lbl_latency_badge.setText(f"Lat: {latency:.1f} ms")
         self.lbl_gesture_val.setText(gesto)
 
-        # Detectar "Hola" una sola vez mientras el gesto se mantenga.
+        # Normalizar el nombre del gesto.
         gesto_actual = str(gesto).strip().lower()
-        es_hola = "hola" in gesto_actual or "saludo" in gesto_actual
+        gesto_actual = (
+            gesto_actual
+            .replace("á", "a")
+            .replace("é", "e")
+            .replace("í", "i")
+            .replace("ó", "o")
+            .replace("ú", "u")
+        )
 
+        es_hola = "hola" in gesto_actual or "saludo" in gesto_actual
+        es_corazon = "corazon" in gesto_actual
+
+        # Restablecer los detectores cuando el gesto desaparece.
         if not es_hola:
             self.hola_detectado = False
-            return
 
-        if self.hola_detectado:
-            return
+        if not es_corazon:
+            self.corazon_detectado = False
 
-        self.hola_detectado = True
+        # Detectar Hola una sola vez.
+        if es_hola and not self.hola_detectado:
+            self.hola_detectado = True
+            self._enviar_comando_rutina("SALUDO")
 
-        if not self.rutina_saludo_activa:
-            self._iniciar_rutina_saludo()
+        # Detectar Corazón una sola vez.
+        elif es_corazon and not self.corazon_detectado:
+            self.corazon_detectado = True
+            self._enviar_comando_rutina("CORAZON")
+
 
     @Slot(float, float)
     def _on_angles_ready(self, q1_raw, q2_raw):
         # No enviar seguimiento automático mientras se ejecuta el saludo.
-        if self.rutina_saludo_activa:
+        if self.rutina_esp32_activa:
             return
 
         if self.combo_mode.currentText() == "Seguimiento Automático 3D":
@@ -373,52 +391,72 @@ class SofiaDashboard(QMainWindow):
             self.comm.send_angles(q1, q2)
 
 
+
     # -------------------------------------------------------------
-    # RUTINA DE SALUDO: EJECUTADA LOCALMENTE EN EL ESP32
+    # RUTINAS LOCALES DEL ESP32
     # -------------------------------------------------------------
-    def _iniciar_rutina_saludo(self):
+    def _enviar_comando_rutina(self, comando):
+        if self.rutina_esp32_activa:
+            self.log_event(
+                f"Comando {comando} ignorado: hay una rutina en ejecucion."
+            )
+            return
+
         if not self.radio_ble.isChecked():
             self.log_event(
-                "Saludo detectado, pero BLE no está seleccionado."
+                f"Gesto {comando} detectado, pero BLE no esta seleccionado."
             )
             return
 
         if not self.comm.is_ble_connected():
             self.log_event(
-                "Saludo detectado, pero el robot no está conectado."
+                f"Gesto {comando} detectado, pero el robot no esta conectado."
             )
             return
 
-        self.rutina_saludo_activa = True
+        duracion_ms = {
+            "SALUDO": 3000,
+            "CORAZON": 2000,
+        }.get(comando)
 
-        self.log_event(
-            "Saludo detectado. Enviando comando SALUDO al ESP32."
-        )
+        if duracion_ms is None:
+            self.log_event(f"Rutina desconocida: {comando}")
+            return
 
         try:
-            enviado = self.comm.send_command("SALUDO")
+            enviado = self.comm.send_command(comando)
 
             if not enviado:
-                self.rutina_saludo_activa = False
-                self.log_event(
-                    "No se pudo enviar SALUDO. Seguimiento desbloqueado."
-                )
+                self.log_event(f"No se pudo enviar {comando}.")
                 return
 
+            self.rutina_esp32_activa = True
+
             self.log_event(
-                "Comando SALUDO enviado. El ESP32 ejecutará los tres ciclos."
+                f"{comando} enviado. El ESP32 ejecuta la rutina local."
+            )
+
+            # Liberar el seguimiento después de la duración estimada.
+            QTimer.singleShot(
+                duracion_ms,
+                self._finalizar_rutina_esp32
             )
 
         except Exception as error:
-            self.rutina_saludo_activa = False
-            self.log_event(f"Error al enviar SALUDO: {error}")
+            self.log_event(f"Error al enviar {comando}: {error}")
+
+    def _finalizar_rutina_esp32(self):
+        self.rutina_esp32_activa = False
+        self.log_event(
+            "Tiempo de rutina cumplido. Seguimiento habilitado."
+        )
 
 
     # -------------------------------------------------------------
     # CONTROL MANUAL Y MODOS
     # -------------------------------------------------------------
     def _handle_manual_slider(self):
-        if self.rutina_saludo_activa:
+        if self.rutina_esp32_activa:
             return
         if self.combo_mode.currentText() == "Control Manual":
             q1 = self.slider_q1.value()
@@ -427,7 +465,7 @@ class SofiaDashboard(QMainWindow):
             self.comm.send_angles(q1, q2)
 
     def _handle_mode_changed(self, idx):
-        if self.rutina_saludo_activa:
+        if self.rutina_esp32_activa:
             return
 
         mode = self.combo_mode.currentText()
