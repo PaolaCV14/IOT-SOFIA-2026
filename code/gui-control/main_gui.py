@@ -289,6 +289,7 @@ class SofiaDashboard(QMainWindow):
             self.btn_action.setText("Conectar BLE")
             self.btn_action.setStyleSheet("")
 
+
     # -------------------------------------------------------------
     # CÁMARA Y VISIÓN
     # -------------------------------------------------------------
@@ -296,12 +297,17 @@ class SofiaDashboard(QMainWindow):
     def _handle_start_vision(self):
         if self.worker is not None:
             return
-        self.worker = VisionWorker(camera_id=0, models_dir=self.models_dir)
+
+        self.worker = VisionWorker(
+            camera_id=0,
+            models_dir=self.models_dir
+        )
         self.worker.frame_ready.connect(self._on_frame_ready)
         self.worker.metrics_ready.connect(self._on_metrics_ready)
         self.worker.angles_ready.connect(self._on_angles_ready)
         self.worker.status_message.connect(self.log_event)
         self.worker.start()
+
         self.btn_start.setEnabled(False)
         self.btn_stop.setEnabled(True)
 
@@ -310,6 +316,7 @@ class SofiaDashboard(QMainWindow):
         if self.worker:
             self.worker.stop()
             self.worker = None
+
         self.btn_start.setEnabled(True)
         self.btn_stop.setEnabled(False)
         self.video_view.setText("Cámara detenida.")
@@ -318,7 +325,9 @@ class SofiaDashboard(QMainWindow):
     def _on_frame_ready(self, q_img):
         pixmap = QPixmap.fromImage(q_img)
         scaled = pixmap.scaled(
-            self.video_view.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation
+            self.video_view.size(),
+            Qt.KeepAspectRatio,
+            Qt.SmoothTransformation
         )
         self.video_view.setPixmap(scaled)
 
@@ -328,78 +337,82 @@ class SofiaDashboard(QMainWindow):
         self.lbl_latency_badge.setText(f"Lat: {latency:.1f} ms")
         self.lbl_gesture_val.setText(gesto)
 
-        # Detecta el saludo por flanco: no vuelve a iniciar mientras siga detectado.
+        # Detectar "Hola" una sola vez mientras el gesto se mantenga.
         gesto_actual = str(gesto).strip().lower()
         es_hola = "hola" in gesto_actual or "saludo" in gesto_actual
 
-        if es_hola:
-            if not self.hola_detectado and not self.rutina_saludo_activa:
-                self.hola_detectado = True
-                self._iniciar_rutina_saludo()
-        else:
+        if not es_hola:
             self.hola_detectado = False
+            return
+
+        if self.hola_detectado:
+            return
+
+        self.hola_detectado = True
+
+        if not self.rutina_saludo_activa:
+            self._iniciar_rutina_saludo()
 
     @Slot(float, float)
     def _on_angles_ready(self, q1_raw, q2_raw):
-        # Ignorar los ángulos de visión mientras la rutina está activa.
+        # No enviar seguimiento automático mientras se ejecuta el saludo.
         if self.rutina_saludo_activa:
             return
 
         if self.combo_mode.currentText() == "Seguimiento Automático 3D":
-            q1 = int(max(ANGULO_MIN, min(ANGULO_MAX, 90 + int(q1_raw * (30.0 / 90.0)))))
-            q2 = int(max(ANGULO_MIN, min(ANGULO_MAX, 90 + int(q2_raw * (30.0 / 90.0)))))
+            q1 = int(max(
+                ANGULO_MIN,
+                min(ANGULO_MAX, 90 + int(q1_raw * (30.0 / 90.0)))
+            ))
+            q2 = int(max(
+                ANGULO_MIN,
+                min(ANGULO_MAX, 90 + int(q2_raw * (30.0 / 90.0)))
+            ))
+
             self._update_joint_display(q1, q2)
             self.comm.send_angles(q1, q2)
 
+
     # -------------------------------------------------------------
-    # RUTINA DE SALUDO: 3 CICLOS DE 90,120 <-> 90,60
+    # RUTINA DE SALUDO: EJECUTADA LOCALMENTE EN EL ESP32
     # -------------------------------------------------------------
     def _iniciar_rutina_saludo(self):
         if not self.radio_ble.isChecked():
-            self.log_event("Saludo detectado, pero BLE no está seleccionado.")
+            self.log_event(
+                "Saludo detectado, pero BLE no está seleccionado."
+            )
             return
 
         if not self.comm.is_ble_connected():
-            self.log_event("Saludo detectado, pero el robot no está conectado.")
+            self.log_event(
+                "Saludo detectado, pero el robot no está conectado."
+            )
             return
 
         self.rutina_saludo_activa = True
-        self.ciclo_saludo = 0
-        self.log_event("Saludo detectado. Iniciando rutina de 3 ciclos.")
-        self._ejecutar_paso_saludo()
 
-    def _ejecutar_paso_saludo(self):
-        if not self.rutina_saludo_activa:
-            return
-
-        self._update_joint_display(90, 120)
-        self.comm.send_angles(90, 120)
         self.log_event(
-            f"Saludo: ciclo {self.ciclo_saludo + 1}/3 - Q1=90, Q2=120"
+            "Saludo detectado. Enviando comando SALUDO al ESP32."
         )
-        QTimer.singleShot(1000, self._segundo_paso_saludo)
 
-    def _segundo_paso_saludo(self):
-        if not self.rutina_saludo_activa:
-            return
+        try:
+            enviado = self.comm.send_command("SALUDO")
 
-        self._update_joint_display(90, 60)
-        self.comm.send_angles(90, 60)
-        self.log_event(
-            f"Saludo: ciclo {self.ciclo_saludo + 1}/3 - Q1=90, Q2=60"
-        )
-        QTimer.singleShot(1000, self._siguiente_ciclo_saludo)
+            if not enviado:
+                self.rutina_saludo_activa = False
+                self.log_event(
+                    "No se pudo enviar SALUDO. Seguimiento desbloqueado."
+                )
+                return
 
-    def _siguiente_ciclo_saludo(self):
-        if not self.rutina_saludo_activa:
-            return
+            self.log_event(
+                "Comando SALUDO enviado. El ESP32 ejecutará los tres ciclos."
+            )
 
-        self.ciclo_saludo += 1
-        if self.ciclo_saludo < 3:
-            self._ejecutar_paso_saludo()
-        else:
+        except Exception as error:
             self.rutina_saludo_activa = False
-            self.log_event("Rutina de saludo terminada. Seguimiento reanudado.")
+            self.log_event(f"Error al enviar SALUDO: {error}")
+
 
     # -------------------------------------------------------------
     # CONTROL MANUAL Y MODOS
