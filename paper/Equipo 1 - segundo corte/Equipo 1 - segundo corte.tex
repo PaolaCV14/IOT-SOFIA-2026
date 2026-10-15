@@ -49,7 +49,7 @@ Modular robotics, Human-Robot Interaction (HRI), servomotor characterization, th
 \section{Introduction}
 \label{sec:introduction}
 
-\IEEEPARstart{M}{odular} \linelabel{ln:intro1}robotics enables the design and construction of complex robotic systems from repeatable functional units that integrate mechanical, electronic, and control capabilities. This approach significantly streamlines manufacturing, system reconfiguration, and maintenance, while supporting distributed architectures where autonomous modules exchange information and share operational resources~\cite{seo2019modular}. Compared to monolithic, rigid robotic platforms, modular reconfigurable robots offer superior adaptability and permit functional units to be deployed across diverse spatial and kinematic configurations~\cite{seo2019modular}.
+\IEEEPARstart{M}{odular} \linelabel{ln:intro1}robotics enables constructing complex spatial mechanisms from repeatable functional units integrating mechanical, electronic, and control capabilities, offering superior reconfigurability and maintainability over monolithic robotic architectures~\cite{seo2019modular}.
 
 \linelabel{ln:intro-hri}In parallel, socially interactive and human-robot interaction (HRI) systems incorporate perception and actuation mechanisms to establish continuous, non-verbal dialogue with human participants. Within this domain, posture, gestures, and body kinematics constitute vital communication channels for interpreting user intent and synthesizing reactive robotic behavior~\cite{fong2003social}. Consequently, modern kinetic robotic installations operate not merely as automated spatial mechanisms, but as interactive expressive surfaces capable of responding synchronously to multimodal human stimuli.
 
@@ -244,8 +244,6 @@ Table~\ref{tab:bom_sofia} \linelabel{ln:bom}summarizes the bill of materials for
 
 \linelabel{ln:servo-exp}The servomotor operational limits and step response parameters were experimentally evaluated using the test protocol \linelabel{ln:servo-path}recorded in the project logbook and supplementary data (repository, \texttt{docs/experimental-data/servo\_characterization.xlsx}). Under continuous PWM excitation at 50~Hz, the effective angular deflection spanned $\theta \equiv q_j \in [19.3^\circ, 70.2^\circ]$ with a mean operating angle of $47.9^\circ$ and step response times ranging between $75\text{ ms}$ and $180\text{ ms}$.
 
-\newpage
-
 \linelabel{ln:psu-sizing}To sustain simultaneous inrush transients and multi-actuator coordinated tracking without voltage sag on the 5.0~V DC bus under a 25\% engineering design margin, the power distribution network requires $I_{\text{PSU}} \ge 23.2\text{ A}$ (Table~\ref{tab:power_balance}). Accordingly, a regulated DC switching power supply rated at 5.0~V / 25~A (125~W) was selected (or 5.0~V / 20~A when PCA9685 PWM channel phase-staggering is enabled). The supply is complemented with local $2200\,\mu\text{F}$ low-ESR decoupling electrolytic capacitors per distribution branch and 22~AWG silicone star wiring with JST-VH high-current terminals, ensuring the actuator rail remains above 4.75~V during worst-case load transients.
 
 \begin{table}[!b]
@@ -266,13 +264,7 @@ Table~\ref{tab:bom_sofia} \linelabel{ln:bom}summarizes the bill of materials for
 	\end{tabular}
 \end{table}
 
-As summarized in Table~\ref{tab:compliance}, each core component satisfies the strict functional requirements dictated by dense kinetic integration. The master ESP32-C3 maintains compliant 3.3~V logic operation, providing $> 0.5\text{ A}$ current headroom to absorb RF burst transients ($276\text{--}335\text{ mA}$) during wireless telemetry without triggering brownouts. Bootstrapping resistors guarantee deterministic SPI execution, and industrial thermal ratings ($-40^\circ\text{C}$ to $+85^\circ\text{C}$) ensure stability within enclosed housings.
-
-\newpage
-
-For kinetic articulation, TowerPro MG90S metal-gear servos operate directly from the 5.0~V rail, delivering stall torque margins ($1.8\text{--}2.2\text{ kgf}\cdot\text{cm}$) exceeding $3\times$ the gravitational payload of the PLA petals. Step response times ($75\text{--}180\text{ ms}$) satisfy dynamic interaction criteria ($t_{\text{resp}} < 180\text{ ms}$), while the $5\,\mu\text{s}$ dead-band suppresses steady-state hunting dissipation. However, locked-rotor stalls draw up to $1796.9\text{ mA}$ (mean $918.4 \pm 142.1\text{ mA}$), rapidly driving casing temperatures toward the polymer softening threshold ($> 65^\circ\text{C}$).
-
-Finally, PCA9685 PWM drivers interface via Fast-mode Plus I$^2$C (1~MHz), providing 12-bit resolution ($\approx 0.04^\circ/\text{step}$) across all 32 channels. Address pin-strapping (A0) isolates dual drivers at \texttt{0x40} and \texttt{0x41}, while dedicated V+ terminals ensure complete galvanic isolation between logic and motor rails.
+As summarized in Tables~\ref{tab:compliance} and \ref{tab:power_balance}, each core component satisfies the functional requirements dictated by dense kinetic integration. The master ESP32-C3 operates with $> 0.5\text{ A}$ current headroom to absorb RF burst transients ($276\text{--}335\text{ mA}$) without triggering brownouts. For kinetic actuation, MG90S servomotors deliver torque margins exceeding $3\times$ the payload with fast response times ($75\text{--}180\text{ ms}$) and a $5\,\mu\text{s}$ dead-band that suppresses quiescent dissipation. Dual PCA9685 PWM drivers interface via Fast-mode Plus I$^2$C with address pin-strapping (\texttt{0x40}, \texttt{0x41}) and complete galvanic isolation between logic and motor rails.
 
 \begin{figure*}[!t]
     \centering
@@ -352,9 +344,7 @@ Equation~\eqref{eq:linearized_thermal} is evaluated strictly as a linear consist
 R_{\text{th}} = \frac{\Delta T_\infty}{P_0}, \quad C_{\text{th}} = \frac{P_0}{(dT_s/dt)_{t=0}} \approx \frac{P_0}{\beta}.
 \label{eq:thermal_parameters}
 \end{equation}
-Crucially, because testing was intentionally terminated when surface temperatures reached $T_{\max} = 70.21^\circ\text{C}$ to avoid destructive plastic degradation, the heating curve remains predominantly within its initial linear transient phase. As a result, non-linear exponential regression yields highly collinear estimates with unbounded asymptotic intervals, rendering asymptotic parameters ($\Delta T_\infty$ and $\tau_T$) non-identifiable without bias from this truncated dataset.
-
-\linelabel{ln:tm-claim}Consequently, following rigorous identification methodology, the thermal dynamics are characterized by the empirical heating slope:
+Because tests were terminated at $T_{\max} = 70.21^\circ\text{C}$ to prevent structural housing deformation, the heating trajectory resides primarily within its initial transient, making asymptotic parameters ($\Delta T_\infty, \tau_T$) collinear. \linelabel{ln:tm-claim}Consequently, the thermal dynamics are robustly characterized by the empirical initial heating slope:
 \begin{equation}
 \left.\frac{dT_s}{dt}\right|_{t=0} \approx \beta = 0.2143\,^\circ\text{C/s} \quad (12.86\,^\circ\text{C/min}),
 \label{eq:heating_rate}
@@ -491,7 +481,7 @@ $[q_{2,\min},q_{2,\max}]$
 
 \linelabel{ln:vis}The perception layer is developed using Python 3.11 with MediaPipe Tasks and OpenCV, structured into a modular, low-latency processing pipeline. Real-time spatial tracking begins with \linelabel{ln:vis-mp}Google MediaPipe Landmarker models operating in video streaming mode. The system extracts 33 holistic body landmarks and two sets of 21 3D hand coordinates $(x, y, z)$ with millisecond-accurate timestamps, sustaining a stable throughput of 30~FPS on standard host CPUs without requiring dedicated GPU acceleration.
 
-To maintain robust classification under varying hand orientations, the pipeline implements rotation-invariant hand topology analysis. Finger extension states are calculated using 3D Euclidean distances between distal tips and the wrist base, normalized against the anatomical palm scale $\lVert \mathbf{p}_{\text{wrist}} - \mathbf{p}_{\text{MCP}} \rVert$. This spatial normalization effectively eliminates perspective shortening and depth distortion when closed fists or angled palms face the camera lens.
+To maintain classification robustness across varying orientations, the pipeline evaluates finger extension states via distal-to-wrist 3D Euclidean distances normalized by anatomical palm scale $\lVert \mathbf{p}_{\text{wrist}} - \mathbf{p}_{\text{MCP}} \rVert$, eliminating perspective shortening and depth distortion.
 
 Interaction intent is arbitrated by a dynamic gesture recognition engine (\textit{GestureDetector}) that enforces strict temporal and priority hierarchies between static postures and continuous motions. For dynamic waving (\linelabel{ln:vis-es1}Dynamic Wave Gesture), the detector monitors lateral palm oscillations across the MCP joint (landmark 9 $X$-coordinate), requiring at least three consecutive direction reversals with a peak-to-peak amplitude exceeding $0.05$ normalized units to prioritize greeting over resting open palms. Similarly, game interactions (\linelabel{ln:vis-es2}Two-Handed Rock--Paper--Scissors Intent) define a horizontal reference palm plane and track three downward fist impacts through an explicit finite-state machine ($d_{\text{contact}} < 0.17$ and $d_{\text{release}} > 0.20$ normalized units), where a temporal hysteresis filter prevents false triggers during intermediate finger transitions. Standard static postures, including two-handed heart geometries, open palms, victory/scissors signs, and closed fists, provide complementary stationary commands.
 
@@ -596,11 +586,11 @@ Nonetheless, several methodological limitations must be considered. \linelabel{l
 \footnotesize
 \textbf{Author Contributions:} P. M. C.-V. \linelabel{ln:ac}conceived SOFIA and coordinated protocol; J. B. O.-Q. developed vision tracking and documentation; L. A. M.-O. and K. I. S.-G. conducted thermal tests; A. E. F.-G. contributed to electronics and kinematics. All authors reviewed the manuscript.
 
-\textbf{Data Availability:} \linelabel{ln:da}Logs and code are available on GitHub (\url{https://github.com/PaolaCV14/IOT-SOFIA-2026}, tag \texttt{v0.2.0}).
+\textbf{Data Availability:} \linelabel{ln:da}Experimental logs, raw characterization data, and firmware/vision code are cataloged as supplementary material in the \texttt{docs/experimental-data/} directory and openly available on GitHub (\url{https://github.com/PaolaCV14/IOT-SOFIA-2026}, release tag \texttt{v0.2.0}, commit \texttt{7d96b66}).
 
-\textbf{Acknowledgment:} \linelabel{ln:ack}The authors thank DPETI and LabDST, ITESO, for laboratory instrumentation and technical support.
+\textbf{Acknowledgment:} \linelabel{ln:ack}The authors thank DPETI and the Laboratory of Technological Solutions Development (LabDST), ITESO, for laboratory instrumentation and technical support.
 
-\textbf{Declaration of Generative AI:} \linelabel{ln:ai-decl}LLMs were used strictly for grammatical proofreading and formatting; authors take full responsibility.
+\textbf{Declaration of Generative AI:} \linelabel{ln:ai-decl}During the preparation of this work, the authors used large language models (Claude 3.5 Sonnet and Gemini 1.5 Pro) strictly for grammatical proofreading, LaTeX typesetting assistance, and reproducible script formatting; the authors reviewed and edited all content and take full responsibility.
 
 \textbf{Conflicts of Interest:} The authors declare no conflicts of interest.
 \normalsize
