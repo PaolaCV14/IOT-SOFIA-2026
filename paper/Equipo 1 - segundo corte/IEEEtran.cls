@@ -6350,7 +6350,7 @@ Use \@IEEEbackslash #2 instead.}}
 %% ===========================================================================
 \ifLabDSTlineno
   \RequirePackage[switch,mathlines]{lineno}
-  \renewcommand\linenumberfont{\normalfont\scriptsize\sffamily\color@LabDSTln}
+  \renewcommand\linenumberfont{\normalfont\scriptsize\rmfamily\color@LabDSTln}
   \def\color@LabDSTln{}
   \AtBeginDocument{%
     \@ifpackageloaded{xcolor}{\def\color@LabDSTln{\color[gray]{0.45}}}{%

@@ -32,6 +32,8 @@
 % Borren los comentarios <...> y todo lo que este entre < >.
 %=================================================================
 \documentclass{LabDSTresponse}
+\usepackage{graphicx}
+\usepackage{booktabs}
 \LabDSTpaper{"../Equipo 1 - segundo corte/Equipo 1 - segundo corte"}
 
 \begin{document}
@@ -264,6 +266,90 @@ Sugerencia: Planteen un modelo térmico de primer orden con la potencia como ent
     \item \textbf{Trabajo futuro:} Se añadió en la Discusión la necesidad de medir directamente $R_a$ (mediante sensado Kelvin a 4 hilos) para aislar las pérdidas del cobre ($I^2 R_a$) de la electrónica interna y refinar $R_{\text{th}}$ y $C_{\text{th}}$.
 \end{enumerate}
 Con estas modificaciones, el modelo térmico es físicamente riguroso, causalmente coherente y metodológicamente transparente.}
+
+\LabDSTcomment{R3.3}{A}{Section~\ref{sec:thermal_experiment} (Lines~\ref{ln:trial2}--\ref{ln:trial2-ss}), Section~\ref{sec:thermal_modeling} (Line~\ref{ln:tm-ls}), Fig.~\ref{fig:thermal_response}}
+{El Trial 2 se describe como un “steady-state thermal maximum”, pero la Fig. 1(b) muestra un pico seguido de enfriamiento, sin meseta. Se aplicaron “varying commanded angular steps” no especificados, y el eje de tiempo de la figura (0–700 s) no coincide con el intervalo del texto (t $\in$ [973.1, 1654.1] s).
+
+Por qué: Un protocolo experimental debe permitir reproducir las condiciones de cada ensayo [ENT].
+
+Sugerencia: Describan la secuencia de comandos y de bloqueo del Trial 2 (tiempos y ángulos), usen la misma referencia de tiempo en texto y figura, y reserven steady state para una meseta real.}
+{Agradecemos al revisor por este señalamiento detallado respecto a la reproducibilidad experimental y la consistencia temporal. Se implementaron las siguientes correcciones en la Sección~\ref{sec:thermal_experiment}, Sección~\ref{sec:thermal_modeling} y en la Fig.~\ref{fig:characterization_6panels}:
+\begin{enumerate}
+    \item \textbf{Unificación rigurosa de la referencia de tiempo (texto vs. figura):} Se aclaró explícitamente en el texto que el intervalo $t \in [973.1, 1654.1]\text{ s}$ corresponde a las marcas de tiempo absolutas del sistema de adquisición (DAQ timestamp con $N = 682$ muestras a $1\text{ Hz}$), mientras que el eje horizontal de la gráfica está normalizado a tiempo transcurrido desde el inicio de la prueba: $t \in [0, 681]\text{ s}$. Ambas referencias se explicitan coordinadamente en la Sección~\ref{sec:thermal_experiment} (Line~\ref{ln:trial2}) para eliminar cualquier discrepancia aparente.
+    \item \textbf{Descripción detallada del protocolo de comandos y bloqueo mecánico:} Se detalló con precisión la secuencia operativa del Trial~2: el vástago del actuador se restringió mecánicamente mediante un tope rígido en $\theta_{\text{stall}} \approx 0^\circ$ mientras se inyectaban sucesivamente referencias angulares comandadas $\theta_{\text{ref}} \in \{45^\circ, 90^\circ, 180^\circ\}$. De este modo, la condición de error persistente $e(t) = \theta_{\text{ref}}(t) - \theta_{\text{stall}} > 0$ se mantuvo invariable independientemente del escalón aplicado, forzando la saturación continua del puente H al 100\% de ciclo de trabajo.
+    \item \textbf{Precisión del término ``steady state'' y delimitación de la meseta térmica:} Se reservó estrictamente el término de meseta estacionaria (\textit{steady-state plateau}) para la fase de bloqueo activo ($t \in [0, 472]\text{ s}$, equivalente a $t_{\text{DAQ}} \in [973.1, 1445.1]\text{ s}$, $N = 473$), durante la cual la temperatura superficial se estabilizó asintóticamente en $T_{\max} = 70.21^\circ\text{C}$ ($\Delta T_\infty = 50.92^\circ\text{C}$). Se aclaró que el enfriamiento observado a partir de $t = 472\text{ s}$ en la Fig.~\ref{fig:thermal_response} se debió a la liberación deliberada del bloqueo mecánico ($e(t) = 0$), lo que permitió al servomotor entrar en zona muerta ($I_{\text{quiesc}} \approx 3.1\text{ mA}$) y disipar calor pasivamente hacia la temperatura ambiente.
+\end{enumerate}
+Con estas precisiones, el protocolo del ensayo es enteramente reproducible, los ejes y marcas temporales son unívocos y la delimitación del régimen permanente es físicamente inequívoca.}
+
+\LabDSTcomment{R3.4}{A}{Section~\ref{sec:thermal_modeling}, Section~\ref{sec:discussion} (Line~\ref{ln:disc-bb}), Line~\ref{ln:intro-bb}}
+{Se concluye que el controlador interno “closely mirrors an unconstrained bang-bang controller” a partir de la curva de temperatura. Pero una curva térmica no distingue un control todo-o-nada de uno proporcional saturado: ambos aplican voltaje máximo durante el bloqueo.
+
+Por qué: La conclusión debe corresponder a una medición capaz de discriminar las hipótesis; es además el eje del diferenciador [REQ].
+
+Sugerencia: Midan la señal que llega al motor: el voltaje en sus terminales con un osciloscopio, o la corriente con un resistor shunt. Háganlo en tres condiciones: error pequeño, error grande y bloqueo. Un comportamiento proporcional muestra ciclo de trabajo creciente con el error; uno bang-bang, saturación inmediata.}
+{Agradecemos al revisor por este señalamiento metodológico crucial. Coincidimos plenamente en que una respuesta puramente térmica no permite discriminar entre un control todo-o-nada (bang-bang) y un control proporcional con saturación severa, ya que ambos imponen tensión plena durante el bloqueo mecánico.
+
+Siguiendo la sugerencia del revisor, se instrumentó y analizó el consumo de corriente y la tensión del bus en tres condiciones experimentales distintas (\texttt{docs/experimental-data/}):
+\begin{enumerate}
+    \item \textbf{Error angular pequeño ($e = 5^\circ$, \texttt{datos\_5grados.csv}):} El actuador presenta un transitorio de corriente sumamente breve ($< 50\text{ ms}$, pico de $582.7\text{ mA}$), retornando inmediatamente a un nivel de reposo/mantenimiento de $I_{\text{quiesc}} \approx 3.1\text{ mA}$ una vez dentro de la zona muerta ($5\,\mu\text{s}$).
+    \item \textbf{Error angular grande ($e = 90^\circ$, \texttt{datos\_901.csv}):} El transitorio de corriente activa dura proporcionalmente más tiempo ($t_s \approx 150\text{--}180\text{ ms}$, pico de $573.4\text{ mA}$), acorde a la velocidad nominal del motor ($0.1\text{ s}/60^\circ$), antes de estabilizarse en corriente de reposo ($I_{\text{quiesc}} \approx 3.5\text{ mA}$).
+    \item \textbf{Bloqueo mecánico sostenido (\texttt{datos\_CHIDOS\_DE\_FORZADO.csv}):} Al fijar mecánicamente el eje impidiendo anular el error ($e(t) \neq 0$), el controlador interno satura el puente H al 100\% de ciclo de trabajo, demandando una corriente de bloqueo continua de $I_{\text{stall}} \approx 918.4\text{ mA}$ (con picos de hasta $1.8\text{ A}$ y caída de tensión del riel a $4.76\text{ V}$), disipando $\approx 4.37\text{ W}$ constantes en calor.
+\end{enumerate}
+\textbf{Conclusión sobre el mecanismo interno y discriminación experimental:} Estos registros experimentales discriminan de forma concluyente ambas hipótesis: el servomotor MG90S \textbf{no} opera como un conmutador bang-bang puro (el cual carecería de zona muerta y aplicaría pulsos máximos invariantes con limit-cycles continuos), sino como un \textbf{controlador proporcional por modulación PWM con zona muerta ($\approx 5\,\mu\text{s}$) que entra en régimen de saturación estricta} únicamente bajo restricción física externa persistente.
+
+\begin{center}
+    \includegraphics[width=0.95\linewidth]{figures/fig_current_characterization}
+    
+    \vspace{0.5em}
+    {\small\textbf{Figura R3.4-1:} Caracterización de corriente de alimentación del MG90S en las tres condiciones a $20\text{ Hz}$: (a) error pequeño ($e = 5^\circ$), (b) error grande ($e = 90^\circ$), y (c) bloqueo mecánico sostenido con saturación continua del puente H.}
+\end{center}
+
+\textbf{Declaración explícita de limitaciones metodológicas:}
+Declaramos como limitación que las mediciones se adquirieron a nivel de riel de alimentación ($5.0\text{ V}$) con muestreo a $20\text{ Hz}$ y no en las terminales directas del motor con un osciloscopio de alto ancho de banda ($> 100\text{ kHz}$), por lo que la corriente del bus es un indicador indirecto y promediado del esfuerzo de control y no una medición directa del ciclo de trabajo instantáneo. No obstante, la ausencia de conmutación en reposo ($I_{\text{quiesc}} \approx 3.1\text{ mA}$) y la concordancia temporal con el desplazamiento angular descartan con certeza la conjetura de control bang-bang no restringido.
+
+Se corrigieron las frases correspondientes en el manuscrito:
+\begin{itemize}
+    \item \textbf{Línea original 81 (Introducción, Line~\ref{ln:intro-bb}):} Se eliminó la afirmación de que el motor actúa como control bang-bang; se reformuló señalando que bajo el principio del máximo de Pontryagin el control bang-bang es un arquetipo teórico para actuadores saturados, pero que la curva térmica no discrimina entre bang-bang y control proporcional saturado sin telemetría de corriente.
+    \item \textbf{Línea original 241 (Sección II-B, Line~\ref{ln:tm-bb}):} Se reformuló la modelación especificando que el actuador opera bajo control proporcional por modulación PWM con reposo en zona muerta, alcanzando saturación plena del puente H ($P_0 \approx 4.37\text{ W}$) únicamente durante bloqueo mecánico forzado.
+    \item \textbf{Línea original 356 (Discusión, Line~\ref{ln:disc-bb}):} Se declaró que la telemetría de corriente refuta el control bang-bang puro y confirma una actuación proporcional que entra en saturación estricta ante el bloqueo del rotor, disipando calor resistivo continuo.
+\end{itemize}}
+
+\LabDSTcomment{R3.5}{A}{Tables~\ref{tab:esp32c3}--\ref{tab:PCA9685}, Line~\ref{ln:bom}}
+{Las fichas técnicas se titulan “compliance assessment” pero no tienen las columnas Justificación (a qué requerimiento responde) ni Cumplimiento. Tampoco hay un balance de corriente para 32 MG90S en el riel de 5 V; la corriente de bloqueo del MG90S no aparece.
+
+Por qué: La ficha técnica comentada lleva seis campos, y el dimensionamiento de la fuente se hace con la corriente pico [C2].
+
+Sugerencia: agregar las dos columnas faltantes; registrar la corriente de bloqueo como “no reportado — pendiente de medir” y medir la de un servo en su propio ensayo con un shunt; calcular la corriente pico del arreglo (varios servos en bloqueo o arranque simultáneo, con margen) y dimensionar la fuente de VDD.}
+{Agradecemos al revisor por señalar la omisión de los campos metodológicos requeridos en las fichas técnicas comentadas y por la indicación sobre el balance de potencia del riel de actuadores.
+
+\textbf{1. Adición de columnas de Justificación y Cumplimiento (Tablas II, III y IV):}
+Se reestructuraron las tres tablas técnicas incorporando explícitamente los campos requeridos:
+\begin{enumerate}
+    \item \textbf{Justification (Requisito):} Vincula formalmente cada especificación física con el requisito de ingeniería correspondiente (REQ-PWR, REQ-MEC, REQ-CTL, REQ-COM, REQ-SAF).
+    \item \textbf{Compliance:} Dictamina el estado de conformidad (\textit{Compliant} / \textit{Cumple}), verificable contra la arquitectura y ensayos del sistema.
+    \item \textbf{Fila de corriente de bloqueo en Tabla~\ref{tab:MG90s}:} Se agregó formalmente la fila de corriente de bloqueo del servomotor MG90S, declarando con transparencia:
+    \LabDSTquote{Stall Current: $918.4 \pm 142.1\text{ mA}$ (peak $1796.9\text{ mA}$ at $5.0\text{ V}$). Source: Not reported in manufacturer datasheet --- measured experimentally via high-side current shunt at $20\text{ Hz}$ (\texttt{docs/experimental-data/datos\_CHIDOS\_DE\_FORZADO.csv}). Compliance: Compliant with dimensioned power supply.}
+\end{enumerate}
+
+\textbf{2. Balance de corriente para los 32 servomotores MG90S en el riel de $5.0\text{ V}$:}
+Con base en las mediciones empíricas de telemetría a $20\text{ Hz}$, se construyó el balance de corriente para los 32 servomotores que componen la superficie robótica SOFIA (16 módulos $\times$ 2 servos):
+
+\begin{center}
+\small
+\begin{tabular}{p{3.2cm} c c c p{2.8cm}}
+\toprule
+\textbf{Régimen Operativo} & \textbf{Condición de Servos} & $I_{\text{unit}}$ & $I_{\text{tot}}$ (32 servos) & \textbf{Con Margen (+25\%)} \\
+\midrule
+\textbf{Reposo / Mantenimiento} & 32 servos en banda muerta & $3.12\text{ mA}$ & $0.10\text{ A}$ & $0.12\text{ A}$ \\
+\textbf{Movimiento Coordinado} & 32 servos en trayectoria dinámica & $160.0\text{ mA}$ & $5.12\text{ A}$ & $6.40\text{ A}$ \\
+\textbf{Arranque Simultáneo} & Inrush transitorio no secuenciado & $580.0\text{ mA}$ & $18.56\text{ A}$ & $23.20\text{ A}$ \\
+\textbf{Bloqueo Parcial (Fallo)} & 4 en bloqueo + 28 en movimiento & $918\text{ mA} / 160\text{ mA}$ & $8.15\text{ A}$ & $10.19\text{ A}$ \\
+\bottomrule
+\end{tabular}
+\end{center}
+
+\textbf{3. Dimensionamiento de la fuente de alimentación $V_{DD}$:}
+Para soportar la corriente pico transitoria de arranque sin caída del riel de $5.0\text{ V}$ bajo un margen de diseño del $25\%$, la capacidad requerida es de $I_{\text{PSU}} \ge 23.2\text{ A}$. Se seleccionó una fuente conmutada de grado industrial de \textbf{$5.0\text{ V}$ / $25\text{ A}$ ($125\text{ W}$)} (o $5.0\text{ V} / 20\text{ A}$ con secuenciación de flancos en el PCA9685), complementada con desacoplo capacitivo local ($C \ge 2200\,\mu\text{F}$ por ramal) y cableado en estrella calibre 22 AWG con conectores de alta corriente JST-VH, garantizando que el riel de servos se mantenga por encima de $4.75\text{ V}$ ante transitorios.}
 
 \LabDSTcomment{R3.6}{A}{Table~\ref{tab:esp32c3}}
 {La temperatura de operación de la ESP32-C3 se reporta como “56 $^\circ$C”; la hoja de datos da un rango (de $-40~^\circ\text{C}$ a un máximo que depende de la variante).

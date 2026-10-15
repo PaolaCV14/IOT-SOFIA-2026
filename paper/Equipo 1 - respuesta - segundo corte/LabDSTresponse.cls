@@ -43,7 +43,7 @@
 \LoadClass[10pt,letterpaper]{article}
 
 \RequirePackage[T1]{fontenc}
-\RequirePackage{mathptmx}
+\RequirePackage{times}
 \RequirePackage[scaled=0.92]{helvet}
 \renewcommand\ttdefault{lmtt}   % tipografia vectorial para \texttt (evita Type 3)
 \RequirePackage[margin=0.75in]{geometry}
