@@ -17,10 +17,15 @@ import queue
 import time
 import re
 
+import sys
 from bleak import BleakClient
 
 
-ESP32_DEFAULT_MAC = "70:AF:09:15:23:42"
+# En macOS, CoreBluetooth asigna UUID en lugar de MAC física
+if sys.platform == "darwin":
+    ESP32_DEFAULT_MAC = "8D8CF7F2-2F26-4A93-E6ED-9D83EDEC3E6A"
+else:
+    ESP32_DEFAULT_MAC = "70:AF:09:15:23:42"
 
 UART_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
 UART_WRITE_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
