@@ -421,8 +421,6 @@
 		\label{fig:block_architecture}
 	\end{figure}
 	
-	
-	\FloatBarrier
 	\subsection{Mechanical Design and Assembly}
 	
 	The SOFIA module integrates a structural base, central support
@@ -501,11 +499,11 @@
 	
 	The \textit{GestureDetector} arbitrates static and dynamic gestures using temporal and priority rules. For waving (\linelabel{ln:vis-es1}Dynamic Wave Gesture), it detects at least three consecutive direction reversals in the MCP joint's lateral coordinate (landmark 9), with peak-to-peak amplitude above $0.05$ normalized units. Two-handed rock--paper--scissors interaction (\linelabel{ln:vis-es2}Two-Handed Rock--Paper--Scissors Intent) uses a finite-state machine with contact and release thresholds of $d_{\text{contact}}<0.17$ and $d_{\text{release}}>0.20$. Temporal hysteresis reduces false triggers during transitions. Static commands include two-handed heart gestures, open palms, victory signs, and closed fists.
 	
-	The PySide6 interface integrates real-time video, gesture status, FPS and latency indicators, communication selection, manual joint sliders, and telemetry (Fig.~\ref{fig:sofia_gui}). Automatic tracking constrains joint targets to $60^\circ$--$120^\circ$, while tracking updates are suspended during predefined ESP32 routines to prevent competing commands. Temporal hysteresis stabilizes gesture recognition, although no dedicated trajectory-smoothing filter or PD controller is implemented.
+	The PySide6 interface integrates live video, gesture telemetry, FPS/latency badges, manual sliders, and channel toggles (Fig.~\ref{fig:sofia_gui}), locking joint angles to $[60^\circ, 120^\circ]$ and suspending tracking during active routines.
 	
 	\begin{figure}[!t]
 		\centering
-		\includegraphics[width=\columnwidth]{figures/sofia_gui.png}
+		\includegraphics[width=0.88\columnwidth,height=3.5cm,keepaspectratio]{figures/sofia_gui.png}
 		\caption{SOFIA graphical interface for vision monitoring and robot control.}
 		\label{fig:sofia_gui}
 	\end{figure}
@@ -527,8 +525,6 @@
 	
 	The control strategy distinguishes between static and dynamic gestures. Static responses transmit joint-angle commands $(q_1,q_2)$ directly to the ESP32-C3, whereas dynamic gestures trigger predefined motion routines stored in the microcontroller firmware. This approach separates continuous joint positioning from the execution of coordinated movements. Smoothing the joint commands during hand tracking remains an area for improvement to reduce abrupt transitions in the physical response.
 	
-	\FloatBarrier
-	
 	\subsection{Electronic Interconnection and Current Hardware Stage}
 	\label{sec:hardware_stage}
 	
@@ -542,7 +538,7 @@
 	as shown in Fig.~\ref{fig:sofia_pcb_design}.
 	
 	
-	\begin{figure}[H]
+	\begin{figure}[!t]
 		\centering
 		\subfloat[Schematic.]{
 			\includegraphics[width=0.45\columnwidth]
@@ -557,19 +553,11 @@
 		\label{fig:sofia_pcb_design}
 	\end{figure}
 	
-	The communication architecture is implemented through a decoupled
-	dispatcher that routes joint-angle commands to either the physical
-	robot or a virtual simulation. The \texttt{SofiaCommDispatcher}
-	supports Bluetooth Low Energy (BLE) communication with the ESP32-C3
-	and UDP datagram transmission to a configurable IP address and port.
-	Before transmission, the dispatcher converts the joint angles to
-	integers and constrains them to the mechanical range of
-	$60^\circ$ to $120^\circ$. BLE commands are transmitted as UTF-8
-	strings through a GATT characteristic, whereas UDP messages use the
-	same comma-separated joint-angle representation with two decimal
-	places. This design separates command generation from the
-	communication channel, allowing the application to switch between
-	physical hardware and simulation without modifying the user interface.
+	The \texttt{SofiaCommDispatcher} architecture decouples kinematic
+	generation from transmission channels, routing joint angles $(q_1, q_2)$
+	bounded to $[60^\circ, 120^\circ]$ via either BLE GATT characteristics to
+	the physical ESP32-C3 or UDP datagrams to the virtual simulator. This
+	permits seamless hot-swapping between hardware and simulation targets.
 	
 	\begin{table}[!htbp]
 		\centering
@@ -589,9 +577,6 @@
 			\hline
 		\end{tabular}
 	\end{table}
-	
-	
-	\FloatBarrier
 	
 	\subsection{Thermal Protection and Reliability Risk Mitigation}
 	\label{sec:risk_mitigation}
@@ -655,34 +640,24 @@
 	\subsection{Physical Prototype Functional Validation}
 	\label{sec:physical_validation}
 	
-	Functional validation was performed using the SOFIA graphical
-	interface and the physical ESP32-C3 prototype. Figure~\ref{fig:modulo_fisico}
-	shows the physical module used during the experimental tests.
-	The event logs record successful BLE connection establishment,
-	transmission of joint-angle commands during hand tracking, and
-	dispatch of the predefined \texttt{SALUDO} and \texttt{CORAZON}
-	routines. The logs also record the suspension and subsequent
-	re-enabling of tracking around routine execution, demonstrating
-	coordination between continuous positioning and predefined movements.
+	Functional validation of the integrated vision, BLE communication,
+	and actuation pipeline was conducted using the physical ESP32-C3 prototype
+	(Fig.~\ref{fig:modulo_fisico}). Synchronous event logs document robust BLE
+	pairing, real-time joint-angle command streaming, and successful dispatch
+	of predefined routines (\texttt{SALUDO} and \texttt{CORAZON}). Figure~\ref{fig:sofia_saludo}
+	illustrates three sequential stages of physical \texttt{SALUDO} execution,
+	verifying mutual exclusion between continuous tracking and discrete gestures.
+	Although qualitative execution is confirmed, formal tracking accuracy and
+	latency metrics require dedicated optical benchmarking.
 	
-	The physical execution of the \texttt{SALUDO} routine is illustrated
-	in Fig.~\ref{fig:sofia_saludo}, which presents three representative
-	stages of the movement. Together with the event logs, these
-	photographs provide qualitative evidence of the integrated vision,
-	communication, and actuation workflow. The session further records
-	camera shutdown and BLE disconnection requests. However, the logs
-	and photographs do not independently quantify servo positioning
-	accuracy, end-to-end latency, or repeatability.
-	
-	\begin{figure}[H]
+	\begin{figure}[!t]
 		\centering
-		\includegraphics[width=0.78\columnwidth]
-		{figures/modulo_fisico.png}
+		\includegraphics[width=0.58\columnwidth,height=3.4cm,keepaspectratio]{figures/modulo_fisico.png}
 		\caption{Physical SOFIA module used for experimental validation.}
 		\label{fig:modulo_fisico}
 	\end{figure}
 	
-	\begin{figure}[H]
+	\begin{figure}[!t]
 		\centering
 		\subfloat[Initial stage.]{%
 			\includegraphics[width=0.31\columnwidth]
@@ -700,7 +675,7 @@
 		\label{fig:sofia_saludo}
 	\end{figure}
 	
-	\begin{table}[H]
+	\begin{table}[!t]
 		\centering
 		\caption{Functional tests documented by the SOFIA event logs.}
 		\label{tab:sofia_log_validation}
