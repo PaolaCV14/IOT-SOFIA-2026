@@ -1,0 +1,9 @@
+%% placeins.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{placeins}[2005/04/18 v 2.2]
+\newcommand{\FloatBarrier}{\suppressfloats[t]\suppressfloats[b]\relax
+  \clearpage}
+\DeclareOption{below}{\renewcommand{\FloatBarrier}{\par\suppressfloats[t]\relax}}
+\DeclareOption{above}{\renewcommand{\FloatBarrier}{\par\suppressfloats[b]\relax}}
+\DeclareOption{section}{\expandafter\def\expandafter\section\expandafter{\expandafter\FloatBarrier\section}}
+\ProcessOptions

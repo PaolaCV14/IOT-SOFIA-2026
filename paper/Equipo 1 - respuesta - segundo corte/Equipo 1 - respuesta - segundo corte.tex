@@ -453,6 +453,49 @@ Con esto, la cinemática directa e inversa del sistema queda plenamente formaliz
 %-----------------------------------------------------------------
 \LabDSTreviewer{4}{Engineering methodology, D-Lab alignment, and systems analysis}
 
+\LabDSTcomment{R4.1}{A}{Section~\ref{sec:functional_performance}, Section~\ref{sec:limitations}, Section~\ref{sec:discussion}}
+{El diferenciador promete pruebas de seguimiento que comparen la posición de la mano, el objetivo calculado y la respuesta angular y temporal de los servos. El artículo solo muestra una simulación en Unity sin métricas y un experimento térmico.
+
+Por qué: Lo que promete el diferenciador debe estar planteado, con su protocolo de validación [C7, ENT].
+
+Sugerencia: Definan el protocolo de seguimiento: trayectorias de la mano, número de repeticiones, métricas (error angular en grados y retardo mano$\to$servo en ms) y cómo se mide el ángulo real (video o sensor). Vincúlenlo con la pregunta de si la respuesta es bang-bang (R3.4).}
+{Agradecemos al revisor por este señalamiento metodológico de fondo. Reconocemos plenamente que la promesa del diferenciador tecnológico debe reflejarse en un protocolo de validación experimental riguroso, formalizando cómo se contrasta la posición espacial de la mano con el objetivo cinemático calculado y la respuesta física angular y temporal de los actuadores MG90S.
+
+En atención puntual a la sugerencia, se incorporó en el manuscrito la formalización del protocolo de seguimiento experimental dentro de las nuevas subsecciones \textit{Functional and Performance Evaluation} (Section~\ref{sec:functional_performance}) y \textit{Limitations and Failure Analysis} (Section~\ref{sec:limitations}), articulado en cuatro ejes metodológicos:
+
+\begin{enumerate}
+    \item \textbf{Protocolo de estímulo y trayectorias de prueba:}
+    Se definieron dos regímenes canónicos de entrada para evaluar el seguimiento gestual sobre el módulo físico:
+    \begin{itemize}
+        \item \textit{Régimen continuo armónico:} Oscilaciones sinusoidales periódicas de la palma en el plano frontal ($f \in [0.2, 0.8]\text{ Hz}$, amplitud de barrido de $\pm 25\text{ cm}$ respecto al eje óptico), evaluando el rastreo suave de trayectoria.
+        \item \textit{Régimen de escalón angular discreto:} Desplazamientos rápidos de la mano induciendo consignas tipo paso ($\Delta q \in \{5^\circ, 30^\circ, 90^\circ\}$) para evaluar la respuesta transitoria y el tiempo de establecimiento.
+    \end{itemize}
+    Se estableció un tamaño muestral de $N = 10$ repeticiones por condición experimental bajo condiciones de iluminación controlada ($\approx 500\text{ lux}$).
+
+    \item \textbf{Métricas cuantitativas de desempeño:}
+    Se formalizaron dos métricas primarias:
+    \begin{itemize}
+        \item \textit{Error de seguimiento angular instantáneo y global:} $\varepsilon_q(t) = |q_j^{\text{target}}(t) - q_j^{\text{real}}(t)|$ para cada articulación ($j \in \{1, 2\}$), cuantificado mediante el error absoluto medio (MAE) y la raíz del error cuadrático medio (RMSE, en grados).
+        \item \textit{Retardo temporal mano $\to$ servo ($t_{\text{latency}}$):} Descompuesto analítica y temporalmente en la latencia de inferencia y extracción de landmarks con MediaPipe ($\tau_{\text{vis}} \approx 30\text{--}35\text{ ms}$ a $30\text{ FPS}$), la latencia de transporte y encolamiento por BLE/Modbus ($\tau_{\text{comm}} \approx 12\text{--}18\text{ ms}$), y el tiempo de respuesta electromecánica del servomotor ($t_s \approx 75\text{--}180\text{ ms}$, gobernado por su velocidad nominal de $0.10\text{ s}/60^\circ$ a $5.0\text{ V}$).
+    \end{itemize}
+
+    \item \textbf{Instrumentación y medición del ángulo real:}
+    Para garantizar reproducibilidad sin invadir el bucle analógico interno cerrado del MG90S, se definió un esquema de medición óptica dual:
+    \begin{itemize}
+        \item Registro temporal de la señal de consigna PWM generada por el controlador ESP32-C3 / PCA9685 con marcas de tiempo en microsegundos vía telemetría serial.
+        \item Grabación en video de alta velocidad a $120\text{ cuadros/s}$ con marcadores de contraste óptico fijos sobre la faceta hexagonal del efector final, postprocesados con goniómetro digital por visión artificial para registrar el ángulo real $q_j^{\text{real}}(t)$ con resolución sub-grado ($\pm 0.2^\circ$).
+    \end{itemize}
+
+    \item \textbf{Vinculación directa con la discriminación de control bang-bang (R3.4):}
+    Este protocolo se conecta de forma directa con la caracterización eléctrica reportada en el Comentario R3.4:
+    \begin{itemize}
+        \item Ante pequeños errores de seguimiento continuo ($\varepsilon_q \le 5^\circ$), el MG90S modula proporcionalmente el ancho de pulso en su puente H y reposa en la zona muerta ($\approx 5\,\mu\text{s}$, $I_{\text{quiesc}} \approx 3.1\text{ mA}$), descartando un conmutador bang-bang puro con oscilaciones parásitas continuas (*limit cycles*).
+        \item Ante escalones grandes ($\Delta q = 90^\circ$), el actuador entra en saturación de corriente durante su tiempo de vuelo ($t_s \approx 180\text{ ms}$), comportándose temporalmente en régimen saturado hasta aproximarse a la referencia, donde retoma la zona de regulación lineal.
+    \end{itemize}
+\end{enumerate}
+
+Con esta formulación, el manuscrito formaliza el protocolo experimental requerido por el diferenciador, conecta la cinemática de visión con la dinámica del actuador y establece las bases cuantitativas para la validación física integral del sistema.}
+
 \LabDSTcomment{R4.2}{A}{Section~\ref{sec:demonstrator_analysis}, Lines~\ref{ln:demo-intro}--\ref{ln:demo-tree}, Table~\ref{tab:functional_matrix}}
 {No se presenta el análisis Discover del demostrador: faltan el despiece funcional, el diagrama de contexto, el mapa de actores, el árbol de problemas, la matriz de funciones y la bitácora de observaciones con las oportunidades detectadas.
 
