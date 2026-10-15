@@ -532,12 +532,14 @@
 	\subsection{Electronic Interconnection and Current Hardware Stage}
 	\label{sec:hardware_stage}
 	
-	The current prototype uses COTS breakout boards on breadboards to
+	\linelabel{ln:hwstage}In the current development stage (Discover $\to$ Learn), the physical electronic
+	architecture is validated using COTS breakout boards on breadboards to
 	connect the ESP32-C3, dual PCA9685 PWM drivers, and external 5.0~V
 	power rails. The custom PCB integrates power distribution,
 	communication, PWM control, and interfaces for 32 servomotors.
 	Its schematic and layout have been submitted for fabrication;
-	physical validation remains pending, as shown in Fig.~\ref{fig:sofia_pcb_design}.
+	\linelabel{ln:hw-make}physical validation remains open work for the Apply and Build \& Validate stages,
+	as shown in Fig.~\ref{fig:sofia_pcb_design}.
 	
 	
 	\begin{figure}[H]
@@ -792,7 +794,7 @@
 	Unlike modular robotics studies that idealize actuators as
 	unconstrained position or velocity sources~\cite{seo2019modular},
 	these findings emphasize thermal accumulation as a relevant risk
-	in densely clustered kinetic arrays. Software watchdogs and stall
+	in densely clustered kinetic arrays. 	\linelabel{ln:disc-wd}Software watchdogs and stall
 	timeouts could help limit thermal exposure while supporting
 	interactive behavior~\cite{fong2003social}.
 	
@@ -818,7 +820,7 @@
 	to generate gesture-driven motion. Thermal tests under sustained
 	stall conditions revealed a heating rate of
 	$\beta \approx 0.214\,^\circ\text{C/s}$ and a maximum casing
-	temperature of $70.21^\circ\text{C}$. These results highlight
+	temperature of \linelabel{ln:concl-runaway}$70.21^\circ\text{C}$. These results highlight
 	the need for angular constraints, thermal monitoring, and
 	stall timeouts to reduce actuator damage risk. Future work will
 	focus on validating these protections and evaluating positioning
@@ -835,18 +837,18 @@
 	A. E. F.-G. contributed to electronics and kinematics.
 	All authors reviewed the manuscript.
 	
-	\noindent\textbf{Data Availability:}
+	\noindent\textbf{Data Availability:} \linelabel{ln:da}
 	Experimental logs, characterization data, and firmware/vision code
 	are available in \texttt{docs/experimental-data/} and on GitHub:
 	\url{https://github.com/PaolaCV14/IOT-SOFIA-2026}
 	(release \texttt{v0.2.0}, commit \texttt{7a790a3}).
 	
-	\noindent\textbf{Acknowledgment:}
+	\noindent\textbf{Acknowledgment:} \linelabel{ln:ack}
 	The authors thank DPETI and the Laboratory of Technological
 	Solutions Development (LabDST), ITESO, for laboratory
 	instrumentation and technical support.
 	
-	\noindent\textbf{Declaration of Generative AI:}
+	\noindent\textbf{Declaration of Generative AI:} \linelabel{ln:ai-decl}
 	The authors used Claude 5.5 Sonnet and Gemini 3.8 Flash for
 	grammatical proofreading, LaTeX typesetting assistance, and
 	reproducible script formatting. All content was reviewed and

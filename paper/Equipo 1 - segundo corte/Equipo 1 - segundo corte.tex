@@ -592,6 +592,18 @@
 	saturates strictly during slewing ($t_s \approx 180\text{ ms}$) before resuming
 	proportional linear regulation.
 	
+	\subsection{Limitations and Failure Analysis}
+	\label{sec:limitations}
+	
+	The current system still requires trajectory-smoothing improvements
+	during continuous hand tracking to reduce abrupt changes in joint
+	targets. In addition, the simulated 16-module array does not by
+	itself establish the physical performance of the complete multi-unit system.
+	While unit-level validation confirms tracking protocol feasibility,
+	future experiments will scale optical tracking to multi-module arrays to
+	evaluate inter-module spatial coherence, bus contention under 32-channel PWM
+	dispatch, and thermal accumulation during sustained continuous interaction.
+	
 	%=================================================================
 	\section{Discussion}
 	\label{sec:discussion}
