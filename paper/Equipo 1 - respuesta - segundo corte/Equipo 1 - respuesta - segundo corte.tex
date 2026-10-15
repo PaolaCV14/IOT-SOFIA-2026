@@ -34,7 +34,7 @@
 \documentclass{LabDSTresponse}
 \usepackage{graphicx}
 \usepackage{booktabs}
-\LabDSTpaper{"../Equipo 1 - segundo corte/Equipo 1 - segundo corte"}
+\LabDSTpaper{"../Equipo 1 - segundo corte/Equipo 1 - segundo new features"}
 
 \begin{document}
 \LabDSTtitle{Second Cut}{Team 1}{SOFIA: Modular Robotic Kinetic Surface for Human-Robot Interaction and Thermal-Constrained Actuator Characterization}
@@ -52,7 +52,7 @@ Los autores agradecen a los revisores por su evaluación rigurosa y constructiva
 %-----------------------------------------------------------------
 \LabDSTreviewer{1}{Format, \LaTeX{} and template compliance}
 
-\LabDSTcomment{R1.1}{A}{Page headers (lines 28--29)}
+\LabDSTcomment{R1.1}{A}{Running headers across all pages (pages~1--10)}
 {El encabezado de cada página dice “IEEE Transactions on Robotics / LabDST Academic Project”.
 
 Por qué: El artículo no está publicado en esa revista; nombrarla en el encabezado atribuye una publicación que no existe [C3].
@@ -73,7 +73,7 @@ Sugerencia: Regeneren la figura con etiquetas como \texttt{r"Temperature (\$\tex
 
 Dicho script procesa los datos experimentales directos desde \texttt{servomotor\_pruebas\_caracterizacion.xlsx} y regenera Fig.~\ref{fig:thermal_response} interpretando correctamente el modo matemático de Matplotlib (empleando cadenas raw y delimitadores matemáticos estándar), con unidades adecuadas en los ejes (\texttt{Time \$t\$ (s)}, \texttt{Temperature ($^\circ$C)}) y leyendas legibles. Se regeneraron e incorporaron al manuscrito tanto los archivos vectoriales PDF como los de mapa de bits PNG en 300~DPI.}
 
-\LabDSTcomment{R1.3}{A}{Section~\ref{sec:methods}, Tables~\ref{tab:bom_sofia}--\ref{tab:PCA9685}}
+\LabDSTcomment{R1.3}{A}{Section~\ref{sec:methods} (lines~215--220), Table~\ref{tab:bom_sofia}, Table~\ref{tab:compliance}}
 {Las tablas de la ESP32-C3 (\texttt{tab:esp32c3}) y del PCA9685 (\texttt{tab:PCA9685}) nunca se citan en el texto, y la del MG90S solo se cita en la sección de diseño. Además, las tres usan líneas verticales, mientras el BOM no.
 
 Por qué: Toda tabla se cita antes de aparecer, y el estilo de las tablas debe ser consistente [C3].
@@ -81,12 +81,12 @@ Por qué: Toda tabla se cita antes de aparecer, y el estilo de las tablas debe s
 Sugerencia: Introduzcan las fichas técnicas con un párrafo: “Tables \ref{tab:esp32c3}–\ref{tab:PCA9685} summarize the critical parameters of each component against the module requirements.” Usen el mismo estilo en todas (booktabs, sin líneas verticales).}
 {Agradecemos al revisor por esta constructiva observación. Ambos puntos fueron atendidos puntualmente:
 \begin{enumerate}
-    \item \textbf{Cita previa en el texto:} En Section~\ref{sec:methods}, inmediatamente después de la mención del Bill of Materials (Table~\ref{tab:bom_sofia}), se incorporó el enunciado introductorio que cita formalmente las tablas técnicas antes de su aparición:
+    \item \textbf{Cita previa en el texto:} En Section~\ref{sec:methods} (lines~215--220), inmediatamente después de la mención del Bill of Materials (Table~\ref{tab:bom_sofia}), se incorporó el enunciado introductorio que cita formalmente las tablas técnicas antes de su aparición:
     \LabDSTquote{Furthermore, Tables~\ref{tab:esp32c3}--\ref{tab:PCA9685} summarize the critical parameters of each key electromechanical and electronic component against the module functional and operational requirements.}
     \item \textbf{Consistencia tipográfica:} Se agregó el paquete \texttt{booktabs} al preámbulo y se rediseñaron las Tables~\ref{tab:bom_sofia}, \ref{tab:esp32c3}, \ref{tab:MG90s} y \ref{tab:PCA9685} bajo estándar formal sin líneas verticales (\texttt{\textbackslash toprule}, \texttt{\textbackslash midrule}, \texttt{\textbackslash bottomrule}), unificando el estilo visual de todas las tablas del artículo.
 \end{enumerate}}
 
-\LabDSTcomment{R1.4}{A}{Table~\ref{tab:bom_sofia}, Tables~\ref{tab:esp32c3}--\ref{tab:PCA9685}, Figs.~\ref{fig:thermal_response}, \ref{fig:sofia_simulation}, and Algorithm~\ref{alg:sofia_ik}}
+\LabDSTcomment{R1.4}{A}{Table~\ref{tab:bom_sofia}, Table~\ref{tab:compliance}, Table~\ref{tab:power_balance}, Fig.~\ref{fig:thermal_response}, Fig.~\ref{fig:sofia_simulation}, Algorithm~\ref{alg:sofia_ik}}
 {El BOM usa \texttt{table*[ht]} y las demás tablas y figuras \texttt{[ht]} o \texttt{[!ht]}; el Algoritmo 1 usa \texttt{[H]}.
 
 Por qué: En IEEE a dos columnas, \texttt{table*} solo se coloca arriba de página, y \texttt{[!t]} evita huecos [C6].
@@ -101,7 +101,7 @@ Sugerencia: Usen \texttt{[!t]} en todos los flotantes y \texttt{table*[t]} para 
 \end{itemize}
 Con esto se eliminan huecos y se da cabal cumplimiento a las normas de diagramación de IEEE Transactions.}
 
-\LabDSTcomment{R1.5}{A}{\texttt{bibliography.bib}, Line~\ref{ln:intro-hw}}
+\LabDSTcomment{R1.5}{A}{\texttt{bibliography.bib}, Section~I (lines~61--64)}
 {Bib\TeX{} advierte “edition ordinal word v2.4 / Rev. 4 may be too high” en las hojas de datos, que usan \texttt{@manual} con \texttt{edition}. La clave \texttt{nxp2024pca9685} dice 2024, pero el año de la entrada es 2015.
 
 Por qué: Los campos deben corresponder al tipo de entrada y la compilación no debe dejar advertencias [C8].
@@ -113,11 +113,11 @@ Sugerencia: Usen \texttt{@techreport} (o \texttt{@manual}) con \texttt{number = 
     \LabDSTquote{note = \{Datasheet, v2.4. Available: \textbackslash url\{https://www.espressif.com\}\}}
     \item Para la hoja de datos del PCA9685, se actualizó la clave bibliográfica de \texttt{nxp2024pca9685} a \texttt{nxp2015pca9685} para reflejar consistentemente su año de publicación (2015). Asimismo, se retiró el campo \texttt{edition} y se trasladó la especificación de revisión al campo \texttt{note}:
     \LabDSTquote{note = \{Datasheet, Rev. 4\}}
-    \item En el texto del paper (Line~\ref{ln:intro-hw}), se actualizó el llamado de citación a \texttt{\textbackslash cite\{nxp2015pca9685\}}.
+    \item En el texto del paper (Section~I, lines~61--64), se actualizó el llamado de citación a \texttt{\textbackslash cite\{nxp2015pca9685\}}.
 \end{enumerate}
 Al compilar con Bib\TeX{}, la base de datos se procesa de forma completamente limpia y libre de advertencias.}
 
-\LabDSTcomment{R1.6}{A}{Section~\ref{sec:methods}, Table~\ref{tab:MG90s}, Line~\ref{ln:servo-path}}
+\LabDSTcomment{R1.6}{A}{Section~\ref{sec:methods} (lines~221--225), Table~\ref{tab:compliance}}
 {El texto cita un archivo local (“docs/experimental-data/servomotor\_pruebas\_caracterizacion.xlsx”) con comillas rectas y nombre en español, y ese archivo no viene en la entrega.
 
 Por qué: Los datos de respaldo se citan como material suplementario o por su ubicación en el repositorio, y el artículo va en inglés [C3].
@@ -127,16 +127,16 @@ Sugerencia: Incluyan el archivo en documents/ con nombre en inglés y escriban: 
 \begin{enumerate}
     \item Se incorporó una copia con nombre formal en inglés del archivo de datos experimentales dentro del repositorio en:
     \texttt{docs/experimental-data/servo\_characterization.xlsx}.
-    \item En el texto del paper (Line~\ref{ln:servo-path}), se reemplazó la cita con comillas rectas y nombre en español por la referencia formal a material suplementario del repositorio en inglés:
-    \LabDSTquote{recorded in the supplementary data (repository, \textbackslash texttt\{docs/experimental-data/servo\textbackslash\_characterization.xlsx\})}
-    \item En la Tabla~\ref{tab:MG90s}, se actualizaron las fuentes de los parámetros experimentales para hacer referencia a \texttt{servo\_characterization.xlsx}.
+    \item En el texto del paper (Section~\ref{sec:methods}, lines~221--225), se reemplazó la cita con comillas rectas y nombre en español por la referencia formal a material suplementario del repositorio en inglés:
+    \LabDSTquote{...recorded in the project logbook and supplementary data (repository, \textbackslash texttt\{docs/experimental-data/servo\_characterization.xlsx\}).}
+    \item En la Tabla~\ref{tab:compliance} (MG90S), se actualizaron las fuentes de los parámetros experimentales para hacer referencia a \texttt{servo\_characterization.xlsx}.
 \end{enumerate}
 Con esto se asegura consistencia idiomática, tipografía correcta de comillas y trazabilidad pública en el repositorio.}
 
 %-----------------------------------------------------------------
 \LabDSTreviewer{2}{Robotics, mechatronics, and experimental design}
 
-\LabDSTcomment{R2.1}{A}{Abstract (Line~\ref{ln:abs-claim}), Line~\ref{ln:contrib-claim}, Section~\ref{sec:discussion} (Line~\ref{ln:disc-wd}), Section~\ref{sec:conclusions} (Line~\ref{ln:concl-runaway})}
+\LabDSTcomment{R2.1}{A}{Abstract (lines~22--28), Section~I (lines~120--122), Section~V (lines~636--638), Section~VI (lines~656--660)}
 {Hay afirmaciones que exceden la evidencia:
 \begin{itemize}
     \item “providing direct evidence on the operational limits” y “to guarantee operational reliability”;
@@ -150,18 +150,18 @@ Por qué: La objetividad exige afirmar solo lo que los datos sostienen [C3].
 Sugerencia: Acoten: “provides a first estimate of the thermal limits...”, “is expected to maintain...”, “leads to a sustained temperature rise”.}
 {Agradecemos al revisor por exigir estricto rigor y objetividad científica respecto al alcance sustentado por los datos experimentales y el estado actual de integración del sistema. Se revisaron y acotaron todas las afirmaciones señaladas:
 \begin{enumerate}
-    \item \textbf{Abstract (Lines~\ref{ln:abs-tau}--\ref{ln:abs-claim}):} Se eliminó la mención a “closed-loop kinematic control” (ya que la cinemática de la superficie modular se encuentra en etapa de simulación cinemática abierta/supervisada) y se sustituyó la aseveración de “direct evidence” por la redacción sugerida:
-    \LabDSTquote{The proposed framework couples 3D real-time visual tracking with kinematic simulation, \textbackslash linelabel\{ln:abs-claim\}providing a first estimate of the operational limits and thermal constraints relevant to long-term deployment in modular robotic surfaces.}
-    \item \textbf{Introducción (Line~\ref{ln:contrib-claim}):} Se sustituyó “to guarantee operational reliability” por una formulación prudente del alcance:
-    \LabDSTquote{...establishing thermal boundaries \textbackslash linelabel\{ln:contrib-claim\}intended to support operational reliability in kinetic surfaces.}
-    \item \textbf{Discusión (Line~\ref{ln:disc-wd}):} Se corrigió la afirmación categórica sobre interacción social continua no validada en banco físico integral por una formulación prospectiva:
-    \LabDSTquote{...SOFIA is expected to prevent localized thermal overshoots while maintaining continuous social interaction~\cite{fong2003social} within safe operating envelopes.}
-    \item \textbf{Conclusiones (Line~\ref{ln:concl-runaway}):} Se retiró el término termodinámico impreciso “thermal runaway” (dado que el modelo identifica saturación exponencial de primer orden con asíntota finita y no una divergencia inestable por realimentación positiva) y se adoptó la terminología sugerida:
-    \LabDSTquote{...demonstrated that unmitigated mechanical stalls \textbackslash linelabel\{ln:concl-runaway\}lead to a sustained temperature rise toward saturation with an identified first-order time constant of $\tau \approx 80.6\text{ s}$ and casing temperatures reaching $70.2^\circ\text{C}$.}
+    \item \textbf{Abstract (lines~22--28):} Se eliminó la mención a “closed-loop kinematic control” (ya que la cinemática de la superficie modular se encuentra en etapa de simulación cinemática abierta/supervisada) y se sustituyó la aseveración de “direct evidence” por la redacción precisa:
+    \LabDSTquote{In parallel, a real-time 3D visual tracking pipeline and a 16-module kinematic simulation are implemented independently; together with the empirical heating dynamics, these subsystems provide a first estimate of the operational limits and thermal constraints intended to guide the proposed end-to-end physical integration of the kinetic surface.}
+    \item \textbf{Introducción (Section~I, lines~120--122):} Se sustituyó “to guarantee operational reliability” por una formulación prudente del alcance:
+    \LabDSTquote{...establishing thermal boundaries intended to support operational reliability in kinetic surfaces.}
+    \item \textbf{Discusión (Section~V, lines~636--638):} Se corrigió la afirmación categórica sobre interacción social continua no validada en banco físico integral por una formulación prospectiva:
+    \LabDSTquote{Software watchdogs and stall timeouts could help limit thermal exposure while supporting interactive behavior~\cite{fong2003social}.}
+    \item \textbf{Conclusiones (Section~VI, lines~656--660):} Se retiró el término termodinámico impreciso “thermal runaway” (dado que el modelo identifica saturación exponencial de primer orden con asíntota finita y no una divergencia inestable por realimentación positiva) y se adoptó la terminología rigurosa:
+    \LabDSTquote{Thermal tests under sustained stall conditions revealed a heating rate of $\beta \approx 0.214\,^\circ\text{C/s}$ and a maximum casing temperature of $70.21^\circ\text{C}$. These results highlight the need for angular constraints, thermal monitoring, and stall timeouts to reduce actuator damage risk.}
 \end{enumerate}
 Con estas precisiones, el texto se adhiere fielmente a los resultados directamente sustentados por los datos experimentales.}
 
-\LabDSTcomment{R2.2}{A}{Section~\ref{sec:methods}, Lines~\ref{ln:vis-es1}--\ref{ln:vis-es2}, Line~\ref{ln:hwstage}, Line~\ref{ln:hw-make}}
+\LabDSTcomment{R2.2}{A}{Section~III-D (lines~474--480), Section~III-E (lines~498--510)}
 {Aparecen términos en español (“(Saludo)”, “(Intención PPT)”) y etapas que no son de D-Lab (“Make → Test”, “Corte 1”).
 
 Por qué: Todo el artículo va en inglés, y las etapas de D-Lab son Discover, Learn, Apply y Build \& Validate [REQ, C7].
@@ -169,16 +169,16 @@ Por qué: Todo el artículo va en inglés, y las etapas de D-Lab son Discover, L
 Sugerencia: Eliminen los términos en español (“Wave gesture”, “Rock–paper–scissors intent”) y escriban “...remain open work for the Apply and Build \& Validate stages”.}
 {Agradecemos al revisor por señalar estas discrepancias de terminología y alineación metodológica. Se realizaron las siguientes correcciones:
 \begin{enumerate}
-    \item \textbf{Términos de interacción en inglés:} Se eliminaron los términos entre paréntesis en español en la Sección~\ref{sec:methods} (Lines~\ref{ln:vis-es1}--\ref{ln:vis-es2}), sustituyéndolos formalmente por su denominación en inglés:
-    \LabDSTquote{\textbackslash item \textbackslash textit\{Dynamic Wave Gesture:\} Tracks lateral palm oscillations...}
-    \LabDSTquote{\textbackslash item \textbackslash textit\{Two-Handed Rock--Paper--Scissors Intent:\} Detects a horizontal flat palm...}
-    \item \textbf{Alineación con las etapas de D-Lab:} En la Sección~\ref{sec:methods} (Line~\ref{ln:hwstage} y Line~\ref{ln:hw-make}), se eliminaron referencias informales como “Corte 1” y “Make $\to$ Test”, estandarizando la redacción con el marco de D-Lab:
-    \LabDSTquote{In the current development stage (Discover $\to$ Learn), the physical electronic architecture is validated...}
-    \LabDSTquote{Custom printed circuit board (PCB) layout, routing, and fabrication remain open work for the Apply and Build \& Validate stages...}
+    \item \textbf{Términos de interacción en inglés (Section~III-D, lines~474--480):} Se eliminaron los términos entre paréntesis en español, sustituyéndolos formalmente por su denominación en inglés:
+    \LabDSTquote{For waving (Dynamic Wave Gesture), it detects at least three consecutive direction reversals in the MCP joint's lateral coordinate (landmark 9), with peak-to-peak amplitude above $0.05$ normalized units.}
+    \LabDSTquote{Two-handed rock--paper--scissors interaction (Two-Handed Rock--Paper--Scissors Intent) uses a finite-state machine with contact and release thresholds of $d_{\text{contact}}<0.17$ and $d_{\text{release}}>0.20$.}
+    \item \textbf{Alineación con las etapas de D-Lab (Section~III-E, lines~498--510):} Se eliminaron referencias informales como “Corte 1” y “Make $\to$ Test”, estandarizando la redacción con el marco de D-Lab:
+    \LabDSTquote{In the current development stage (Discover $\to$ Learn), the physical electronic architecture is validated using COTS breakout boards on breadboards...}
+    \LabDSTquote{The custom PCB integrates power distribution, communication, PWM control, and interfaces for 32 servomotors. Its schematic and layout have been submitted for fabrication; physical validation remains open work for the Apply and Build \& Validate stages, as shown in Fig.~\ref{fig:sofia_pcb_design}.}
 \end{enumerate}
 Con estas modificaciones, el manuscrito mantiene total homogeneidad idiomática en inglés y pleno apego a la taxonomía metodológica del laboratorio.}
 
-\LabDSTcomment{R2.3}{A}{Section~\ref{sec:conclusions}, Lines~\ref{ln:ack}--\ref{ln:ai-decl}}
+\LabDSTcomment{R2.3}{A}{Declarations and Acknowledgments (lines~671--678)}
 {“Laboratory of Distributed Systems and Telematics (LabDST)” no es el nombre del laboratorio, y no hay declaración sobre el uso de IA generativa.
 
 Por qué: Las secciones de cierre deben ser exactas y declarar el uso de IA generativa si la hubo [C3].
@@ -186,14 +186,14 @@ Por qué: Las secciones de cierre deben ser exactas y declarar el uso de IA gene
 Sugerencia: “...the Laboratory of Technological Solutions Development (LabDST), ITESO...”. Agreguen la declaración de uso de IA (herramienta, versión y para qué) o indiquen que no se usó.}
 {Agradecemos al revisor por la precisión institucional y ética en las secciones finales del manuscrito. Se implementaron los siguientes cambios:
 \begin{enumerate}
-    \item \textbf{Corrección del nombre del laboratorio:} En la sección de \textit{Acknowledgment} (Line~\ref{ln:ack}), se actualizó el nombre exacto de la entidad:
+    \item \textbf{Corrección del nombre del laboratorio (Acknowledgment, lines~671--673):} En la sección de \textit{Acknowledgment}, se actualizó el nombre exacto de la entidad:
     \LabDSTquote{...the Laboratory of Technological Solutions Development (LabDST), ITESO...}
-    \item \textbf{Declaración de uso de Inteligencia Artificial Generativa:} Se incorporó la sección obligatoria \textit{Declaration of Generative AI and AI-Assisted Technologies} (Line~\ref{ln:ai-decl}), especificando con total transparencia las herramientas, versiones y finalidades asistenciales empleadas:
-    \LabDSTquote{During the preparation of this work, the authors used large language models (Claude 5.5 Sonnet and Gemini 3.8 Flash) strictly for grammatical proofreading, LaTeX typesetting assistance, and reproducible script formatting; the authors reviewed and edited all content and take full responsibility.}
+    \item \textbf{Declaración de uso de Inteligencia Artificial Generativa (lines~674--678):} Se incorporó la sección obligatoria \textit{Declaration of Generative AI and AI-Assisted Technologies}, especificando con total transparencia las herramientas, versiones y finalidades asistenciales empleadas:
+    \LabDSTquote{The authors used Claude 5.5 Sonnet and Gemini 3.8 Flash for grammatical proofreading, LaTeX typesetting assistance, and reproducible script formatting. All content was reviewed and edited by the authors, who take full responsibility.}
 \end{enumerate}
 Ambas secciones reflejan ahora exactitud institucional y cumplimiento íntegro de las directrices éticas de publicación.}
 
-\LabDSTcomment{R2.4}{A}{Section~\ref{sec:system_architecture}, Section~\ref{sec:vision_pipeline}, Section~\ref{sec:discussion}}
+\LabDSTcomment{R2.4}{A}{Section~II-A (lines~255--276), Section~III-A (lines~401--426), Section~III-D (lines~463--495), Section~V (lines~621--648)}
 {El montaje experimental, la arquitectura, el pipeline de visión y la discusión están escritos como listas con viñetas y títulos en negritas.
 
 Por qué: Las secciones técnicas se redactan en prosa; las listas se reservan para enumeraciones reales [C3].
@@ -201,14 +201,14 @@ Por qué: Las secciones técnicas se redactan en prosa; las listas se reservan p
 Sugerencia: Conviertan la discusión y la arquitectura en párrafos conectados; el montaje puede quedar como lista si se acompaña de una figura del banco de pruebas.}
 {Agradecemos al revisor por la oportuna recomendación estilística y de redacción científica. Atendimos la observación transformando las secciones enumerativas en prosa técnica fluida y conectada:
 \begin{enumerate}
-    \item \textbf{Arquitectura del Sistema (Section~\ref{sec:system_architecture}):} Se eliminó la lista de viñetas con títulos en negritas y se reescribió en tres párrafos continuos y conectados que describen jerárquicamente el subsistema de percepción y control de alto nivel, el subsistema maestro de comunicación y telemetría (ESP32-C3 / RS-485 Modbus) y el arreglo modular distribuido de 16 unidades.
-    \item \textbf{Pipeline de Visión por Computadora (Section~\ref{sec:vision_pipeline}):} Se sustituyó la estructura de listas anidadas por prosa técnica conectada, hilvanando la extracción de landmarks 3D con MediaPipe, la normalización anatómica invariante a la rotación de la mano, y el motor de arbitraje temporal de gestos dinámicos e interacciones estáticas.
-    \item \textbf{Discusión (Section~\ref{sec:discussion}):} Se transformaron las tres viñetas temáticas en párrafos articulados de discusión que profundizan en la dinámica térmica y la saturación tipo bang-bang, el contraste crítico con la literatura de robótica modular y las limitaciones metodológicas instrumentales del sensor LM35.
-    \item \textbf{Montaje Experimental (Section~\ref{sec:thermal_experiment}):} Se preservó la lista numerada concisa para los cuatro elementos instrumentales del banco de pruebas, garantizando claridad procedimental reproducible.
+    \item \textbf{Arquitectura del Sistema (Section~III-A, lines~401--426):} Se eliminó la lista de viñetas con títulos en negritas y se reescribió en tres párrafos continuos y conectados que describen jerárquicamente el subsistema de percepción y control de alto nivel, el subsistema maestro de comunicación y telemetría (ESP32-C3 / RS-485 Modbus) y el arreglo modular distribuido de 16 unidades.
+    \item \textbf{Pipeline de Visión por Computadora (Section~III-D, lines~463--495):} Se sustituyó la estructura de listas anidadas por prosa técnica conectada, hilvanando la extracción de landmarks 3D con MediaPipe, la normalización anatómica invariante a la rotación de la mano, y el motor de arbitraje temporal de gestos dinámicos e interacciones estáticas.
+    \item \textbf{Discusión (Section~V, lines~621--648):} Se transformaron las tres viñetas temáticas en párrafos articulados de discusión que profundizan en la dinámica térmica y la saturación tipo bang-bang, el contraste crítico con la literatura de robótica modular y las limitaciones metodológicas instrumentales del sensor LM35.
+    \item \textbf{Montaje Experimental (Section~II-A, lines~255--276):} Se preservó la lista numerada concisa para los cuatro elementos instrumentales del banco de pruebas, garantizando claridad procedimental reproducible.
 \end{enumerate}
 Con esto se mejora notablemente la madurez narrativa y el estilo formal de publicación del artículo.}
 
-\LabDSTcomment{R2.5}{A}{Abstract (Lines~\ref{ln:abs}--\ref{ln:abs-claim})}
+\LabDSTcomment{R2.5}{A}{Abstract (lines~22--28)}
 {El abstract presenta como resultado del trabajo un marco que “couples 3D real-time visual tracking with closed-loop kinematic control”, pero en el cuerpo la visión y la cinemática aún no están integradas.
 
 Por qué: El abstract no debe afirmar lo que el cuerpo no sustenta [C3, PLA].
@@ -218,15 +218,15 @@ Sugerencia: Distingan lo implementado (caracterización térmica, pipeline de vi
 \begin{enumerate}
     \item Se aclaró que el artículo presenta el diseño modular y la validación experimental de subsistemas clave para la superficie cinética proyectada.
     \item Se especificó que el pipeline de visión artificial 3D y la simulación cinemática del arreglo de 16 módulos fueron desarrollados e implementados de forma independiente.
-    \item Se reformuló el cierre del abstract explicitando que los subsistemas y el modelo térmico empírico proporcionan cotas de operación cuyo propósito es guiar la integración física integral propuesta:
-    \LabDSTquote{In parallel, a real-time 3D visual tracking pipeline and a 16-module kinematic simulation are implemented independently; \textbackslash linelabel\{ln:abs-claim\}together with the experimental thermal model, these subsystems provide a first estimate of the operational limits and thermal constraints intended to guide the proposed end-to-end physical integration of the kinetic surface.}
+    \item Se reformuló el cierre del abstract (lines~22--28) explicitando que los subsistemas y el modelo térmico empírico proporcionan cotas de operación cuyo propósito es guiar la integración física integral propuesta:
+    \LabDSTquote{In parallel, a real-time 3D visual tracking pipeline and a 16-module kinematic simulation are implemented independently; together with the empirical heating dynamics, these subsystems provide a first estimate of the operational limits and thermal constraints intended to guide the proposed end-to-end physical integration of the kinetic surface.}
 \end{enumerate}
 De esta forma, el abstract refleja con total honestidad intelectual el alcance del trabajo reportado en el cuerpo del manuscrito.}
 
 %-----------------------------------------------------------------
 \LabDSTreviewer{3}{Control theory, thermal modeling, and parameter identification}
 
-\LabDSTcomment{R3.1}{A}{Section~\ref{sec:thermal_modeling} (Lines~\ref{ln:tm-lin}--\ref{ln:tm-claim}), Abstract (Line~\ref{ln:abs-tau}), Section~\ref{sec:risk_mitigation} (Line~\ref{ln:wd}), Section~\ref{sec:discussion} (Line~\ref{ln:disc-lim}), Section~\ref{sec:conclusions} (Line~\ref{ln:concl-runaway})}
+\LabDSTcomment{R3.1}{A}{Abstract (line~20), Section~II-B (lines~363--388), Section~III-F (lines~514--517), Section~V (lines~639--649), Section~VI (lines~656--660)}
 {El ajuste toma $T_{ss} \approx 64.84\,^\circ\text{C}$, que es la última temperatura medida del Trial 1, como temperatura de estado estacionario. La Fig. 1(a) muestra que en ese instante la curva sigue subiendo casi linealmente, sin estabilizarse. Además:
 \begin{itemize}
     \item $\ln(T_{ss} - T_s(t))$ se indetermina en el último punto, porque la diferencia es cero, y los puntos cercanos dominan la regresión;
@@ -239,15 +239,15 @@ Sugerencia: Ajusten $T_{ss}$ y $\tau_T$ simultáneamente con mínimos cuadrados 
 {Agradecemos profundamente al revisor por este análisis crítico de fundamentación matemática y control. Coincidimos plenamente en que asumir la temperatura final truncada del ensayo ($64.84\,^\circ\text{C}$) como asíntota estacionaria $T_{ss}$ sesgaba la linealización logarítmica y causaba indeterminación en la frontera. Atendimos la observación de forma exhaustiva:
 \begin{enumerate}
     \item \textbf{Evaluación de Mínimos Cuadrados No Lineales (NLLS):} Se implementó el ajuste no lineal simultáneo de $T_{ss}$ y $\tau_T$ sobre la ecuación exponencial $T_s(t) = T_a + (T_{ss}-T_a)(1-e^{-t/\tau_T})$ para el Trial 1. Como la trayectoria térmica en los $226\text{ s}$ de ensayo es monótona creciente sin alcanzar el punto de inflexión asintótico, los parámetros resultan fuertemente colineales y no identificables unívocamente (intervalos de confianza asintóticos superiores al $\pm 40\%$, con $T_{ss}$ proyectado en valores no físicos $> 150\,^\circ\text{C}$).
-    \item \textbf{Declaración formal de no identificabilidad de $\tau_T$:} En la Sección~\ref{sec:thermal_modeling} (Line~\ref{ln:tm-ls}) y en las limitaciones metodológicas de la Discusión (Line~\ref{ln:disc-lim}), se declaró explícitamente que la constante de tiempo exponencial $\tau_T$ no es identificable a partir del registro truncado del Trial 1.
-    \item \textbf{Modelado por tasa de incremento térmico ($^\circ\text{C/s}$):} Siguiendo la recomendación del revisor, se reformuló la caracterización cuantitativa mediante la pendiente real de calentamiento:
+    \item \textbf{Declaración formal de no identificabilidad de $\tau_T$ (Section~II-B, lines~368--376; Section~V, lines~639--649):} En la Sección~\ref{sec:thermal_modeling} y en las limitaciones metodológicas de la Discusión, se declaró explícitamente que la constante de tiempo exponencial $\tau_T$ no es identificable a partir del registro truncado del Trial 1.
+    \item \textbf{Modelado por tasa de incremento térmico (Section~II-B, lines~363--388):} Siguiendo la recomendación del revisor, se reformuló la caracterización cuantitativa mediante la pendiente real de calentamiento:
     \LabDSTquote{$\frac{dT_s}{dt} \approx \beta = 0.2143\,^\circ\text{C/s} \quad (R^2 = 0.9930)$}
     con un residuo cuadrático medio de $0.62\,^\circ\text{C}$, demostrando una dinámica térmica de calentamiento sostenido de aproximadamente $12.9\,^\circ\text{C/min}$.
-    \item \textbf{Consistencia en el resto del manuscrito:} Se ajustaron el Abstract (Line~\ref{ln:abs-tau}), las reglas del watchdog térmico (Line~\ref{ln:wd}), la Discusión (Line~\ref{ln:disc-bb}) y las Conclusiones (Line~\ref{ln:concl-runaway}) sustituyendo la referencia a $\tau \approx 80.6\text{ s}$ por la tasa de calentamiento comprobada $\beta \approx 0.214\,^\circ\text{C/s}$ y el pico térmico de $70.21\,^\circ\text{C}$.
+    \item \textbf{Consistencia en el resto del manuscrito:} Se ajustaron el Abstract (line~20), las reglas del watchdog térmico (Section~III-F, lines~514--517), la Discusión (Section~V, lines~630--635) y las Conclusiones (Section~VI, lines~656--660) sustituyendo la referencia a $\tau \approx 80.6\text{ s}$ por la tasa de calentamiento comprobada $\beta \approx 0.214\,^\circ\text{C/s}$ y el pico térmico de $70.21\,^\circ\text{C}$.
 \end{enumerate}
 Con esto, la modelación térmica adquiere pleno rigor físico y consistencia numérica estricta con la evidencia experimental.}
 
-\LabDSTcomment{R3.2}{A}{Section~\ref{sec:thermal_modeling}, Lines~\ref{ln:tm-io}--\ref{ln:tm-bb}, Fig.~\ref{fig:thermal_response}}
+\LabDSTcomment{R3.2}{A}{Section~II-B (lines~320--396), Fig.~\ref{fig:thermal_response}}
 {El modelo $G_T(s) = T_s(s)/\Theta_d(s)$ toma el ángulo comandado como entrada de la temperatura, con ganancia en $^\circ\text{C/rad}$. Físicamente, el calentamiento depende de la potencia disipada, es decir, de la corriente de bloqueo asociada al error persistente $e(t)$ de la Ec. (2), no del ángulo comandado. Además, el modelo usa la temperatura absoluta, cuando debería usar el incremento sobre la ambiente.
 
 Por qué: Los supuestos y variables del modelo deben declararse y ser físicamente coherentes antes de la derivación [C9].
@@ -267,7 +267,7 @@ Sugerencia: Planteen un modelo térmico de primer orden con la potencia como ent
 \end{enumerate}
 Con estas modificaciones, el modelo térmico es físicamente riguroso, causalmente coherente y metodológicamente transparente.}
 
-\LabDSTcomment{R3.3}{A}{Section~\ref{sec:thermal_experiment} (Lines~\ref{ln:trial2}--\ref{ln:trial2-ss}), Section~\ref{sec:thermal_modeling} (Line~\ref{ln:tm-ls}), Fig.~\ref{fig:thermal_response}}
+\LabDSTcomment{R3.3}{A}{Section~II-A (lines~286--299), Section~II-B (lines~368--376), Fig.~\ref{fig:thermal_response}}
 {El Trial 2 se describe como un “steady-state thermal maximum”, pero la Fig. 1(b) muestra un pico seguido de enfriamiento, sin meseta. Se aplicaron “varying commanded angular steps” no especificados, y el eje de tiempo de la figura (0–700 s) no coincide con el intervalo del texto (t $\in$ [973.1, 1654.1] s).
 
 Por qué: Un protocolo experimental debe permitir reproducir las condiciones de cada ensayo [ENT].
@@ -275,13 +275,13 @@ Por qué: Un protocolo experimental debe permitir reproducir las condiciones de 
 Sugerencia: Describan la secuencia de comandos y de bloqueo del Trial 2 (tiempos y ángulos), usen la misma referencia de tiempo en texto y figura, y reserven steady state para una meseta real.}
 {Agradecemos al revisor por este señalamiento detallado respecto a la reproducibilidad experimental y la consistencia temporal. Se implementaron las siguientes correcciones en la Sección~\ref{sec:thermal_experiment}, Sección~\ref{sec:thermal_modeling} y en la Fig.~\ref{fig:characterization_6panels}:
 \begin{enumerate}
-    \item \textbf{Unificación rigurosa de la referencia de tiempo (texto vs. figura):} Se aclaró explícitamente en el texto que el intervalo $t \in [973.1, 1654.1]\text{ s}$ corresponde a las marcas de tiempo absolutas del sistema de adquisición (DAQ timestamp con $N = 682$ muestras a $1\text{ Hz}$), mientras que el eje horizontal de la gráfica está normalizado a tiempo transcurrido desde el inicio de la prueba: $t \in [0, 681]\text{ s}$. Ambas referencias se explicitan coordinadamente en la Sección~\ref{sec:thermal_experiment} (Line~\ref{ln:trial2}) para eliminar cualquier discrepancia aparente.
+    \item \textbf{Unificación rigurosa de la referencia de tiempo (texto vs. figura):} Se aclaró explícitamente en el texto (Section~II-A, lines~286--299) que el intervalo $t \in [973.1, 1654.1]\text{ s}$ corresponde a las marcas de tiempo absolutas del sistema de adquisición (DAQ timestamp con $N = 682$ muestras a $1\text{ Hz}$), mientras que el eje horizontal de la gráfica está normalizado a tiempo transcurrido desde el inicio de la prueba: $t \in [0, 681]\text{ s}$. Ambas referencias se explicitan coordinadamente para eliminar cualquier discrepancia aparente.
     \item \textbf{Descripción detallada del protocolo de comandos y bloqueo mecánico:} Se detalló con precisión la secuencia operativa del Trial~2: el vástago del actuador se restringió mecánicamente mediante un tope rígido en $\theta_{\text{stall}} \approx 0^\circ$ mientras se inyectaban sucesivamente referencias angulares comandadas $\theta_{\text{ref}} \in \{45^\circ, 90^\circ, 180^\circ\}$. De este modo, la condición de error persistente $e(t) = \theta_{\text{ref}}(t) - \theta_{\text{stall}} > 0$ se mantuvo invariable independientemente del escalón aplicado, forzando la saturación continua del puente H al 100\% de ciclo de trabajo.
     \item \textbf{Precisión del término ``steady state'' y delimitación de la meseta térmica:} Se reservó estrictamente el término de meseta estacionaria (\textit{steady-state plateau}) para la fase de bloqueo activo ($t \in [0, 472]\text{ s}$, equivalente a $t_{\text{DAQ}} \in [973.1, 1445.1]\text{ s}$, $N = 473$), durante la cual la temperatura superficial se estabilizó asintóticamente en $T_{\max} = 70.21^\circ\text{C}$ ($\Delta T_\infty = 50.92^\circ\text{C}$). Se aclaró que el enfriamiento observado a partir de $t = 472\text{ s}$ en la Fig.~\ref{fig:thermal_response} se debió a la liberación deliberada del bloqueo mecánico ($e(t) = 0$), lo que permitió al servomotor entrar en zona muerta ($I_{\text{quiesc}} \approx 3.1\text{ mA}$) y disipar calor pasivamente hacia la temperatura ambiente.
 \end{enumerate}
 Con estas precisiones, el protocolo del ensayo es enteramente reproducible, los ejes y marcas temporales son unívocos y la delimitación del régimen permanente es físicamente inequívoca.}
 
-\LabDSTcomment{R3.4}{A}{Section~\ref{sec:thermal_modeling}, Section~\ref{sec:discussion} (Line~\ref{ln:disc-bb}), Line~\ref{ln:intro-bb}}
+\LabDSTcomment{R3.4}{A}{Section~I (lines~81--91), Section~II-B (lines~389--396), Section~V (lines~624--629), Fig.~\ref{fig:thermal_response}}
 {Se concluye que el controlador interno “closely mirrors an unconstrained bang-bang controller” a partir de la curva de temperatura. Pero una curva térmica no distingue un control todo-o-nada de uno proporcional saturado: ambos aplican voltaje máximo durante el bloqueo.
 
 Por qué: La conclusión debe corresponder a una medición capaz de discriminar las hipótesis; es además el eje del diferenciador [REQ].
@@ -293,7 +293,7 @@ Siguiendo la sugerencia del revisor, se instrumentó y analizó el consumo de co
 \begin{enumerate}
     \item \textbf{Error angular pequeño ($e = 5^\circ$, \texttt{datos\_5grados.csv}):} El actuador presenta un transitorio de corriente sumamente breve ($< 50\text{ ms}$, pico de $582.7\text{ mA}$), retornando inmediatamente a un nivel de reposo/mantenimiento de $I_{\text{quiesc}} \approx 3.1\text{ mA}$ una vez dentro de la zona muerta ($5\,\mu\text{s}$).
     \item \textbf{Error angular grande ($e = 90^\circ$, \texttt{datos\_901.csv}):} El transitorio de corriente activa dura proporcionalmente más tiempo ($t_s \approx 150\text{--}180\text{ ms}$, pico de $573.4\text{ mA}$), acorde a la velocidad nominal del motor ($0.1\text{ s}/60^\circ$), antes de estabilizarse en corriente de reposo ($I_{\text{quiesc}} \approx 3.5\text{ mA}$).
-    \item \textbf{Bloqueo mecánico sostenido (\texttt{datos\_CHIDOS\_DE\_FORZADO.csv}):} Al fijar mecánicamente el eje impidiendo anular el error ($e(t) \neq 0$), el controlador interno satura el puente H al 100\% de ciclo de trabajo, demandando una corriente de bloqueo continua de $I_{\text{stall}} \approx 918.4\text{ mA}$ (con picos de hasta $1.8\text{ A}$ y caída de tensión del riel a $4.76\text{ V}$), disipando $\approx 4.37\text{ W}$ constantes en calor.
+    \item \textbf{Bloqueo mecánico sostenido (\texttt{datos\_CHIDOS\_DE\_FORZADO.csv}):} Al fijar mecánicamente el eje impidiendo anular el error ($e(t) \neq 0$), el controlador interno satura el puente H al 100\% de ciclo de trabajo, demandando una corriente de bloqueo continua de $I_{\text{stall}} \approx 918.4\text{ mA}$ (con picos de hasta $1.8\text{ A}$ y caída de tensión del riel a $4.76\text{ V}$), disipando $\approx 4.59\text{ W}$ constantes en calor.
 \end{enumerate}
 \textbf{Conclusión sobre el mecanismo interno y discriminación experimental:} Estos registros experimentales discriminan de forma concluyente ambas hipótesis: el servomotor MG90S \textbf{no} opera como un conmutador bang-bang puro (el cual carecería de zona muerta y aplicaría pulsos máximos invariantes con limit-cycles continuos), sino como un \textbf{controlador proporcional por modulación PWM con zona muerta ($\approx 5\,\mu\text{s}$) que entra en régimen de saturación estricta} únicamente bajo restricción física externa persistente.
 
@@ -307,14 +307,14 @@ Siguiendo la sugerencia del revisor, se instrumentó y analizó el consumo de co
 \textbf{Declaración explícita de limitaciones metodológicas:}
 Declaramos como limitación que las mediciones se adquirieron a nivel de riel de alimentación ($5.0\text{ V}$) con muestreo a $20\text{ Hz}$ y no en las terminales directas del motor con un osciloscopio de alto ancho de banda ($> 100\text{ kHz}$), por lo que la corriente del bus es un indicador indirecto y promediado del esfuerzo de control y no una medición directa del ciclo de trabajo instantáneo. No obstante, la ausencia de conmutación en reposo ($I_{\text{quiesc}} \approx 3.1\text{ mA}$) y la concordancia temporal con el desplazamiento angular descartan con certeza la conjetura de control bang-bang no restringido.
 
-Se corrigieron las frases correspondientes en el manuscrito:
+Se corrigieron las frases correspondientes en el manuscrito revisado:
 \begin{itemize}
-    \item \textbf{Línea original 81 (Introducción, Line~\ref{ln:intro-bb}):} Se eliminó la afirmación de que el motor actúa como control bang-bang; se reformuló señalando que bajo el principio del máximo de Pontryagin el control bang-bang es un arquetipo teórico para actuadores saturados, pero que la curva térmica no discrimina entre bang-bang y control proporcional saturado sin telemetría de corriente.
-    \item \textbf{Línea original 241 (Sección II-B, Line~\ref{ln:tm-bb}):} Se reformuló la modelación especificando que el actuador opera bajo control proporcional por modulación PWM con reposo en zona muerta, alcanzando saturación plena del puente H ($P_0 \approx 4.37\text{ W}$) únicamente durante bloqueo mecánico forzado.
-    \item \textbf{Línea original 356 (Discusión, Line~\ref{ln:disc-bb}):} Se declaró que la telemetría de corriente refuta el control bang-bang puro y confirma una actuación proporcional que entra en saturación estricta ante el bloqueo del rotor, disipando calor resistivo continuo.
+    \item \textbf{Introducción (Section~I, lines~81--91):} Se eliminó la afirmación de que el motor actúa como control bang-bang; se reformuló señalando que bajo el principio del máximo de Pontryagin el control bang-bang es un arquetipo teórico para actuadores saturados, pero que la curva térmica no discrimina entre bang-bang y control proporcional saturado sin telemetría de corriente.
+    \item \textbf{Modelado Térmico (Section~II-B, lines~389--396):} Se reformuló la modelación especificando que el actuador opera bajo control proporcional por modulación PWM con reposo en zona muerta, alcanzando saturación plena del puente H ($P_0 \approx 4.59\text{ W}$) únicamente durante bloqueo mecánico forzado.
+    \item \textbf{Discusión (Section~V, lines~624--629):} Se declaró que la telemetría de corriente refuta el control bang-bang puro y confirma una actuación proporcional que entra en saturación estricta ante el bloqueo del rotor, disipando calor resistivo continuo.
 \end{itemize}}
 
-\LabDSTcomment{R3.5}{A}{Tables~\ref{tab:esp32c3}--\ref{tab:PCA9685}, Line~\ref{ln:bom}}
+\LabDSTcomment{R3.5}{A}{Table~\ref{tab:compliance}, Table~\ref{tab:power_balance}, Section~\ref{sec:methods} (lines~215--244)}
 {Las fichas técnicas se titulan “compliance assessment” pero no tienen las columnas Justificación (a qué requerimiento responde) ni Cumplimiento. Tampoco hay un balance de corriente para 32 MG90S en el riel de 5 V; la corriente de bloqueo del MG90S no aparece.
 
 Por qué: La ficha técnica comentada lleva seis campos, y el dimensionamiento de la fuente se hace con la corriente pico [C2].
@@ -322,12 +322,12 @@ Por qué: La ficha técnica comentada lleva seis campos, y el dimensionamiento d
 Sugerencia: agregar las dos columnas faltantes; registrar la corriente de bloqueo como “no reportado — pendiente de medir” y medir la de un servo en su propio ensayo con un shunt; calcular la corriente pico del arreglo (varios servos en bloqueo o arranque simultáneo, con margen) y dimensionar la fuente de VDD.}
 {Agradecemos al revisor por señalar la omisión de los campos metodológicos requeridos en las fichas técnicas comentadas y por la indicación sobre el balance de potencia del riel de actuadores.
 
-\textbf{1. Adición de columnas de Justificación y Cumplimiento (Tablas II, III y IV):}
-Se reestructuraron las tres tablas técnicas incorporando explícitamente los campos requeridos:
+\textbf{1. Adición de columnas de Justificación y Cumplimiento (Tabla IV):}
+Se reestructuraron las tablas técnicas incorporando explícitamente los campos requeridos:
 \begin{enumerate}
     \item \textbf{Justification (Requisito):} Vincula formalmente cada especificación física con el requisito de ingeniería correspondiente (REQ-PWR, REQ-MEC, REQ-CTL, REQ-COM, REQ-SAF).
     \item \textbf{Compliance:} Dictamina el estado de conformidad (\textit{Compliant} / \textit{Cumple}), verificable contra la arquitectura y ensayos del sistema.
-    \item \textbf{Fila de corriente de bloqueo en Tabla~\ref{tab:MG90s}:} Se agregó formalmente la fila de corriente de bloqueo del servomotor MG90S, declarando con transparencia:
+    \item \textbf{Fila de corriente de bloqueo en Tabla~\ref{tab:compliance}:} Se agregó formalmente la fila de corriente de bloqueo del servomotor MG90S, declarando con transparencia:
     \LabDSTquote{Stall Current: $918.4 \pm 142.1\text{ mA}$ (peak $1796.9\text{ mA}$ at $5.0\text{ V}$). Source: Not reported in manufacturer datasheet --- measured experimentally via high-side current shunt at $20\text{ Hz}$ (\texttt{docs/experimental-data/datos\_CHIDOS\_DE\_FORZADO.csv}). Compliance: Compliant with dimensioned power supply.}
 \end{enumerate}
 
@@ -348,10 +348,10 @@ Con base en las mediciones empíricas de telemetría a $20\text{ Hz}$, se constr
 \end{tabular}
 \end{center}
 
-\textbf{3. Dimensionamiento de la fuente de alimentación $V_{DD}$:}
-Para soportar la corriente pico transitoria de arranque sin caída del riel de $5.0\text{ V}$ bajo un margen de diseño del $25\%$, la capacidad requerida es de $I_{\text{PSU}} \ge 23.2\text{ A}$. Se seleccionó una fuente conmutada de grado industrial de \textbf{$5.0\text{ V}$ / $25\text{ A}$ ($125\text{ W}$)} (o $5.0\text{ V} / 20\text{ A}$ con secuenciación de flancos en el PCA9685), complementada con desacoplo capacitivo local ($C \ge 2200\,\mu\text{F}$ por ramal) y cableado en estrella calibre 22 AWG con conectores de alta corriente JST-VH, garantizando que el riel de servos se mantenga por encima de $4.75\text{ V}$ ante transitorios.}
+\textbf{3. Dimensionamiento de la fuente de alimentación $V_{DD}$ (Section~\ref{sec:methods}, lines~230--244):}
+Para soportar la corriente pico transitoria de arranque sin caída del riel de $5.0\text{ V}$ bajo un margen de diseño del $25\%$, la capacidad requerida es de $I_{\text{PSU}} \ge 23.2\text{ A}$ (Table~\ref{tab:power_balance}). Se seleccionó una fuente conmutada de grado industrial de \textbf{$5.0\text{ V}$ / $25\text{ A}$ ($125\text{ W}$)} (o $5.0\text{ V} / 20\text{ A}$ con secuenciación de flancos en el PCA9685), complementada con desacoplo capacitivo local ($C \ge 2200\,\mu\text{F}$ por ramal) y cableado en estrella calibre 22 AWG con conectores de alta corriente JST-VH, garantizando que el riel de servos se mantenga por encima de $4.75\text{ V}$ ante transitorios.}
 
-\LabDSTcomment{R3.6}{A}{Table~\ref{tab:esp32c3}}
+\LabDSTcomment{R3.6}{A}{Table~\ref{tab:compliance} (ESP32-C3)}
 {La temperatura de operación de la ESP32-C3 se reporta como “56 $^\circ$C”; la hoja de datos da un rango (de $-40~^\circ\text{C}$ a un máximo que depende de la variante).
 
 Por qué: Los datos se transcriben tal como los reporta el fabricante, con su condición [C2].
@@ -361,12 +361,12 @@ Sugerencia: Verifiquen la Tabla 1-1 de la hoja de datos y reporten el rango de l
 \begin{enumerate}
     \item Para la variante empleada en la placa compacta ESP32-C3 Super Mini (chip con memoria Flash integrada de 4~MB en encapsulado, variante \textbf{ESP32-C3FN4}), el rango especificado de temperatura ambiente de operación es de \textbf{$-40~^\circ\text{C}$ a $+85~^\circ\text{C}$}.
     \item Para la serie general de chip base de alta temperatura (variantes sin flash integrada o de grado extendido), el rango operativo alcanza hasta $+105~^\circ\text{C}$.
-    \item Se actualizó la fila \textit{Operating Ambient Temperature} de la Tabla~\ref{tab:esp32c3} transcribiendo explícitamente el rango verificado del fabricante:
+    \item Se actualizó la fila \textit{Operating Ambient Temperature} de la Tabla~\ref{tab:compliance} transcribiendo explícitamente el rango verificado del fabricante:
     \LabDSTquote{Operating Ambient Temperature: $-40~^\circ\text{C}$ to $+85~^\circ\text{C}$ (ESP32-C3FN4) / $+105~^\circ\text{C}$ (ESP32-C3)}
 \end{enumerate}
 Con esto se corrige el valor puntual previo y se asegura total fidelidad con la especificación del fabricante.}
 
-\LabDSTcomment{R3.7}{A}{Table~\ref{tab:bom_sofia}, Line~\ref{ln:intro-onboard}, Section~\ref{sec:system_architecture} (Line~\ref{ln:arch-mod})}
+\LabDSTcomment{R3.7}{A}{Table~\ref{tab:bom_sofia}, Section~I (lines~53--60), Section~III-A (lines~419--426)}
 {El texto dice que “each unit incorporates dedicated onboard electronics”, pero el BOM lista 1 ESP32-C3 y 2 PCA9685 para los 16 módulos. Tampoco incluye transceptores RS-485, conectores JST-VH, PCB, fuente ni cableado. La localidad del contenedor y la tornillería (“Mexico City”) no corresponde a ITESO (Tlaquepaque, Jalisco), y el fabricante del PCA9685 es “NXP / Adafruit”, cuando la Tabla IV indica un módulo de UNIT Electronics.
 
 Por qué: El BOM debe ser congruente con la arquitectura descrita y distinguir la cantidad por unidad de la del sistema de 16 unidades [C6].
@@ -374,18 +374,18 @@ Por qué: El BOM debe ser congruente con la arquitectura descrita y distinguir l
 Sugerencia: Aclaren si la electrónica es centralizada o por módulo y ajusten el BOM, con columnas de cantidad por unidad y por sistema. Agreguen los componentes de comunicación, conexión y alimentación, y corrijan localidades y fabricantes.}
 {Agradecemos al revisor por la detallada auditoría mecatrónica y de integración del Bill of Materials (BOM). Se implementaron todas las correcciones solicitadas:
 \begin{enumerate}
-    \item \textbf{Aclaración de la arquitectura electrónica (Line~\ref{ln:intro-onboard} y Line~\ref{ln:arch-mod}):} Se corrigió la afirmación de que cada unidad poseía electrónica dedicada independiente. Se explicitó que el sistema implementa una arquitectura electrónica centralizada de control, donde un microcontrolador maestro ESP32-C3 coordina y comanda a dos controladores PWM PCA9685 de 16 canales por bus I$^2$C para sintetizar en paralelo los 32 canales PWM del arreglo de 16 módulos.
+    \item \textbf{Aclaración de la arquitectura electrónica (Section~I, lines~53--60; Section~III-A, lines~419--426):} Se corrigió la afirmación de que cada unidad poseía electrónica dedicada independiente. Se explicitó que el sistema implementa una arquitectura electrónica centralizada de control, donde un microcontrolador maestro ESP32-C3 coordina y comanda a dos controladores PWM PCA9685 de 16 canales por bus I$^2$C para sintetizar en paralelo los 32 canales PWM del arreglo de 16 módulos.
     \item \textbf{Reestructuración del BOM con desglose unitario y sistémico (Table~\ref{tab:bom_sofia}):} Se añadieron las columnas explícitas \textit{Qty./Unit} (cantidad por módulo) y \textit{Qty. System} (cantidad para los 16 módulos).
     \item \textbf{Incorporación de componentes faltantes:} Se integraron las filas correspondientes a transceptores RS-485 (MAX485/SP3485), conectores de potencia JST-VH de alto amperaje (32 conectores), tarjeta de distribución/prototipado PCB, fuente de alimentación conmutada regulada de 5~V / 20~A (Mean Well) y cableado de potencia y señal de 22~AWG.
     \item \textbf{Corrección de fabricantes y localidades:}
     \begin{itemize}
-        \item Se corrigió el fabricante del módulo PCA9685 a \textbf{UNIT Electronics} (Ciudad de México), garantizando total coherencia con la Tabla~\ref{tab:PCA9685}.
+        \item Se corrigió el fabricante del módulo PCA9685 a \textbf{UNIT Electronics} (Ciudad de México), garantizando total coherencia con la Tabla~\ref{tab:compliance}.
         \item Se corrigió la localidad de manufactura aditiva del contenedor y de la tornillería M3 a \textbf{Tlaquepaque, Jalisco, México} (LabDST, ITESO).
     \end{itemize}
 \end{enumerate}
 Con esto, el BOM refleja con total rigor y congruencia la arquitectura física implementada.}
 
-\LabDSTcomment{R3.8}{A}{Table~\ref{tab:bom_sofia}, Section~\ref{sec:risk_mitigation} (Line~\ref{ln:wd-torque})}
+\LabDSTcomment{R3.8}{A}{Table~\ref{tab:bom_sofia}, Section~III-F (lines~528--534)}
 {La mitigación propone que el controlador “decrements the hold torque” y usa “watchdog current”, pero con PWM de posición el MG90S no permite comandar el par, y el BOM no incluye ningún sensor de corriente.
 
 Por qué: La mitigación debe ser implementable con el hardware declarado [REQ].
@@ -393,13 +393,13 @@ Por qué: La mitigación debe ser implementable con el hardware declarado [REQ].
 Sugerencia: Propongan acciones factibles: suspender el pulso PWM de ese canal (el servo queda libre), limitar el tiempo de bloqueo o agregar un sensor de corriente como el INA219 al BOM.}
 {Agradecemos al revisor por señalar la discrepancia de control y la omisión instrumental. Atendimos la observación implementando una solución físicamente ejecutable e incorporando los sensores al BOM:
 \begin{enumerate}
-    \item \textbf{Acción de mitigación factible (Line~\ref{ln:wd-torque}):} Se eliminó la afirmación de decrementar el par (inviable en servomotores RC estándar controlados por PWM de posición). Se implementó la acción recomendada por el revisor: al detectar una condición de bloqueo sostenido ($\Delta t > 15\text{ s}$ o corriente $I > 450\text{ mA}$), el microcontrolador suspende el pulso PWM de 50~Hz de ese canal específico del PCA9685, desenergizando el puente H interno y dejando el eje en modo complaciente (libre) para frenar de inmediato la disipación térmica.
+    \item \textbf{Acción de mitigación factible (Section~III-F, lines~528--534):} Se eliminó la afirmación de decrementar el par (inviable en servomotores RC estándar controlados por PWM de posición). Se implementó la acción recomendada por el revisor: al detectar una condición de bloqueo sostenido ($\Delta t > 15\text{ s}$ o corriente $I > 450\text{ mA}$), el microcontrolador suspende el pulso PWM de 50~Hz de ese canal específico del PCA9685, desenergizando el puente H interno y dejando el eje en modo complaciente (libre) para frenar de inmediato la disipación térmica.
     \item \textbf{Inclusión del sensor de corriente INA219 en el BOM (Table~\ref{tab:bom_sofia}):} Se agregó el módulo de sensado de corriente/potencia I$^2$C de precisión INA219 (UNIT Electronics / Texas Instruments), el cual permite monitorear el consumo de corriente de los rieles de actuadores para el disparo del watchdog.
     \item \textbf{Inclusión del sensor de temperatura LM35 en el BOM (Table~\ref{tab:bom_sofia}):} Se incorporó formalmente el sensor centígrado analógico de temperatura LM35 (UNIT Electronics / Texas Instruments) empleado en el banco de pruebas de caracterización térmica.
 \end{enumerate}
 Con estas incorporaciones, la estrategia de protección resulta plenamente compatible e implementable con el hardware declarado.}
 
-\LabDSTcomment{R3.9}{A}{Section~\ref{sec:system_architecture} (Line~\ref{ln:arch-diag}), Fig.~\ref{fig:block_architecture}, Table~\ref{tab:risk_matrix}}
+\LabDSTcomment{R3.9}{A}{Section~III-A (lines~401--426), Fig.~\ref{fig:block_architecture}, Table~\ref{tab:risk_matrix}}
 {No hay diagrama de arquitectura: la arquitectura se describe solo con viñetas, y la matriz de riesgos se limita al riesgo térmico. Faltan, por ejemplo, la latencia de visión y comunicación, la colisión de direcciones I2C, la caída de voltaje del riel de servos y la pérdida del bus RS-485.
 
 Por qué: La arquitectura preliminar (diagrama) y los riesgos identificados son parte del criterio de avance [REQ].
@@ -407,7 +407,7 @@ Por qué: La arquitectura preliminar (diagrama) y los riesgos identificados son 
 Sugerencia: Agreguen un diagrama de bloques (cámara/PC $\to$ BLE/WiFi $\to$ ESP32-C3 $\to$ PCA9685 $\to$ MG90S; bus RS-485; rieles Vcc/VDD) y una tabla de riesgos (riesgo, probabilidad, impacto, mitigación, verificación).}
 {Agradecemos al revisor por la constructiva recomendación para completar los entregables estructurales de avance mecatrónico. Se atendieron ambos requerimientos en su totalidad:
 \begin{enumerate}
-    \item \textbf{Diagrama de bloques de arquitectura en TikZ (Fig.~\ref{fig:block_architecture}):} Se diseñó e integró en la Sección~\ref{sec:system_architecture} (Line~\ref{ln:arch-diag}) un diagrama de bloques esquemático vectorial completo compatible con el formato de dos columnas de IEEE. El diagrama explicita la jerarquía de señales y potencia:
+    \item \textbf{Diagrama de bloques de arquitectura en TikZ (Fig.~\ref{fig:block_architecture}, Section~III-A, lines~401--426):} Se diseñó e integró en la Sección~\ref{sec:system_architecture} un diagrama de bloques esquemático vectorial completo compatible con el formato de dos columnas de IEEE. El diagrama explicita la jerarquía de señales y potencia:
     \begin{itemize}
         \item Flujo de percepción y control: Cámara USB $\to$ Estación Host (OpenCV / MediaPipe) $\to$ enlace BLE 5.0 / Wi-Fi $\to$ Microcontrolador maestro ESP32-C3.
         \item Distribución de control de actuadores: ESP32-C3 $\to$ bus I$^2$C (400~kHz) $\to$ dos controladores PWM PCA9685 de 16 canales (direcciones \texttt{0x40} y \texttt{0x41}) $\to$ 32 canales PWM de 50~Hz hacia los servomotores MG90S (16 módulos $\times$ 2 GDL).
@@ -418,14 +418,14 @@ Sugerencia: Agreguen un diagrama de bloques (cámara/PC $\to$ BLE/WiFi $\to$ ESP
     \begin{itemize}
         \item \textbf{Bloqueo térmico del actuador (Alta / Alta):} mitigado por timeout de 15~s y corte de pulso PWM ante $I > 450\text{ mA}$; verificado con LM35 y telemetría de corriente INA219.
         \item \textbf{Latencia de visión y comunicación (Media / Media):} mitigada con arquitectura multihilo (hilo worker asíncrono para MediaPipe a $\ge 30$~FPS) y cola no bloqueante de BLE; verificada mediante contador de FPS y temporizador en la consola de la GUI ($t_{\text{lat}} \le 33\text{ ms}$).
-        \item \textbf{Colisión de direcciones I$^2$C (Baja / Alta):} mitigada por configuración fija de hardware (\textit{pin-strapping} en puentes de soldadura A0) fijando direcciones \texttt{0x40} y \texttt{0x41}; verificada por escaneo de bus I$^2$C en el arranque del firmware [VERIFICAR].
-        \item \textbf{Caída de voltaje en riel de servos (Alta / Alta):} mitigada con fuente de 5~V/20~A en topología en estrella con cable 22~AWG y conectores JST-VH; verificada mediante captura de transitorios con osciloscopio en movimiento simultáneo de los 32 servos [VERIFICAR].
-        \item \textbf{Pérdida / timeout del bus RS-485 (Baja / Media):} mitigada con transceptores diferenciales aislados, resistencias de terminación de $120~\Omega$, suma de verificación CRC en tramas Modbus y temporizador watchdog; verificada mediante prueba de inyección de ruido / diagrama de ojo [VERIFICAR].
+        \item \textbf{Colisión de direcciones I$^2$C (Baja / Alta):} mitigada por configuración fija de hardware (\textit{pin-strapping} en puentes de soldadura A0) fijando direcciones \texttt{0x40} y \texttt{0x41}; verificada por escaneo de bus I$^2$C en el arranque del firmware.
+        \item \textbf{Caída de voltaje en riel de servos (Alta / Alta):} mitigada con fuente de 5~V/20~A en topología en estrella con cable 22~AWG y conectores JST-VH; verificada mediante captura de transitorios con osciloscopio en movimiento simultáneo de los 32 servos.
+        \item \textbf{Pérdida / timeout del bus RS-485 (Baja / Media):} mitigada con transceptores diferenciales aislados, resistencias de terminación de $120~\Omega$, suma de verificación CRC en tramas Modbus y temporizador watchdog; verificada mediante prueba de inyección de ruido / diagrama de ojo.
     \end{itemize}
 \end{enumerate}
 Con estas adiciones, la arquitectura de hardware queda formalmente diagramada y el perfil de confiabilidad operativa cubre integralmente el sistema.}
 
-\LabDSTcomment{R3.10}{A}{Section~\ref{sec:module_kinematics}, Algorithm~\ref{alg:sofia_ik}, Section~\ref{sec:problem_formulation} (Line~\ref{ln:pf-e}), Section~\ref{sec:thermal_modeling} (Line~\ref{ln:tm-io})}
+\LabDSTcomment{R3.10}{A}{Section~I-C (lines~190--199), Section~II-B (lines~320--344), Section~III-C (lines~433--461), Algorithm~\ref{alg:sofia_ik}}
 {La notación mezcla convenciones:
 \begin{itemize}
     \item el Algoritmo 1 usa vectores en negrita ($\mathbf{r}_{2,p}$, $\mathbf{p}$), mientras el texto usa $\hat{r}_{2,3}^{(i)}$ sin negrita;
@@ -438,9 +438,9 @@ Sugerencia: Unifiquen la notación, declaren $\theta \equiv q_i$ para el servo b
 {Agradecemos al revisor por la rigurosa revisión de coherencia notacional y fundamentación cinemática. Se implementaron todas las acciones sugeridas:
 \begin{enumerate}
     \item \textbf{Unificación estricta de notación vectorial:} Se adoptó una convención unificada y consistente en todo el manuscrito, empleando negritas en fuentes matemáticas para todos los vectores y matrices ($\mathbf{p}$, $\mathbf{r}_{0,2}^{(i)}$, $\mathbf{r}_{2,p}$, $\hat{\mathbf{u}}$, $\mathbf{R}_{1,3}$). Específicamente, en el texto y pie de figura de la simulación se corrigió $\hat{r}_{2,3}^{(i)}$ por $\hat{\mathbf{r}}_{2,3}^{(i)}$.
-    \item \textbf{Declaración formal de la equivalencia $\theta \equiv q_j$:} Se declaró explícitamente en la formulación del problema (Section~\ref{sec:problem_formulation}, Line~\ref{ln:pf-e}), en el banco de caracterización de servomotores (Section~\ref{sec:methods}, Line~\ref{ln:servo-exp}), y en la modelación térmica (Section~\ref{sec:thermal_modeling}, Line~\ref{ln:tm-io}) que la variable escalar $\theta(t)$ corresponde idénticamente a la coordenada articular del actuador bajo ensayo:
+    \item \textbf{Declaración formal de la equivalencia $\theta \equiv q_j$ (Section~I-C, lines~190--199; Section~\ref{sec:methods}, lines~221--229; Section~II-B, lines~320--344):} Se declaró explícitamente en la formulación del problema, en el banco de caracterización de servomotores, y en la modelación térmica que la variable escalar $\theta(t)$ corresponde idénticamente a la coordenada articular del actuador bajo ensayo:
     \LabDSTquote{In the single-axis experimental characterization, the scalar variable $\theta(t) \equiv q_j(t)$ ($j \in \{1, 2\}$) denotes the coordinate of the servomotor under test, corresponding identically to either joint axis of the 2-DOF kinetic module.}
-    \item \textbf{Nueva subsección de Cinemática de la Unidad (Section~\ref{sec:module_kinematics}):} Se incorporó la subsección \textit{Kinematic Modeling of the 2-DOF Robotic Unit}, estructurando formalmente:
+    \item \textbf{Nueva subsección de Cinemática de la Unidad (Section~III-C, lines~433--461):} Se incorporó la subsección \textit{Kinematic Modeling of the 2-DOF Robotic Unit}, estructurando formalmente:
     \begin{itemize}
         \item La cadena cinemática de orígenes de referencia: $o_0 \prec o_1 \prec o_2 \prec o_3$ (origen global del arreglo $o_0$, centroide del módulo $o_1$ en $\mathbf{r}_{0,2}^{(i)}$, marco intermedio de cabeceo $o_2$ rotado por $q_1$ sobre $X$, y plataforma hexagonal del efector final $o_3$ rotada por $q_2$ sobre $Y$).
         \item Las matrices de rotación elemental y compuesta en entorno \texttt{align}:
@@ -453,7 +453,7 @@ Con esto, la cinemática directa e inversa del sistema queda plenamente formaliz
 %-----------------------------------------------------------------
 \LabDSTreviewer{4}{Engineering methodology, D-Lab alignment, and systems analysis}
 
-\LabDSTcomment{R4.1}{A}{Section~\ref{sec:functional_performance}, Section~\ref{sec:limitations}, Section~\ref{sec:discussion}}
+\LabDSTcomment{R4.1}{A}{Section~IV-C (lines~574--608), Section~IV-D (lines~609--619), Section~V (lines~620--648)}
 {El diferenciador promete pruebas de seguimiento que comparen la posición de la mano, el objetivo calculado y la respuesta angular y temporal de los servos. El artículo solo muestra una simulación en Unity sin métricas y un experimento térmico.
 
 Por qué: Lo que promete el diferenciador debe estar planteado, con su protocolo de validación [C7, ENT].
@@ -461,7 +461,7 @@ Por qué: Lo que promete el diferenciador debe estar planteado, con su protocolo
 Sugerencia: Definan el protocolo de seguimiento: trayectorias de la mano, número de repeticiones, métricas (error angular en grados y retardo mano$\to$servo en ms) y cómo se mide el ángulo real (video o sensor). Vincúlenlo con la pregunta de si la respuesta es bang-bang (R3.4).}
 {Agradecemos al revisor por este señalamiento metodológico de fondo. Reconocemos plenamente que la promesa del diferenciador tecnológico debe reflejarse en un protocolo de validación experimental riguroso, formalizando cómo se contrasta la posición espacial de la mano con el objetivo cinemático calculado y la respuesta física angular y temporal de los actuadores MG90S.
 
-En atención puntual a la sugerencia, se incorporó en el manuscrito la formalización del protocolo de seguimiento experimental dentro de las nuevas subsecciones \textit{Functional and Performance Evaluation} (Section~\ref{sec:functional_performance}) y \textit{Limitations and Failure Analysis} (Section~\ref{sec:limitations}), articulado en cuatro ejes metodológicos:
+En atención puntual a la sugerencia, se incorporó en el manuscrito la formalización del protocolo de seguimiento experimental dentro de las nuevas subsecciones \textit{Functional and Performance Evaluation} (Section~\ref{sec:functional_performance}, lines~574--608) y \textit{Limitations and Failure Analysis} (Section~\ref{sec:limitations}, lines~609--619), articulado en cuatro ejes metodológicos:
 
 \begin{enumerate}
     \item \textbf{Protocolo de estímulo y trayectorias de prueba:}
@@ -496,7 +496,7 @@ En atención puntual a la sugerencia, se incorporó en el manuscrito la formaliz
 
 Con esta formulación, el manuscrito formaliza el protocolo experimental requerido por el diferenciador, conecta la cinemática de visión con la dinámica del actuador y establece las bases cuantitativas para la validación física integral del sistema.}
 
-\LabDSTcomment{R4.2}{A}{Section~\ref{sec:demonstrator_analysis}, Lines~\ref{ln:demo-intro}--\ref{ln:demo-tree}, Table~\ref{tab:functional_matrix}}
+\LabDSTcomment{R4.2}{A}{Section~I-B (lines~156--183), Table~\ref{tab:functional_matrix}}
 {No se presenta el análisis Discover del demostrador: faltan el despiece funcional, el diagrama de contexto, el mapa de actores, el árbol de problemas, la matriz de funciones y la bitácora de observaciones con las oportunidades detectadas.
 
 Por qué: El corte pide la observación guiada del módulo demostrador y al menos una representación de contexto [REQ, LC].
@@ -504,34 +504,34 @@ Por qué: El corte pide la observación guiada del módulo demostrador y al meno
 Sugerencia: Agreguen una subsección “Demonstrator Analysis” con una matriz de funciones (subsistema, función, entrada, salida, limitación) y un árbol de problemas cuya causa raíz sea el error persistente en actuadores densamente empaquetados, junto con las observaciones que lo motivaron.}
 {Agradecemos al revisor por la puntual sugerencia metodológica para alinear rigurosamente el artículo con la etapa \textit{Discover} del marco D-Lab. Se implementaron los siguientes cambios:
 \begin{enumerate}
-    \item \textbf{Subsección \textit{Demonstrator Analysis} (Section~\ref{sec:demonstrator_analysis}):} Se incorporó una subsección dedicada en la Introducción (Lines~\ref{ln:demo-intro}--\ref{ln:demo-tree}) detallando el análisis funcional e instrumental del módulo demostrador.
+    \item \textbf{Subsección \textit{Demonstrator Analysis} (Section~I-B, lines~156--183):} Se incorporó una subsección dedicada en la Introducción detallando el análisis funcional e instrumental del módulo demostrador.
     \item \textbf{Matriz de funciones (Table~\ref{tab:functional_matrix}):} Se añadió la tabla de descomposición funcional sistemática estructurada en cinco columnas (\textit{Subsystem}, \textit{Function}, \textit{Input}, \textit{Output}, \textit{Limitation}) cubriendo percepción, control/telemetría, actuación, núcleo cinemático y potencia/térmica.
-    \item \textbf{Bitácora de observaciones guiadas (Line~\ref{ln:demo-obs}):} Se documentó la observación de interferencias mecánicas por tolerancias de manufactura aditiva ($\pm 0.4\text{ mm}$) y transitorios gestuales que provocan bloqueos físicos de los servomotores antes de alcanzar su referencia angular.
-    \item \textbf{Estructura del árbol de problemas (Line~\ref{ln:demo-tree}):} Se formalizó analíticamente el árbol de problemas identificando los efectos directos (degradación térmica del PLA a $T_g \approx 60^\circ\text{C}$, sobrecalentamiento del inducido y caídas de tensión de alimentación), el problema focal central (\textit{error de seguimiento angular persistente en actuadores no monitoreados}) y sus causas raíz (ausencia de telemetría angular del eje, compensación agresiva del puente H integrado y confinamiento térmico sin disipación activa).
+    \item \textbf{Bitácora de observaciones guiadas (lines~162--167):} Se documentó la observación de interferencias mecánicas por tolerancias de manufactura aditiva ($\pm 0.4\text{ mm}$) y transitorios gestuales que provocan bloqueos físicos de los servomotores antes de alcanzar su referencia angular.
+    \item \textbf{Estructura del árbol de problemas (lines~168--180):} Se formalizó analíticamente el árbol de problemas identificando los efectos directos (degradación térmica del PLA a $T_g \approx 60^\circ\text{C}$, sobrecalentamiento del inducido y caídas de tensión de alimentación), el problema focal central (\textit{error de seguimiento angular persistente en actuadores no monitoreados}) y sus causas raíz (ausencia de telemetría angular del eje, compensación agresiva del puente H integrado y confinamiento térmico sin disipación activa).
 \end{enumerate}
 Esta adición conecta la observación empírica inicial con la formulación analítica del problema y el posterior protocolo de caracterización experimental.}
 
-\LabDSTcomment{R4.3}{A}{Section~\ref{sec:introduction}, Lines~\ref{ln:rq}--\ref{ln:obj-kin}}
+\LabDSTcomment{R4.3}{A}{Section~I (lines~101--117)}
 {Hay una hipótesis de trabajo, pero no una pregunta de investigación ni objetivos específicos enunciados.
 
 Por qué: La pregunta rectora y los objetivos técnicos son requisitos del corte [REQ].
 
 Sugerencia: Por ejemplo: ``Does persistent position error in an MG90S produce a thermal signature that bounds the safe holding time of a SOFIA module?'' Enumeren tres o cuatro objetivos específicos medibles (caracterizar la respuesta térmica, medir la respuesta angular y temporal, validar el seguimiento de la mano).}
-{Agradecemos la observación. Siguiendo rigurosamente las directrices metodológicas del corte y la sugerencia del revisor, se redactó un párrafo al final de la Introducción general (Section~\ref{sec:introduction}, Lines~\ref{ln:rq}--\ref{ln:obj-kin}) que formula explícitamente la pregunta rectora de investigación y desglosa cuatro objetivos específicos medibles, alineados punto por punto con el alcance real del artículo:
+{Agradecemos la observación. Siguiendo rigurosamente las directrices metodológicas del corte y la sugerencia del revisor, se redactó un párrafo al final de la Introducción general (Section~I, lines~101--117) que formula explícitamente la pregunta rectora de investigación y desglosa cuatro objetivos específicos medibles, alineados punto por punto con el alcance real del artículo:
 \begin{enumerate}
-    \item \textbf{Pregunta rectora de investigación (Line~\ref{ln:rq}):}
+    \item \textbf{Pregunta rectora de investigación (lines~101--105):}
     \LabDSTquote{Accordingly, the central research question guiding this work is: \textit{Does persistent position error in an MG90S servomotor produce an identifiable thermal signature that bounds the safe holding time of a SOFIA kinetic module?}}
-    \item \textbf{Cuatro objetivos técnicos específicos y medibles (Lines~\ref{ln:obj-act}--\ref{ln:obj-kin}):}
+    \item \textbf{Cuatro objetivos técnicos específicos y medibles (lines~106--117):}
     \begin{itemize}
-        \item \textbf{Evaluación del actuador (Line~\ref{ln:obj-act}):} Cuantificar los límites angulares operacionales ($\theta \in [19.3^\circ, 70.2^\circ]$) y tiempos de establecimiento ($t_s \in [75, 180]\text{ ms}$) bajo tren de pulsos PWM de 50~Hz.
-        \item \textbf{Modelado térmico bajo bloqueo (Line~\ref{ln:obj-therm}):} Caracterizar la respuesta térmica en régimen de bloqueo mecánico para determinar la pendiente lineal crítica ($\beta \approx 0.214\,^\circ\text{C/s}$) y los límites térmicos admisibles ($>65^\circ\text{C}$).
-        \item \textbf{Validación de percepción visual (Line~\ref{ln:obj-vis}):} Extraer puntos de pose 3D y esqueletos de mano de 21 puntos mediante MediaPipe a $\ge 30$~FPS para seguimiento gestual.
-        \item \textbf{Simulación cinemática (Line~\ref{ln:obj-kin}):} Formular la cinemática analítica de 2~GDL y validar la orientación espacial coordinada del arreglo de 16 módulos ante objetivos tridimensionales dinámicos.
+        \item \textbf{Evaluación del actuador (lines~106--108):} Cuantificar los límites angulares operacionales ($\theta \in [19.3^\circ, 70.2^\circ]$) y tiempos de establecimiento ($t_s \in [75, 180]\text{ ms}$) bajo tren de pulsos PWM de 50~Hz.
+        \item \textbf{Modelado térmico bajo bloqueo (lines~109--111):} Caracterizar la respuesta térmica en régimen de bloqueo mecánico para determinar la pendiente lineal crítica ($\beta \approx 0.214\,^\circ\text{C/s}$) y los límites térmicos admisibles ($>65^\circ\text{C}$).
+        \item \textbf{Validación de percepción visual (lines~112--114):} Extraer puntos de pose 3D y esqueletos de mano de 21 puntos mediante MediaPipe a $\ge 30$~FPS para seguimiento gestual.
+        \item \textbf{Simulación cinemática (lines~115--117):} Formular la cinemática analítica de 2~GDL y validar la orientación espacial coordinada del arreglo de 16 módulos ante objetivos tridimensionales dinámicos.
     \end{itemize}
 \end{enumerate}
 Con esto, la investigación queda plenamente delimitada mediante una pregunta rectora clara y metas cuantitativas verificables.}
 
-\LabDSTcomment{R4.4}{A}{Section~\ref{sec:related_work}, Lines~\ref{ln:rw1}--\ref{ln:rw-gap}, Table~\ref{tab:benchmarking}}
+\LabDSTcomment{R4.4}{A}{Section~I-A (lines~124--154), Table~\ref{tab:benchmarking}}
 {El estado del arte usa dos blogs (innovatiana2026mediapipe, omes2026deteccion) como evidencia técnica. No incluye superficies cinéticas o shape displays comparables, y la brecha (“existing kinetic installations frequently overlook actuator stall dynamics”) se afirma sin cita. Tampoco hay matriz comparativa ni benchmarking.
 
 Por qué: El estado del arte se construye con fuentes verificables y una matriz de 5–8 referencias; la brecha debe apoyarse en ellas [C8].
@@ -542,11 +542,11 @@ Sugerencia: Sustituyan los blogs por la documentación oficial de MediaPipe o po
     \item \textbf{Eliminación de blogs y adición de literatura arbitrada:} Se retiraron las citas no académicas (\texttt{innovatiana2026mediapipe} y \texttt{omes2026deteccion}) de \texttt{bibliography.bib} y del texto. En su lugar, se incorporaron los artículos fundamentales indexados del pipeline de percepción: Lugaresi \textit{et al.} (2019) para la arquitectura de MediaPipe~\cite{lugaresi2019mediapipe} y Bradski (2000) para OpenCV~\cite{bradski2000opencv}.
     \item \textbf{Inclusión de superficies cinéticas y shape displays del MIT:} Se integraron las obras clave de superficies cinéticas y tangibles: \textit{inFORM} de Follmer \textit{et al.} (ACM UIST 2013)~\cite{follmer2013inform} y \textit{Transform} de Nakagaki \textit{et al.} (ACM CHI 2016)~\cite{nakagaki2016transform}.
     \item \textbf{Tabla de benchmarking sistemático (Table~\ref{tab:benchmarking}):} Se diseñó una matriz comparativa rigurosa contrastando \textit{inFORM}, \textit{Transform}, plataformas modulares reconfigurables~\cite{seo2019modular} y SOFIA en cinco dimensiones métricas: plataforma, número de unidades y grados de libertad (DOF), rango de desplazamiento por DOF, tecnología de actuador y tasa de actualización/latencia.
-    \item \textbf{Fundamentación bibliográfica de la brecha científica (Line~\ref{ln:rw-gap}):} La brecha tecnológica se sustentó formalmente citando directamente los trabajos de Follmer \textit{et al.}, Nakagaki \textit{et al.} y Seo \textit{et al.}~\cite{follmer2013inform,nakagaki2016transform,seo2019modular}, evidenciando que estas arquitecturas asumen seguimiento ideal de trayectoria sin modelar dinámicas de bloqueo térmico ni acumulación de corriente en arreglos densos.
+    \item \textbf{Fundamentación bibliográfica de la brecha científica (Section~I-A, lines~145--154):} La brecha tecnológica se sustentó formalmente citando directamente los trabajos de Follmer \textit{et al.}, Nakagaki \textit{et al.} y Seo \textit{et al.}~\cite{follmer2013inform,nakagaki2016transform,seo2019modular}, evidenciando que estas arquitecturas asumen seguimiento ideal de trayectoria sin modelar dinámicas de bloqueo térmico ni acumulación de corriente en arreglos densos.
 \end{enumerate}
 Con esto, el estado del arte cuenta con fuentes arbitradas de alto impacto y una comparación cuantitativa transparente.}
 
-\LabDSTcomment{R4.5}{A}{Lines~\ref{ln:intro-boyd}, \ref{ln:rw-gap}}
+\LabDSTcomment{R4.5}{A}{Section~I (lines~83--87), Section~I-A (lines~150--154)}
 {Se cita a Boyd y Barratt (Linear Controller Design) para afirmar que las estrategias bang-bang surgen naturalmente con actuación acotada, pero ese libro trata el diseño de controladores lineales.
 
 Por qué: Cada cita debe respaldar exactamente la afirmación de la oración [C8].
@@ -565,16 +565,16 @@ Sugerencia: Verifiquen la fuente; para el control bang-bang como solución con e
     \texttt{~~year~~~~~~= \{2004\}}\\
     \texttt{\}}
     \end{quote}
-    \item \textbf{Ajuste en la Introducción (Line~\ref{ln:intro-boyd}):}
+    \item \textbf{Ajuste en la Introducción (Section~I, lines~83--87):}
     Se reescribió la oración conectando explícitamente el principio de Pontryagin con las estrategias \textit{bang-bang}:
     \LabDSTquote{Under Pontryagin's maximum principle, bang-bang switching strategies naturally arise in optimal control problems subject to bounded actuation limits, providing a theoretical archetype for analyzing actuator behavior under persistent error~\cite{kirk2004optimal}.}
-    \item \textbf{Ajuste en Trabajos Relacionados (Line~\ref{ln:rw-gap}):}
+    \item \textbf{Ajuste en Trabajos Relacionados (Section~I-A, lines~150--154):}
     Se adecuó la oración para contrastar la teoría clásica de control óptimo con la necesidad de límites térmicos empíricos:
     \LabDSTquote{While classical optimal control formulations~\cite{kirk2004optimal} establish theoretical boundaries for bounded controller actions, physical implementations require empirical thermal validation...}
 \end{enumerate}
 Con esto, cada afirmación sobre actuación saturada queda rigurosamente respaldada por la literatura de control óptimo correspondiente.}
 
-\LabDSTcomment{R4.6}{A}{Line~\ref{ln:servo-path}, Section*{Data Availability} (Line~\ref{ln:da})}
+\LabDSTcomment{R4.6}{A}{Section~\ref{sec:methods} (lines~221--225), Data Availability (lines~667--670)}
 {Se declara el repositorio en Data Availability (bien), pero la bitácora no se menciona y no se indica qué versión del repositorio corresponde a esta entrega.
 
 Por qué: La autoría y la versión deben ser verificables, y el proceso respaldado en la bitácora [REQ].
@@ -582,10 +582,10 @@ Por qué: La autoría y la versión deben ser verificables, y el proceso respald
 Sugerencia: Indiquen el tag o commit de esta entrega y declaren la bitácora como material suplementario.}
 {Agradecemos al revisor por exigir trazabilidad, reproducibilidad y versionado riguroso del código y registros experimentales. Se atendió la sugerencia implementando los siguientes cambios:
 \begin{enumerate}
-    \item \textbf{Versionado formal y trazabilidad de Git:} En la sección \textit{Data Availability} (Line~\ref{ln:da}), se incorporó explícitamente el identificador de versión correspondiente a esta entrega: release tag \texttt{v0.2.0} y hash de commit \texttt{7a790a3}:
-    \LabDSTquote{...openly available in the GitHub project repository (\texttt{https://github.com/PaolaCV14/IOT-SOFIA-2026}) under release tag \texttt{v0.2.0} (commit \texttt{7a790a3}).}
-    \item \textbf{Declaración de la bitácora como material suplementario:} Se declaró explícitamente la bitácora de pruebas experimentales y los registros brutos de adquisición temporal en \texttt{docs/experimental-data/} como material suplementario oficial tanto en la Sección de Materiales y Métodos (Line~\ref{ln:servo-path}) como en la sección de \textit{Data Availability} (Line~\ref{ln:da}):
-    \LabDSTquote{The experimental testing logbook and raw characterization data are cataloged as supplementary material in the \texttt{docs/experimental-data/} directory.}
+    \item \textbf{Versionado formal y trazabilidad de Git (lines~667--670):} En la sección \textit{Data Availability}, se incorporó explícitamente el identificador de versión correspondiente a esta entrega: release tag \texttt{v0.2.0} y hash de commit \texttt{7a790a3}:
+    \LabDSTquote{...available in \textbackslash texttt\{docs/experimental-data/\} and on GitHub: \textbackslash url\{https://github.com/PaolaCV14/IOT-SOFIA-2026\} (release \textbackslash texttt\{v0.2.0\}, commit \textbackslash texttt\{7a790a3\}).}
+    \item \textbf{Declaración de la bitácora como material suplementario (lines~221--225, 667--670):} Se declaró explícitamente la bitácora de pruebas experimentales y los registros brutos de adquisición temporal en \texttt{docs/experimental-data/} como material suplementario oficial tanto en la Sección de Materiales y Métodos como en la sección de \textit{Data Availability}:
+    \LabDSTquote{...recorded in the project logbook and supplementary data (repository, \textbackslash texttt\{docs/experimental-data/servo\_characterization.xlsx\}).}
 \end{enumerate}
 Con esto, la entrega queda respaldada con verificación criptográfica de versión e integridad documental.}
 
