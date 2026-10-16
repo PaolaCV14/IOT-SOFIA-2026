@@ -1,11 +1,10 @@
 """
-==============================================================
-ESTILOS VISUALES (QSS) - ESTACIÓN DE CONTROL SOFIA
-Tema oscuro moderno con acentos cian/menta y diseño limpio
-==============================================================
+Estilos visuales (QSS) para la estacion de control de SOFIA.
+Tema oscuro con paleta en tonos grafito, acentos en azul cian y ambar.
 """
 
 MODERN_DARK_THEME = """
+/* Estilo base */
 QWidget {
     background-color: #121418;
     color: #E2E8F0;
@@ -13,7 +12,7 @@ QWidget {
     font-size: 13px;
 }
 
-/* Paneles y Tarjetas */
+/* Paneles contenedores */
 QFrame#card {
     background-color: #1A1D24;
     border-radius: 10px;
@@ -21,6 +20,7 @@ QFrame#card {
     padding: 12px;
 }
 
+/* Agrupadores con titulo */
 QGroupBox {
     background-color: #1A1D24;
     border: 1px solid #282D37;
@@ -59,6 +59,7 @@ QPushButton:pressed {
     background-color: #1E222A;
 }
 
+/* Boton Iniciar */
 QPushButton#btn-start {
     background-color: #0284C7;
     border: 1px solid #38BDF8;
@@ -68,6 +69,17 @@ QPushButton#btn-start:hover {
     background-color: #0369A1;
 }
 
+/* Boton Pausar / Reanudar */
+QPushButton#btn-pause {
+    background-color: #D97706;
+    border: 1px solid #FBBF24;
+}
+
+QPushButton#btn-pause:hover {
+    background-color: #B45309;
+}
+
+/* Boton Detener */
 QPushButton#btn-stop {
     background-color: #BE123C;
     border: 1px solid #FB7185;
@@ -77,7 +89,7 @@ QPushButton#btn-stop:hover {
     background-color: #9F1239;
 }
 
-/* Sliders */
+/* Sliders de articulaciones */
 QSlider::groove:horizontal {
     height: 6px;
     background: #282D37;
@@ -102,7 +114,7 @@ QSlider::handle:horizontal:hover {
     background: #38BDF8;
 }
 
-/* ComboBox y Inputs */
+/* Entradas y listas desplegables */
 QComboBox {
     background-color: #20242D;
     border: 1px solid #2F3644;
@@ -115,7 +127,7 @@ QComboBox::drop-down {
     border: none;
 }
 
-/* Terminal / Log */
+/* Terminal de logs */
 QTextEdit#logTerminal {
     background-color: #0D0F12;
     border: 1px solid #20252E;
@@ -125,7 +137,7 @@ QTextEdit#logTerminal {
     color: #34D399;
 }
 
-/* Indicadores de Estado y Badges */
+/* Badges de estado */
 QLabel#badge {
     background-color: #20242D;
     color: #94A3B8;

@@ -77,7 +77,7 @@ La cámara tiene ruido de sensor, cambios de luz y compresión. La red neuronal 
 Si enviamos esas coordenadas directas a un servomotor, el servo **vibra, hace ruido y se sobrecalienta**.
 
 ### 💡 La Solución Matemática: Media Móvil Exponencial (EMA)
-En lugar de aceptar el punto nuevo de golpe, el filtro en [smoother.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/utils/smoother.py) hace un promedio ponderado:
+En lugar de aceptar el punto nuevo de golpe, el filtro en [`utils/smoother.py`](utils/smoother.py) hace un promedio ponderado:
 
 $$P_{\text{filtrado}} = \alpha \cdot P_{\text{nuevo}} + (1 - \alpha) \cdot P_{\text{anterior}}$$
 
@@ -93,7 +93,7 @@ Donde $\alpha$ (alpha) es el **factor de suavizado** (en SOFÍA usamos $\alpha =
 No usamos redes neuronales gigantes para cada gesto. Usamos **geometría analítica 3D** sobre los landmarks, lo cual corre a cientos de FPS consumiendo casi 0% de CPU.
 
 ### 4.1 Matemática de los Dedos (Estirado vs Doblado)
-Para saber si un dedo está estirado o cerrado (ver [finger_utils.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/finger_utils.py)):
+Para saber si un dedo está estirado o cerrado (ver [`gestures/finger_utils.py`](gestures/finger_utils.py)):
 
 1. Medimos la distancia 3D euclidiana:
    $$d = \sqrt{(x_2 - x_1)^2 + (y_2 - y_1)^2 + (z_2 - z_1)^2}$$
@@ -107,10 +107,10 @@ Para saber si un dedo está estirado o cerrado (ver [finger_utils.py](file:///Us
 
 | Gesto | Archivo | Condición Geométrica |
 | :--- | :--- | :--- |
-| **Piedra (Roca)** | [rock.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/rock.py) | Los 4 dedos doblados (`8, 12, 16, 20`) y todas las puntas a menos de $1.6 \times$ del tamaño de la palma. |
-| **Papel** | [paper.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/paper.py) | Los 5 dedos (incluyendo pulgar) extendidos simultáneamente. |
-| **Tijera** | [scissors.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/scissors.py) | Índice (`8`) y Medio (`12`) extendidos; Anular (`16`) y Meñique (`20`) doblados. |
-| **Corazón** | [heart.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/heart.py) | Ambas manos presentes, puntas de pulgares muy cerca entre sí y puntas de índices también muy juntas formando el arco superior. |
+| **Piedra (Roca)** | [`gestures/rock.py`](gestures/rock.py) | Los 4 dedos doblados (`8, 12, 16, 20`) y todas las puntas a menos de $1.6 \times$ del tamaño de la palma. |
+| **Papel** | [`gestures/paper.py`](gestures/paper.py) | Los 5 dedos (incluyendo pulgar) extendidos simultáneamente. |
+| **Tijera** | [`gestures/scissors.py`](gestures/scissors.py) | Índice (`8`) y Medio (`12`) extendidos; Anular (`16`) y Meñique (`20`) doblados. |
+| **Corazón** | [`gestures/heart.py`](gestures/heart.py) | Ambas manos presentes, puntas de pulgares muy cerca entre sí y puntas de índices también muy juntas formando el arco superior. |
 
 ---
 
@@ -118,14 +118,14 @@ Para saber si un dedo está estirado o cerrado (ver [finger_utils.py](file:///Us
 
 A diferencia de una foto fija, estos gestos evalúan la variación en el tiempo ($\Delta t$):
 
-#### 👋 Saludo ([wave.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/wave.py))
+#### 👋 Saludo ([`gestures/wave.py`](gestures/wave.py))
 - Detecta mano abierta a la altura de la cabeza.
 - Registra la velocidad horizontal ($v_x$). Si la dirección cambia alternadamente (izquierda $\to$ derecha $\to$ izquierda) al menos 3 veces en menos de 1.5 segundos, activa `HOLA! SALUDO`.
 
-#### 💨 Barrido o Swipe ([swipe.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/swipe.py))
+#### 💨 Barrido o Swipe ([`gestures/swipe.py`](gestures/swipe.py))
 - Si el centro de la palma se desplaza rápidamente más de $0.25$ unidades en el eje X en menos de 300 ms, detecta `SWIPE DERECHA` o `SWIPE IZQUIERDA`.
 
-#### 🥊 Conteo de Intención PPT ([rps_intent.py](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/tracking-vision/gestures/rps_intent.py))
+#### 🥊 Conteo de Intención PPT ([`gestures/rps_intent.py`](gestures/rps_intent.py))
 - Implementa una **Máquina de Estados Finitos (FSM)**:
   1. Detecta una mano plana como base (Palma abierta) y la otra en Puño.
   2. Evalúa ciclos de distancia vertical: Puño arriba $\to$ Puño toca palma ($1/3 \to 2/3 \to 3/3$).

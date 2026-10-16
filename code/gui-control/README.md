@@ -7,9 +7,9 @@ Interfaz gráfica de escritorio moderna, intuitiva y optimizada para el monitore
 ## 🚀 Características Principales
 
 1. **Visor de Cámara a 60 FPS:** Renderizado en tiempo real con superposición de landmarks (manos, postura corporal y gestos).
-2. **Arquitectura Multihilo (`QThread`):** El procesamiento de MediaPipe y OpenCV se ejecuta en un hilo separado para garantizar que los controles nunca se congelen.
+2. **Arquitectura Multihilo (`QThread`) con Control de Ciclo de Vida:** El procesamiento de MediaPipe y OpenCV se ejecuta en un hilo separado con controles completos de inicio, pausa/reanudación y detención sin bloquear la interfaz.
 3. **Modos de Operación:**
-   - **Seguimiento Automático 3D:** Envío continuo de ángulos calculados ($q_1, q_2$) por UDP.
+   - **Seguimiento Automático 3D:** Envío continuo de ángulos calculados ($q_1, q_2$) por UDP o BLE.
    - **Control Manual:** Sliders interactivos para fijar ángulos articulares.
    - **Calibración y Reposo:** Para mantenimiento del hardware.
 4. **Telemetría y Logs:** Métricas de FPS, latencia en ms y terminal integrada de eventos.

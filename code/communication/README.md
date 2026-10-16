@@ -6,12 +6,12 @@ Este paquete unifica los canales de transmisión hacia los actuadores físicos y
 
 ## 📂 Archivos del Módulo
 
-- **[`dispatcher.py`](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/communication/dispatcher.py):**
+- **[`dispatcher.py`](dispatcher.py):**
   - **Clase:** `SofiaCommDispatcher`
   - **Función:** Conmuta de forma segura entre el canal Bluetooth (`BLE`) y la simulación por sockets (`UDP`).
   - **Seguridad:** Aplica saturación y límites mecánicos ($60^\circ$ a $120^\circ$) para proteger la integridad de los servomotores antes de despachar cada trama.
 
-- **[`ble_sender.py`](file:///Users/bernardoorozco/Documents/GitHub/IOT-SOFIA-2026/code/communication/ble_sender.py):**
+- **[`ble_sender.py`](ble_sender.py):**
   - **Clase:** `SofiaBleClient`
   - **Función:** Driver de bajo nivel para comunicación inalámbrica BLE con el microcontrolador **ESP32-C3** (MAC por defecto: `70:AF:09:15:23:42`).
   - **Rendimiento:** Utiliza un bucle asíncrono con `bleak` en segundo plano con una cola thread-safe (`queue.Queue`) y control de tasa de envío para no saturar la radio del robot.
