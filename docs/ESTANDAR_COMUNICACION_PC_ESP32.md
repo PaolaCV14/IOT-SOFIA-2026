@@ -1,6 +1,6 @@
 # Estándar de Comunicación Inalámbrica PC — ESP32 Maestro
 **Proyecto SOFÍA 2026**  
-**Laboratorio de Dispositivos y Sistemas de Telecomunicaciones (LabDST), ITESO**  
+**LabDST, ITESO**  
 **Entregable 2:** Documento Formal del Estándar de Comunicación
 
 **Autores:**
@@ -57,7 +57,7 @@ El enlace opera bajo el perfil GATT serial estándar:
   * *Modo:* `Notify` *(Canal de retorno para emisión de ACKs y telemetría).*
 
 ### 2.3 Asignación de Canales y Restricciones Mecánicas
-Parámetros comprobados en el código fuente del firmware (`code/tracking-vision/arduino.ino`):
+Parámetros comprobados en el código fuente del firmware (`code/firmware-mecatronica/modulo_sofia.ino`):
 * **Dirección I2C del PCA9685:** `0x40`.
 * **Canal Servo Q1 (Yaw horizontal):** Canal 14.
 * **Canal Servo Q2 (Pitch vertical):** Canal 15.
@@ -167,8 +167,10 @@ await client.write_gatt_char(RX_CHARACTERISTIC_UUID, trama.encode("utf-8"), resp
 ```
 
 ### 7.2 Implementación de la Característica TX en Firmware ESP32 (Paola)
-Configuración requerida en el archivo de firmware (`code/tracking-vision/arduino.ino`):
+Configuración requerida en el archivo de firmware (`code/firmware-mecatronica/modulo_sofia.ino`):
 ```cpp
+#include <BLE2902.h>
+
 // Puntero para la característica de transmisión TX
 BLECharacteristic *pTxCharacteristic = nullptr;
 
@@ -179,6 +181,7 @@ pTxCharacteristic = service->createCharacteristic(
     TX_UUID,
     BLECharacteristic::PROPERTY_NOTIFY
 );
+pTxCharacteristic->addDescriptor(new BLE2902());
 
 // Emisión de confirmación ACK / NACK:
 void responderACK(String seq, String status, String info) {

@@ -1,6 +1,6 @@
 # Arquitectura, Wireframes y Justificación de Diseño de la GUI
 **Proyecto SOFÍA 2026**  
-**Laboratorio de Dispositivos y Sistemas de Telecomunicaciones (LabDST), ITESO**  
+**LabDST, ITESO**  
 **Actividad 1:** Especificación de Arquitectura, Wireframes y Decisiones de Diseño
 
 **Equipo:**
