@@ -1,6 +1,6 @@
 # 📚 Arquitectura Modular y Guía Operativa - Proyecto SOFÍA
 
-Este documento describe la estructura del código en `code/`, qué hace cada archivo y cómo operar el sistema: desde la visión por computadora hasta la conexión inalámbrica Bluetooth (BLE) con el robot físico y la simulación en Unity/Webots.
+Este documento describe la estructura del código en `code/`, la responsabilidad de cada módulo y los pasos detallados para instalar dependencias y ejecutar la estación de control (GUI en PySide6), así como los canales de comunicación inalámbrica Bluetooth (BLE) y simulación (UDP).
 
 ---
 
@@ -9,127 +9,232 @@ Este documento describe la estructura del código en `code/`, qué hace cada arc
 ```text
 IOT-SOFIA-2026/
 ├── code/
-│   ├── tracking-vision/          # Procesamiento de imagen e IA (MediaPipe)
-│   │   ├── detectors/            # Clases detectoras (manos, postura, gestos)
-│   │   ├── gestures/             # Lógica matemática de cada gesto y juego PPT
-│   │   ├── utils/                # Filtro EMA de suavizado y dibujo de esqueletos
+│   ├── requirements.txt          # Dependencias unificadas (Python 3.10 o 3.11)
+│   ├── CODE.md                   # Esta guía técnica y operativa
+│   │
+│   ├── gui-control/              # 🖥️ ESTACIÓN DE CONTROL Y MONITOREO (PySide6)
+│   │   ├── main_gui.py           # Ventana principal, layout visual y despacho de eventos
+│   │   ├── vision_worker.py      # Hilo concurrente QThread para cámara a 60 FPS (start/pause/stop)
+│   │   ├── styles.py             # Hoja de estilos QSS (Tema oscuro moderno)
+│   │   ├── build_exe.spec        # Especificación de PyInstaller para compilar .exe
+│   │   └── requirements.txt      # Dependencias específicas de la interfaz
+│   │
+│   ├── tracking-vision/          # 👁️ PROCESAMIENTO DE IMAGEN E IA (MediaPipe)
+│   │   ├── detectors/            # Detectores de manos, postura y gestos
+│   │   ├── gestures/             # Lógica cinemática de gestos y clasificador PPT
+│   │   ├── utils/                # Filtro EMA de suavizado y dibujado de landmarks
 │   │   ├── models/               # Redes neuronales de MediaPipe (.task)
-│   │   └── GUIA_VISION_Y_POSTURAS.md # Manual universitario de cinemática y filtrado
+│   │   └── GUIA_VISION_Y_POSTURAS.md # Manual cinemático y de filtrado
 │   │
-│   ├── communication/            # 🚀 CANALES DE ENLACE Y TELEMETRÍA (FÍSICO & VIRTUAL)
-│   │   ├── dispatcher.py         # Enrutador inteligente (Conmuta entre BLE y UDP)
-│   │   ├── ble_sender.py         # Driver Bluetooth Low Energy para ESP32-C3
-│   │   └── README.md             # Guía de uso rápido del módulo de comunicaciones
+│   ├── communication/            # 🚀 ENLACE Y DESPACHO DE COMUNICACIONES
+│   │   ├── dispatcher.py         # Enrutador inteligente (conmuta entre BLE y UDP)
+│   │   ├── ble_sender.py         # Cliente BLE asíncrono multihilo para ESP32-C3
+│   │   └── README.md             # Guía técnica del módulo de comunicaciones
 │   │
-│   ├── gui-control/              # Estación de control de escritorio (PySide6)
-│   │   ├── main_gui.py           # Dashboard visual unificado (Vista/UI limpia)
-│   │   ├── vision_worker.py      # Hilo concurrente QThread para la cámara a 60 FPS
-│   │   ├── styles.py             # Estilos modo oscuro moderno
-│   │   ├── build_exe.spec        # Empaquetador PyInstaller para generar el .exe
-│   │   └── requirements.txt      # Dependencias completas (PySide6, OpenCV, MediaPipe, Bleak)
-│   │
-│   └── firmware-mecatronica/     # Firmware de microcontroladores y drivers
+│   └── firmware-mecatronica/     # ⚙️ FIRMWARE DE MICROCONTROLADORES
+│       └── modulo_sofia.ino      # Firmware oficial para ESP32-C3 y PCA9685 (I2C)
 │
-├── WEBOT SOFIA/                  # Simulación en Webots y scripts originales de prueba BLE
-│   ├── cad/                      # Piezas mecánicas 3D (Base, Ejes X/Y, Hexágono)
-│   ├── controlar_sofia_ble.py    # Control manual por terminal
-│   └── webots/worlds/            # Mundo virtual de Webots (.wbt)
+├── docs/                         # 📄 DOCUMENTACIÓN TÉCNICA FORMAL
+│   ├── ARQUITECTURA_Y_WIREFRAMES_GUI.md # Memoria de arquitectura y wireframes
+│   ├── ESTANDAR_COMUNICACION_PC_ESP32.md # Estándar formal de tramas y protocolos
+│   └── DOCS.md                   # Índice general de documentación
 │
-└── unity-simulation/             # Simulación y cinemática en Unity 3D (C#)
+├── WEBOT SOFIA/                  # Simulación en Webots y scripts de prueba
+└── unity-simulation/             # Cinemática en Unity 3D (C#)
 ```
 
 ---
 
-## 🔄 ¿Cómo Funciona Todo Entrelazado? (El Flujo de Datos)
+## ⚙️ Requisitos Previos e Instalación del Entorno
 
-Para entender cómo se conectan los 4 pilares del sistema, imagina una cadena de relevos que ocurre en milisegundos en cada fotograma:
+> [!NOTE]
+> **Versiones de Python probadas y certificadas:**  
+> El sistema ha sido probado y verificado al 100% tanto en **Python 3.14** (versión de desarrollo con `mediapipe 0.10.35` en macOS Apple Silicon) como en **Python 3.11** (entorno estable de Homebrew y Windows).
+> * Si tienes **Python 3.14** instalado, puedes crear el entorno directamente (`py -m venv venv` o `python3 -m venv venv`) y funcionará sin problemas.
+> * Si en alguna máquina ajena o versión específica de Linux/Windows se presentara alguna incompatibilidad de paquetes, se recomienda usar **Python 3.11** como versión de máxima compatibilidad estándar.
+
+### 📋 Dependencias Unificadas (`code/requirements.txt`)
+En el proyecto existen archivos locales en subcarpetas (`gui-control/requirements.txt` y `tracking-vision/requirements.txt`). Para evitar confusiones, el archivo **[`code/requirements.txt`](code/requirements.txt)** consolida **todas** las dependencias requeridas por el sistema en una sola lista oficial:
+* `mediapipe>=0.10.0,<1.0.0` (Inferencia de puntos corporales y manos 3D)
+* `opencv-python>=4.8.0` (Captura de cámara a 60 FPS y procesado de video)
+* `PySide6>=6.5.0` (Interfaz gráfica oficial de Qt)
+* `bleak>=0.21.0` (Comunicación inalámbrica Bluetooth BLE con el ESP32)
+* `numpy>=1.24.0` (Cálculo de matrices, ángulos articulares y filtrado EMA)
+
+---
+
+### 🍎 Opción A: Configuración en macOS / Linux
+
+1. **Abrir la terminal** y ubicarse dentro de la carpeta **`code/`** (ya sea tras descomprimir el ZIP o dentro del repositorio clonado):
+   ```bash
+   cd code
+   ```
+
+2. **Crear el entorno virtual dentro de `code/`:**
+   ```bash
+   # Opción 1 (Directa con tu Python instalado, ej. Python 3.14):
+   py -m venv venv
+   # o:
+   python3 -m venv venv
+   
+   # Opción 2 (Alternativa forzando Python 3.11 si lo prefieres):
+   python3.11 -m venv venv
+   # (o con Homebrew: /opt/homebrew/bin/python3.11 -m venv venv)
+   ```
+
+3. **Activar el entorno virtual:**
+   ```bash
+   source venv/bin/activate
+   ```
+   *Comprueba la versión activa ejecutando `python --version`; debe responder `Python 3.11.x`.*
+
+4. **Actualizar pip e instalar todas las dependencias:**
+   ```bash
+   pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+5. **Lanzar la interfaz gráfica:**
+   ```bash
+   python gui-control/main_gui.py
+   ```
+
+---
+
+### 🪟 Opción B: Configuración en Windows (PowerShell o CMD)
+
+1. **Abrir PowerShell** y ubicarse dentro de la carpeta **`code`**:
+   ```powershell
+   cd code
+   ```
+
+2. **Crear el entorno virtual forzando Python 3.11:**
+   En Windows tienes varias opciones según cómo tengas instalado Python:
+   ```powershell
+   # Método 1 (Recomendado con el lanzador oficial de Windows):
+   py -3.11 -m venv venv
+
+   # Método 2 (Si Python 3.11 es tu versión predeterminada en PATH):
+   python -m venv venv
+
+   # Método 3 (Invocando la ruta estándar de instalación en Windows):
+   & "$env:LOCALAPPDATA\Programs\Python\Python311\python.exe" -m venv venv
+
+   # Método 4 (Si aún no tienes Python 3.11 en Windows, instálalo en segundos con winget):
+   winget install Python.Python.3.11
+   py -3.11 -m venv venv
+   ```
+
+3. **Activar el entorno virtual:**
+   * En **PowerShell**:
+     ```powershell
+     .\venv\Scripts\Activate.ps1
+     ```
+     *(Si PowerShell restringe scripts, permite la sesión con: `Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass`).*
+   * En **CMD**:
+     ```cmd
+     venv\Scripts\activate.bat
+     ```
+   *Comprueba la versión activa con `python --version`; debe responder `Python 3.11.x`.*
+
+4. **Actualizar pip e instalar requerimientos:**
+   ```powershell
+   python -m pip install --upgrade pip
+   pip install -r requirements.txt
+   ```
+
+5. **Lanzar la estación de control:**
+   ```powershell
+   python gui-control/main_gui.py
+   ```
+
+---
+
+## 🔄 ¿Cómo Funciona la Interfaz Gráfica? (Flujo Operativo)
+
+La GUI implementa un modelo multihilo estricto basado en **PySide6**:
 
 ```mermaid
 sequenceDiagram
     autonumber
-    actor Usuario
-    participant Cam as Cámara Web (OpenCV)
-    participant Vision as tracking-vision (Worker)
-    participant GUI as gui-control (main_gui.py)
-    participant Comm as comm_dispatcher.py
-    participant BLE as ble_sender.py (ESP32)
-    participant Unity as Simulación (Unity UDP)
+    actor Operador
+    participant GUI as Ventana Principal (main_gui.py)
+    participant Worker as VisionWorker (QThread a 60 FPS)
+    participant Dispatcher as SofiaCommDispatcher
+    participant Hardware as Robot ESP32 / Unity
 
-    Usuario->>Cam: Mueve la mano frente a la lente
-    Cam->>Vision: Entrega fotograma (matriz BGR)
-    Vision->>Vision: MediaPipe calcula Landmarks 3D + Filtro EMA
-    Vision->>GUI: Emite señales Qt (Video en vivo, Gestos, q1, q2)
-    GUI->>GUI: Actualiza pantalla a 60 FPS y mueve sliders visualmente
-    GUI->>Comm: comm.send_angles(q1, q2)
-    alt Destino seleccionado: Robot Físico (BLE)
-        Comm->>BLE: send_raw_command("75,105") con cola no bloqueante
-        BLE->>Usuario: Servomotores físicos de SOFÍA se mueven
-    else Destino seleccionado: Simulación (UDP)
-        Comm->>Unity: Paquete UDP socket ("75.00,105.00")
-        Unity->>Usuario: Gemelo digital 3D se orienta hacia el objetivo
+    Operador->>GUI: Clic en "Iniciar"
+    GUI->>Worker: worker.start() (Inicia captura en hilo paralelo)
+    Worker->>GUI: frame_ready (QImage procesada a 60 FPS)
+    Worker->>GUI: metrics_ready (FPS, latencia y gesto)
+    Worker->>GUI: angles_ready (q1 yaw, q2 pitch calculados)
+    GUI->>Dispatcher: send_angles(q1, q2)
+    Dispatcher->>Hardware: Envía por BLE (ESP32) o UDP (Unity)
+
+    alt Operador requiere pausar
+        Operador->>GUI: Clic en "Pausar"
+        GUI->>Worker: worker.pause()
+        Note over Worker: Mantiene stream de video con aviso [PAUSADO]<br/>Suspende inferencia y no emite ángulos
+        Note over Hardware: Servos retienen firmemente su última posición
+    else Operador reanuda
+        Operador->>GUI: Clic en "Reanudar"
+        GUI->>Worker: worker.resume()
+        Note over Worker: Reanuda MediaPipe y despacho continuo
+    else Operador detiene
+        Operador->>GUI: Clic en "Detener"
+        GUI->>Worker: worker.stop() (Libera cámara y modelos de IA)
     end
 ```
 
-### 🧩 Los 4 Componentes Explicados a Grandes Rasgos:
+---
 
-| Componente | Rol en el Sistema | ¿Qué hace exactamente? |
-| :--- | :--- | :--- |
-| **1. `tracking-vision/`**<br>*(El Ojo y Cerebro)* | Captura y Percepción | Lee la cámara, corre las redes de MediaPipe para extraer los 21 puntos de la mano y 33 del cuerpo, filtra el temblor con el suavizador EMA y calcula matemáticamente los ángulos $q_1, q_2$ y gestos (puño, tijera, saludo, PPT). |
-| **2. `gui-control/main_gui.py`**<br>*(La Cara y Centro de Mando)* | Interfaz de Usuario (UI/UX) | Muestra el video a 60 FPS sin trabarse, ofrece controles de detección (inicio, pausa/reanudación y paro seguro), sliders para control manual, selector de modos (automático, reposo, calibración) y la consola de telemetría. **No procesa video ni abre sockets directamente**, solo escucha y delega. |
-| **3. `comm_dispatcher.py`**<br>*(El Cartero / Enrutador)* | Despacho de Comunicaciones | Es el intermediario inteligente. Recibe los ángulos $(q_1, q_2)$, aplica los límites de seguridad física ($60^\circ$ a $120^\circ$) y decide a dónde mandarlos según el botón seleccionado en la pantalla: si a la simulación o al robot real. |
-| **4. `ble_sender.py`**<br>*(El Puente Inalámbrico Físico)* | Driver de Hardware BLE | Se conecta por Bluetooth Low Energy al ESP32-C3 del robot físico. Tiene una cola interna (`queue.Queue`) para enviar los comandos de forma asíncrona sin saturar el radio ni detener la interfaz. |
+## 🎛️ Guía de Uso de la Pantalla de Control
+
+Una vez abierta la ventana de 1200 × 760 píxeles, dispones de los siguientes controles:
+
+1. **Destino de Comunicación (Panel Superior Derecho):**
+   * **Simulación (Unity / UDP):** Seleccionado por defecto. Envía paquetes `q1,q2` a `127.0.0.1:5005` para validar movimientos en el gemelo digital sin requerir hardware físico.
+   * **Robot Físico (ESP32 / BLE):** Cambia el destino al robot real. Introduce la MAC del ESP32 (por defecto `70:AF:09:15:23:42` en Windows/Linux o el UUID asignado por CoreBluetooth en macOS) y presiona **"Conectar BLE"**. Al conectar, el botón pasa a color verde *"Desconectar"*.
+
+2. **Ciclo de Vida de la Detección:**
+   * **Botón "Iniciar":** Abre la cámara web e inicia la inferencia 3D en el hilo secundario.
+   * **Botón "Pausar / Reanudar":** Permite detener momentáneamente el seguimiento sin apagar la cámara. La pantalla muestra el aviso `[ DETECCION PAUSADA ]` y los servomotores se quedan inmóviles en su último ángulo. Al pulsar *"Reanudar"*, el seguimiento continúa al instante.
+   * **Botón "Detener":** Cierra la captura de video y libera los recursos de la red neuronal.
+
+3. **Modos de Operación:**
+   * **Seguimiento Automático 3D:** Los servomotores siguen de forma fluida el centroide de tu mano o cabeza dentro de los ángulos permitidos.
+   * **Control Manual:** Permite mover directamente los sliders $q_1$ (horizontal) y $q_2$ (vertical). Los sliders están limitados por software al rango de seguridad mecánica **[$60^\circ, 120^\circ$]** para proteger los actuadores MG90S.
+   * **Calibración (Home):** Centra ambos ejes a $90^\circ, 90^\circ$.
+   * **Reposo:** Coloca la articulación vertical en descanso a $60^\circ$.
+
+4. **Reconocimiento de Gestos Coreográficos:**
+   * Al hacer el gesto de **"Hola" (Saludo)** o **"Corazón"** frente a la cámara, la interfaz detecta la intención y despacha la rutina coreográfica almacenada en el ESP32, suspendiendo temporalmente el seguimiento mediante un temporizador `QTimer` para evitar interferencias cinemáticas.
+
+5. **Terminal de Eventos:**
+   * Consola inferior en color verde esmeralda que registra en tiempo real los eventos de conexión, comandos transmitidos, ángulos y estados del sistema.
 
 ---
 
-### 📋 Datos Técnicos de Enlace del Robot Físico:
-- **Microcontrolador:** ESP32-C3
-- **Dirección MAC BLE:** `70:AF:09:15:23:42`
-- **Servicio UART UUID:** `6e400001-b5a3-f393-e0a9-e50e24dcca9e`
-- **Característica Write UUID:** `6e400002-b5a3-f393-e0a9-e50e24dcca9e`
-- **Rango seguro de servomotores:** $60^\circ$ a $120^\circ$ (Posición Neutra/Home: $90^\circ, 90^\circ$).
+## 📦 Compilación a Ejecutable Autónomo para Windows (.exe)
 
----
+Si se requiere entregar una versión autocontenida que no requiera instalar Python ni bibliotecas en la máquina destino:
 
-### 🖥️ Método 1: La Interfaz Gráfica Integrada (Recomendado)
-Todo unificado en una sola ventana: video fluido, gestos, control manual y botón para conectar por Bluetooth al robot físico o por UDP a Unity.
-
-1. **Instalar dependencias:**
-   ```bash
-   pip install -r code/gui-control/requirements.txt
-   ```
-2. **Ejecutar la GUI:**
-   ```bash
-   python code/gui-control/main_gui.py
-   ```
-3. **¿Cómo usarla?**
-   - **Destino de Control:** Selecciona si quieres enviar las órdenes a:
-     - 🔘 **Robot Físico (BLE):** Pulsa el botón *"Conectar BLE"*; se enlazará al ESP32 sin bloquear la pantalla.
-     - 🔘 **Simulación Unity (UDP):** Transmite paquetes en tiempo real al puerto `5005`.
-   - **Iniciar Cámara:** Pulsa *"▶ Iniciar Cámara"*. El video mostrará tus manos y los gestos detectados.
-   - **Modo Automático:** Mueve tu mano y el robot físico o la simulación te seguirán de forma fluida.
-   - **Modo Manual:** Usa los sliders de $q_1$ y $q_2$ para mover los servomotores milimétricamente.
-   - **Calibración y Reposo:** Botones directos para llevar el robot al centro ($90^\circ, 90^\circ$) o a postura de descanso para proteger los actuadores.
-
----
-
-### 📦 Método 2: Compilar a un `.exe` Autónomo para Windows
-Si necesitas entregar el software para que corra en cualquier computadora sin tener Python instalado:
-
-```bash
+```powershell
 cd code/gui-control
 pyinstaller build_exe.spec
 ```
-El archivo ejecutable resultante estará en `code/gui-control/dist/SOFIA_Control_Station.exe`, incluyendo internamente los modelos de MediaPipe y el soporte Bluetooth de Bleak.
+El archivo ejecutable compilado se generará dentro de `code/gui-control/dist/SOFIA_Control_Station.exe`.
 
 ---
 
-### 🔬 Método 3: Ejecución de Scripts Ligeros por Consola
-Si estás en una prueba de laboratorio y solo quieres correr terminales rápidas:
-- **Probar el robot físico por consola (sin cámara):**
+## 🔬 Ejecución de Scripts Auxiliares por Consola
+
+Para pruebas rápidas de laboratorio sin abrir la interfaz gráfica completa:
+* **Control manual de servomotores por terminal BLE:**
   ```bash
   python "WEBOT SOFIA/controlar_sofia_ble.py"
   ```
-- **Tracking de 9 cuadrantes en consola con BLE:**
+* **Tracking de 9 cuadrantes en consola:**
   ```bash
   python code/tracking-vision/test_ble_pipe_v2.py
   ```
