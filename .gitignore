@@ -26,3 +26,5 @@ env/
 ENV/
 __pycache__/
 *.py[cod]
+~$*.pptx
+

@@ -1,11 +1,21 @@
 """Genera SOFIA_LabDST_Presentacion.pptx (16:9) con python-pptx.
-Uso:  python3 build_deck.py
+Presentación Oficial de Avance - Segundo Corte (LabDST, ITESO, Otoño 2026).
+Diseño ejecutivo de alto impacto, ultra-limpio y visual:
+- Objetivo estricto de tiempo: 7 min 25 s (10 diapositivas).
+- Títulos con punch (afirmaciones, no categorías de rúbrica).
+- Máximo 3 bloques de texto por slide, máximo 15 palabras por bloque.
+- Tipografía grande: Títulos >= 40 pt, Números >= 60 pt, Cuerpo >= 24 pt.
+- Imágenes enormes (50% a 70% de área en slides de evidencia).
+- Sin nombres de expositores (solo tiempo y guion conversacional).
+- Notas de Slide 10 con 5 preguntas probables de jueces y respuestas breves.
+
+Uso: python3 build_deck.py
 """
 import os
 import tempfile
 from PIL import Image
 from pptx import Presentation
-from pptx.util import Inches, Pt, Emu
+from pptx.util import Inches, Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.shapes import MSO_SHAPE, MSO_CONNECTOR
 from pptx.enum.text import PP_ALIGN, MSO_ANCHOR
@@ -15,15 +25,17 @@ FIG = os.path.join(HERE, "..", "paper", "Equipo 1 - segundo corte", "figures")
 OUT = os.path.join(HERE, "SOFIA_LabDST_Presentacion.pptx")
 TMP = tempfile.mkdtemp()
 
-# ---------- paleta ----------
-BG = RGBColor(0x0B, 0x12, 0x20)
-CARD = RGBColor(0x14, 0x1E, 0x33)
-CARD2 = RGBColor(0x1B, 0x28, 0x44)
-TEAL = RGBColor(0x2D, 0xD4, 0xBF)
-ORANGE = RGBColor(0xF5, 0x9E, 0x0B)
-RED = RGBColor(0xF8, 0x71, 0x71)
-WHITE = RGBColor(0xF1, 0xF5, 0xF9)
-MUTED = RGBColor(0x94, 0xA3, 0xB8)
+# =====================================================================
+# PALETA VISUAL ULTRA-LIMPIA Y PROFESIONAL
+# =====================================================================
+BG = RGBColor(0x0B, 0x13, 0x2B)       # Azul noche profundo
+CARD = RGBColor(0x1C, 0x25, 0x41)     # Superficie de tarjeta
+CARD_HI = RGBColor(0x24, 0x33, 0x56)  # Tarjeta destacada
+TEAL = RGBColor(0x2D, 0xD4, 0xBF)     # Color de acento principal (Cyan / Teal vivo)
+AMBER = RGBColor(0xF5, 0x9E, 0x0B)    # Acento secundario (atención)
+CORAL = RGBColor(0xF8, 0x71, 0x71)    # Acento de alerta térmica
+WHITE = RGBColor(0xF8, 0xFA, 0xFC)    # Blanco nieve
+MUTED = RGBColor(0x94, 0xA3, 0xB8)    # Gris claro legible
 FONT = "Calibri"
 
 prs = Presentation()
@@ -33,7 +45,9 @@ W, H = prs.slide_width, prs.slide_height
 BLANK = prs.slide_layouts[6]
 
 
-# ---------- helpers ----------
+# =====================================================================
+# HELPERS
+# =====================================================================
 def new_slide(notes=""):
     s = prs.slides.add_slide(BLANK)
     s.background.fill.solid()
@@ -43,7 +57,7 @@ def new_slide(notes=""):
     return s
 
 
-def rect(s, x, y, w, h, fill=CARD, line=None, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.06):
+def rect(s, x, y, w, h, fill=CARD, line=None, shape=MSO_SHAPE.ROUNDED_RECTANGLE, radius=0.04):
     r = s.shapes.add_shape(shape, x, y, w, h)
     r.fill.solid()
     r.fill.fore_color.rgb = fill
@@ -51,20 +65,39 @@ def rect(s, x, y, w, h, fill=CARD, line=None, shape=MSO_SHAPE.ROUNDED_RECTANGLE,
         r.line.fill.background()
     else:
         r.line.color.rgb = line
-        r.line.width = Pt(1.25)
+        r.line.width = Pt(1.5)
     r.shadow.inherit = False
     if shape == MSO_SHAPE.ROUNDED_RECTANGLE:
         r.adjustments[0] = radius
     return r
 
 
-def text(s, x, y, w, h, content, size=18, color=WHITE, bold=False, align=PP_ALIGN.LEFT,
-         anchor=MSO_ANCHOR.TOP, italic=False):
+def title_header(s, title, rubric_tag=None, n=None):
+    # Franja de acento a la izquierda
+    rect(s, 0, 0, Inches(0.18), H, fill=TEAL, shape=MSO_SHAPE.RECTANGLE)
+    
+    # Tag de rúbrica pequeño y discreto en la esquina superior
+    if rubric_tag:
+        text_box(s, Inches(0.8), Inches(0.35), Inches(8.5), Inches(0.3),
+                 rubric_tag.upper(), size=12, color=TEAL, bold=True)
+    
+    # Título principal con PUNCH (>= 40 pt)
+    text_box(s, Inches(0.8), Inches(0.68), Inches(11.8), Inches(0.85),
+             title, size=40, color=WHITE, bold=True)
+    
+    # Número de slide discreto en la esquina inferior derecha
+    if n:
+        text_box(s, Inches(12.0), Inches(7.05), Inches(1.0), Inches(0.3),
+                 f"{n}/10", size=13, color=MUTED, align=PP_ALIGN.RIGHT)
+
+
+def text_box(s, x, y, w, h, content, size=24, color=WHITE, bold=False, align=PP_ALIGN.LEFT,
+             anchor=MSO_ANCHOR.TOP, italic=False):
     tb = s.shapes.add_textbox(x, y, w, h)
     tf = tb.text_frame
     tf.word_wrap = True
     tf.vertical_anchor = anchor
-    tf.margin_left = tf.margin_right = Inches(0.05)
+    tf.margin_left = tf.margin_right = Inches(0.04)
     tf.margin_top = tf.margin_bottom = Inches(0.02)
     lines = content if isinstance(content, list) else [content]
     for i, ln in enumerate(lines):
@@ -80,67 +113,19 @@ def text(s, x, y, w, h, content, size=18, color=WHITE, bold=False, align=PP_ALIG
     return tb
 
 
-def bullets(s, x, y, w, h, items, size=18, color=WHITE, gap=8, dot=TEAL):
-    tb = s.shapes.add_textbox(x, y, w, h)
-    tf = tb.text_frame
-    tf.word_wrap = True
-    for i, it in enumerate(items):
-        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.space_after = Pt(gap)
-        r0 = p.add_run()
-        r0.text = "▸ "
-        r0.font.size = Pt(size)
-        r0.font.color.rgb = dot
-        r0.font.name = FONT
-        if isinstance(it, tuple):  # (negrita, resto)
-            rb = p.add_run()
-            rb.text = it[0]
-            rb.font.bold = True
-            rb.font.size = Pt(size)
-            rb.font.color.rgb = color
-            rb.font.name = FONT
-            rr = p.add_run()
-            rr.text = it[1]
-            rr.font.size = Pt(size)
-            rr.font.color.rgb = MUTED
-            rr.font.name = FONT
-        else:
-            rr = p.add_run()
-            rr.text = it
-            rr.font.size = Pt(size)
-            rr.font.color.rgb = color
-            rr.font.name = FONT
-    return tb
-
-
-def header(s, title, kicker=None, n=None):
-    rect(s, 0, 0, Inches(0.18), H, fill=TEAL, shape=MSO_SHAPE.RECTANGLE)
-    if kicker:
-        text(s, Inches(0.6), Inches(0.35), Inches(9), Inches(0.35), kicker.upper(), size=13,
-             color=TEAL, bold=True)
-    text(s, Inches(0.6), Inches(0.65), Inches(12), Inches(0.9), title, size=34, bold=True)
-    text(s, Inches(0.6), Inches(7.05), Inches(8), Inches(0.3),
-         "SOFIA · LabDST · ITESO · Otoño 2026", size=11, color=MUTED)
-    if n:
-        text(s, Inches(12.2), Inches(7.05), Inches(0.9), Inches(0.3), str(n), size=11,
-             color=MUTED, align=PP_ALIGN.RIGHT)
-
-
-def prep(name, maxw=2200):
-    """Reduce imágenes enormes para que el PPTX no pese de más."""
+def prep(name, maxw=2000):
     src = os.path.join(FIG, name)
     im = Image.open(src)
     if im.width > maxw:
         im = im.resize((maxw, int(im.height * maxw / im.width)), Image.LANCZOS)
     dst = os.path.join(TMP, name.replace(" ", "_"))
-    im.convert("RGB").save(dst, quality=90)
+    im.convert("RGB").save(dst, quality=92)
     return dst, im.size
 
 
-def pic(s, name, x, y, w, h, card=True, caption=None, white_bg=True):
-    """Coloca imagen centrada dentro de un recuadro (x,y,w,h) conservando proporción."""
+def pic(s, name, x, y, w, h, card=True, caption=None, white_bg=False):
     path, (iw, ih) = prep(name)
-    pad = Inches(0.1)
+    pad = Inches(0.06)
     if card:
         rect(s, x, y, w, h, fill=RGBColor(255, 255, 255) if white_bg else CARD, radius=0.03)
     bw, bh = w - 2 * pad, h - 2 * pad
@@ -148,22 +133,14 @@ def pic(s, name, x, y, w, h, card=True, caption=None, white_bg=True):
     pw, ph = int(iw * ratio), int(ih * ratio)
     s.shapes.add_picture(path, x + (w - pw) // 2, y + (h - ph) // 2, pw, ph)
     if caption:
-        text(s, x, y + h + Inches(0.03), w, Inches(0.3), caption, size=11, color=MUTED,
-             align=PP_ALIGN.CENTER, italic=True)
-
-
-def stat(s, x, y, w, h, big, small, color=TEAL):
-    rect(s, x, y, w, h, fill=CARD, line=color)
-    text(s, x, y + Inches(0.1), w, h * 0.55, big, size=32, bold=True, color=color,
-         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, x + Inches(0.1), y + h * 0.58, w - Inches(0.2), h * 0.4, small, size=12.5,
-         color=MUTED, align=PP_ALIGN.CENTER)
+        text_box(s, x, y + h + Inches(0.02), w, Inches(0.28), caption, size=13, color=MUTED,
+                 align=PP_ALIGN.CENTER, italic=True)
 
 
 def arrow(s, x1, y1, x2, y2, color=TEAL):
     c = s.shapes.add_connector(MSO_CONNECTOR.STRAIGHT, x1, y1, x2, y2)
     c.line.color.rgb = color
-    c.line.width = Pt(2.25)
+    c.line.width = Pt(2.0)
     ln = c.line._get_or_add_ln()
     from lxml import etree
     tail = etree.SubElement(ln, "{http://schemas.openxmlformats.org/drawingml/2006/main}tailEnd")
@@ -172,368 +149,422 @@ def arrow(s, x1, y1, x2, y2, color=TEAL):
 
 
 # =====================================================================
-# 1. PORTADA
+# 1. PORTADA (15 s)
 # =====================================================================
-s = new_slide(
-    "Presentación (10 s): Somos el Equipo 1 de LabDST. Hoy presentamos SOFIA, una superficie "
-    "cinética modular que responde a gestos humanos, y lo que descubrimos sobre sus servomotores.")
-rect(s, 0, 0, W, H, fill=BG, shape=MSO_SHAPE.RECTANGLE)
-rect(s, Inches(8.4), 0, Inches(4.93), H, fill=CARD, shape=MSO_SHAPE.RECTANGLE)
-rect(s, 0, 0, Inches(0.18), H, fill=TEAL, shape=MSO_SHAPE.RECTANGLE)
-pic(s, "sofia_solid.png", Inches(8.9), Inches(0.7), Inches(3.9), Inches(3.6), card=True)
-pic(s, "modulo_fisico.png", Inches(8.9), Inches(4.5), Inches(3.9), Inches(2.1), card=True)
-text(s, Inches(0.7), Inches(0.7), Inches(7), Inches(0.4), "LABDST · ITESO · AVANCES SEGUNDO CORTE",
-     size=14, color=TEAL, bold=True)
-text(s, Inches(0.7), Inches(1.3), Inches(7.5), Inches(1.3), "SOFIA", size=80, bold=True)
-text(s, Inches(0.7), Inches(2.75), Inches(7.4), Inches(1.4),
-     "Superficie robótica cinética modular para interacción humano-robot y "
-     "caracterización térmica de actuadores", size=22, color=WHITE)
-rect(s, Inches(0.75), Inches(4.3), Inches(1.2), Inches(0.06), fill=ORANGE, shape=MSO_SHAPE.RECTANGLE)
-text(s, Inches(0.7), Inches(4.5), Inches(7.5), Inches(0.4), "EQUIPO 1", size=14, color=ORANGE, bold=True)
-text(s, Inches(0.7), Inches(4.85), Inches(7.5), Inches(1.6),
-     ["Paola M. Covarrubias-Viveros · Lizeth A. Méndez-Ortiz",
-      "Juan Bernardo Orozco-Quirarte · Karen I. Sánchez-García",
-      "Alan E. Fuentes-Gutiérrez"], size=17, color=WHITE)
-text(s, Inches(0.7), Inches(6.3), Inches(7.5), Inches(0.7),
-     ["Con: Jorge A. Lizarraga · Graciela Baca · Luis E. González-Jiménez · Luis F. Luque-Vega",
-      "Depto. de Procesos Tecnológicos e Industriales, ITESO · Otoño 2026"],
-     size=11.5, color=MUTED)
+s1 = new_slide(
+    "Tiempo: 15 s\n"
+    "Buenos días profesores y evaluadores. Presentamos SOFÍA: una pared robótica interactiva con paneles tipo panal "
+    "que te siguen con la mirada y responden a tus gestos en vivo, junto con nuestras pruebas para operarla de forma segura.")
+
+rect(s1, 0, 0, W, H, fill=BG, shape=MSO_SHAPE.RECTANGLE)
+rect(s1, 0, 0, Inches(0.18), H, fill=TEAL, shape=MSO_SHAPE.RECTANGLE)
+
+# Kicker y Título principal
+text_box(s1, Inches(0.8), Inches(0.6), Inches(11.8), Inches(0.35),
+         "LABDST · ITESO · EVALUACIÓN DE SEGUNDO CORTE (OTOÑO 2026)", size=14, color=TEAL, bold=True)
+text_box(s1, Inches(0.8), Inches(1.05), Inches(11.8), Inches(1.1),
+         "SOFÍA: la pared que te mira", size=54, color=WHITE, bold=True)
+text_box(s1, Inches(0.8), Inches(2.25), Inches(11.8), Inches(0.6),
+         "Pared robótica interactiva de paneles que te siguen y hacen rutinas", size=24, color=MUTED)
+
+# 2 Imágenes GRANDES ocupando 60% del ancho
+pic(s1, "sofia_solid.png", Inches(0.8), Inches(3.05), Inches(5.7), Inches(3.7), card=True,
+    caption="Diseño 3D de paneles móviles en panal")
+pic(s1, "modulo_fisico.png", Inches(6.8), Inches(3.05), Inches(5.7), Inches(3.7), card=True,
+    caption="Prototipo físico montado y funcional")
+
+text_box(s1, Inches(0.8), Inches(7.05), Inches(8.0), Inches(0.3),
+         "Equipo 1 · Ingeniería ITESO", size=13, color=MUTED)
+
 
 # =====================================================================
-# 2. EL PROBLEMA
+# 2. EL PROBLEMA Y LO QUE QUEREMOS (45 s)
 # =====================================================================
-s = new_slide(
-    "(45 s) SOFIA son 16 módulos con 2 grados de libertad: 32 servos MG90S. El servo comercial trae "
-    "su control interno encapsulado, no lo vemos. Si un módulo se atora, el error de posición "
-    "persiste, el motor jala corriente máxima y se calienta. En un arreglo denso eso es riesgo real.")
-header(s, "Una superficie que responde… hasta que se calienta", "Contexto y problema", 2)
-stat(s, Inches(0.6), Inches(1.75), Inches(2.9), Inches(1.5), "16", "módulos en panal hexagonal")
-stat(s, Inches(3.7), Inches(1.75), Inches(2.9), Inches(1.5), "2 GDL", "por módulo (cabeceo + giro)", ORANGE)
-stat(s, Inches(6.8), Inches(1.75), Inches(2.9), Inches(1.5), "32", "servomotores MG90S")
-bullets(s, Inches(0.6), Inches(3.6), Inches(9.2), Inches(3.3), [
-    ("Control encapsulado: ", "el lazo interno del servo comercial es inaccesible; solo vemos el PWM de 50 Hz."),
-    ("Error persistente: ", "tolerancias, choques entre módulos u obstáculos impiden llegar a la consigna."),
-    ("Consecuencia: ", "corriente de bloqueo, calentamiento y degradación (el PLA se ablanda ≈ 60 °C)."),
-    ("Pregunta clave: ", "¿el servo se comporta como bang-bang o como control proporcional saturado?"),
-], size=18, gap=10)
-rect(s, Inches(10.1), Inches(1.75), Inches(2.7), Inches(5.0), fill=CARD2)
-pic(s, "sofia_exploded.png", Inches(10.2), Inches(1.85), Inches(2.5), Inches(4.8), card=False)
+s2 = new_slide(
+    "Tiempo: 45 s\n"
+    "Las paredes cinéticas en museos o aeropuertos cuestan millones de pesos y si alguien las toca se queman. "
+    "Nuestro objetivo es crear una pared modular accesible que te siga con la mirada y se autoproteja de sobrecalentamientos.")
 
-# =====================================================================
-# 3. PREGUNTA Y OBJETIVOS
-# =====================================================================
-s = new_slide(
-    "(45 s) Nuestra pregunta rectora: ¿el error de posición persistente en un MG90S produce una firma "
-    "térmica identificable que limite el tiempo seguro de sostén? Para responderla tenemos 4 objetivos medibles.")
-header(s, "Pregunta de investigación y objetivos", "Qué queremos demostrar", 3)
-rect(s, Inches(0.6), Inches(1.7), Inches(12.1), Inches(1.45), fill=CARD, line=TEAL)
-text(s, Inches(0.9), Inches(1.78), Inches(11.5), Inches(1.3),
-     "¿Un error de posición persistente en un servo MG90S produce una firma térmica "
-     "identificable que acote el tiempo seguro de sostén de un módulo SOFIA?",
-     size=23, bold=True, anchor=MSO_ANCHOR.MIDDLE, color=WHITE)
+title_header(s2, "Las paredes interactivas cuestan millones y se queman", "Rúbrica: Planteamiento y Marco (20%)", 2)
+
+# Imagen de piezas impresas en 3D (Grande a la izquierda)
+pic(s2, "sofia_exploded.png", Inches(0.8), Inches(1.75), Inches(4.3), Inches(5.0), card=True,
+    caption="Piezas impresas en 3D")
+
+# Bloque 1: El problema (3 tarjetas punch)
+y_b1 = Inches(1.75)
+p_items = [
+    ("💰 Carísimas", "Cuestan millones"),
+    ("🔒 Motores cerrados", "Mecánica inaccesible"),
+    ("🔥 Se sobrecalientan", "Riesgo al detenerse"),
+]
+for i, (t, sub) in enumerate(p_items):
+    bx = Inches(5.4 + i * 2.45)
+    rect(s2, bx, y_b1, Inches(2.3), Inches(1.2), fill=CARD, line=CORAL)
+    text_box(s2, bx, y_b1 + Inches(0.12), Inches(2.3), Inches(0.4), t, size=20, bold=True, color=CORAL, align=PP_ALIGN.CENTER)
+    text_box(s2, bx, y_b1 + Inches(0.58), Inches(2.3), Inches(0.4), sub, size=15, color=MUTED, align=PP_ALIGN.CENTER)
+
+# Bloque 2: Objetivo en 1 frase + 3 de 5 palabras
+rect(s2, Inches(5.4), Inches(3.15), Inches(7.2), Inches(2.1), fill=CARD_HI, line=TEAL)
+text_box(s2, Inches(5.65), Inches(3.25), Inches(6.7), Inches(0.7),
+         "Objetivo: crear una pared robótica accesible que te siga en tiempo real y sea segura.",
+         size=22, bold=True, color=WHITE)
+
 objs = [
-    ("1", "Evaluar el actuador", "Rango angular 19.3°–70.2° y tiempos de asentamiento 75–180 ms (PWM 50 Hz)"),
-    ("2", "Modelar la térmica", "Pendiente de calentamiento bajo bloqueo y límite seguro > 65 °C"),
-    ("3", "Validar la percepción", "Pose 3D + 21 puntos de mano con MediaPipe a ≥ 30 FPS"),
-    ("4", "Simular la cinemática", "Cinemática 2-GDL y seguimiento coordinado de los 16 módulos"),
+    "▸ Paneles modulares en 3D",
+    "▸ Sigan y reaccionen a gestos",
+    "▸ Protegerse del sobrecalentamiento",
 ]
-for i, (n, t, d) in enumerate(objs):
-    x = Inches(0.6 + (i % 2) * 6.15)
-    y = Inches(3.45 + (i // 2) * 1.75)
-    rect(s, x, y, Inches(5.95), Inches(1.55), fill=CARD2)
-    rect(s, x, y, Inches(0.9), Inches(1.55), fill=TEAL if i % 2 == 0 else ORANGE, radius=0.1)
-    text(s, x, y, Inches(0.9), Inches(1.55), n, size=40, bold=True, color=BG,
-         align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, x + Inches(1.05), y + Inches(0.12), Inches(4.8), Inches(0.45), t, size=19, bold=True)
-    text(s, x + Inches(1.05), y + Inches(0.6), Inches(4.8), Inches(0.9), d, size=14.5, color=MUTED)
+for idx, o in enumerate(objs):
+    text_box(s2, Inches(5.65), Inches(4.05 + idx * 0.38), Inches(6.7), Inches(0.35),
+             o, size=18, color=TEAL, bold=True)
+
+# Bloque 3: Línea de tiempo D-Lab + Materiales
+rect(s2, Inches(5.4), Inches(5.45), Inches(7.2), Inches(1.3), fill=CARD)
+text_box(s2, Inches(5.65), Inches(5.55), Inches(6.7), Inches(0.4),
+         "Corte 1: Diseño  ➔  Corte 2: Prototipo [ESTAMOS AQUÍ]  ➔  Corte 3: Pared completa",
+         size=16, bold=True, color=AMBER)
+text_box(s2, Inches(5.65), Inches(6.05), Inches(6.7), Inches(0.6),
+         "Materiales: 16 módulos PLA SOFIA003, 32 servos MG90S, 64 tornillos M3, 2 PCA9685, 1 ESP32-C3 y cámara.", size=14, color=MUTED)
+
 
 # =====================================================================
-# 4. DIFERENCIADOR / ESTADO DEL ARTE
+# 3. QUÉ EXISTE Y EN QUÉ SOMOS DISTINTOS (40 s)
 # =====================================================================
-s = new_slide(
-    "(40 s) inFORM y Transform tienen cientos de actuadores lineales pero asumen que el actuador siempre "
-    "llega a su posición. SOFIA es más pequeño pero se enfoca en lo que ellos ignoran: qué pasa cuando el "
-    "actuador se atora y cuánta temperatura genera.")
-header(s, "Qué nos diferencia", "Estado del arte", 4)
-rows = [
-    ("Plataforma", "Unidades (GDL)", "Rango / GDL", "Actuador", "Latencia / tasa"),
-    ("inFORM (MIT)", "900 (1-GDL)", "100 mm lineal", "Pin motorizado DC", "≈ 60 Hz"),
-    ("Transform (MIT)", "1,152 (1-GDL)", "100 mm lineal", "Gearmotor DC", "≈ 30 Hz"),
-    ("Celdas modulares", "Variable", "Rotacional", "Brushless / DC", "Bus distribuido"),
-    ("SOFIA (nuestro)", "16 (2-GDL)", "19.3°–70.2°", "Metal MG90S", "≤ 33 ms (30 fps)"),
+s3 = new_slide(
+    "Tiempo: 40 s\n"
+    "Las obras existentes como inFORM del MIT o las esculturas de aeropuertos son carísimas o solo repiten videos sin verte. "
+    "SOFÍA te ve en vivo, es modular y accesible. Nuestro diferenciador clave es el estudio térmico: como el servomotor comercial "
+    "NO tiene sensor interno de temperatura, medimos su calentamiento en laboratorio con termómetro láser y osciloscopio "
+    "para diseñar su corte preventivo.")
+
+title_header(s3, "Hermosas, caras y sin ojos", "Rúbrica: Planteamiento y Marco (20%)", 3)
+
+# 3 Columnas
+cw3 = Inches(3.8)
+
+# Col 1: MIT inFORM
+rect(s3, Inches(0.8), Inches(1.8), cw3, Inches(4.9), fill=CARD)
+text_box(s3, Inches(1.05), Inches(2.0), cw3 - Inches(0.5), Inches(0.5),
+         "MIT inFORM", size=28, bold=True, color=WHITE)
+text_box(s3, Inches(1.05), Inches(2.6), cw3 - Inches(0.5), Inches(0.4),
+         "Mesas cinéticas motorizadas", size=18, color=MUTED, italic=True)
+text_box(s3, Inches(1.05), Inches(3.2), cw3 - Inches(0.5), Inches(3.0),
+         ["▸ 900 barras móviles",
+          "",
+          "▸ Millones de pesos en costo",
+          "",
+          "▸ Atadas a un laboratorio"], size=22, color=WHITE)
+
+# Col 2: Esculturas de aeropuerto
+rect(s3, Inches(4.8), Inches(1.8), cw3, Inches(4.9), fill=CARD)
+text_box(s3, Inches(5.05), Inches(2.0), cw3 - Inches(0.5), Inches(0.5),
+         "Arte Comercial", size=28, bold=True, color=WHITE)
+text_box(s3, Inches(5.05), Inches(2.6), cw3 - Inches(0.5), Inches(0.4),
+         "Esculturas en aeropuertos", size=18, color=MUTED, italic=True)
+text_box(s3, Inches(5.05), Inches(3.2), cw3 - Inches(0.5), Inches(3.0),
+         ["▸ Coreografía en bucle fijo",
+          "",
+          "▸ Cero interacción viva",
+          "",
+          "▸ No te ven ni te siguen"], size=22, color=WHITE)
+
+# Col 3: SOFÍA (Destacada con borde TEAL)
+rect(s3, Inches(8.8), Inches(1.8), cw3, Inches(4.9), fill=CARD_HI, line=TEAL)
+text_box(s3, Inches(9.05), Inches(2.0), cw3 - Inches(0.5), Inches(0.5),
+         "SOFÍA (ITESO)", size=30, bold=True, color=TEAL)
+text_box(s3, Inches(9.05), Inches(2.6), cw3 - Inches(0.5), Inches(0.4),
+         "Pared interactiva inteligente", size=18, color=AMBER, italic=True)
+text_box(s3, Inches(9.05), Inches(3.1), cw3 - Inches(0.5), Inches(1.8),
+         ["⭐ Te ve y te sigue en vivo",
+          "⭐ Modular en 3D (16 módulos)",
+          "⭐ Sin sensor interno: medido con láser y osciloscopio"], size=18, color=WHITE, bold=True)
+pic(s3, "sofia_solid.png", Inches(9.1), Inches(4.95), Inches(3.2), Inches(1.65), card=True)
+
+
+# =====================================================================
+# 4. CÓMO LO PROBAMOS (50 s)
+# =====================================================================
+s4 = new_slide(
+    "Tiempo: 50 s\n"
+    "Medimos velocidad de cámara, respuesta a gestos y calor del motor con termómetro láser, osciloscopio e instrumentos mecatrónicos. "
+    "Nuestros criterios de aprobación son claros: más de 30 cuadros por segundo, respuesta en menos de 100 milisegundos "
+    "y corte de seguridad en menos de 15 segundos si algo se atora.")
+
+title_header(s4, "Tres cosas medidas, tres líneas rojas", "Rúbrica: Diseño de la Investigación (20%)", 4)
+
+# Cadena horizontal superior con íconos
+pipe_w = Inches(2.15)
+pipe_items = [
+    ("📷 Cámara web", "Te ve en vivo"),
+    ("💻 Software PC", "Detecta tu mano"),
+    ("📶 Bluetooth", "Sin cables LE"),
+    ("⚡ ESP32 + 2x PCA", "Control 32 canales"),
+    ("🌸 16 Paneles", "32 servos MG90S"),
 ]
-tx, ty = Inches(0.6), Inches(1.75)
-colw = [Inches(2.5), Inches(2.2), Inches(2.2), Inches(2.6), Inches(2.6)]
-rh = Inches(0.62)
-for r_i, row in enumerate(rows):
-    cx = tx
-    for c_i, cell in enumerate(row):
-        last = r_i == len(rows) - 1
-        fill = TEAL if r_i == 0 else (CARD2 if last else CARD)
-        rect(s, cx, ty + rh * r_i, colw[c_i] - Inches(0.05), rh - Inches(0.05), fill=fill,
-             shape=MSO_SHAPE.RECTANGLE, line=ORANGE if last else None)
-        text(s, cx, ty + rh * r_i, colw[c_i] - Inches(0.05), rh - Inches(0.05), cell,
-             size=15, bold=(r_i == 0 or last), color=BG if r_i == 0 else WHITE,
-             align=PP_ALIGN.CENTER, anchor=MSO_ANCHOR.MIDDLE)
-        cx += colw[c_i]
-rect(s, Inches(0.6), Inches(5.1), Inches(12.1), Inches(1.7), fill=CARD, line=ORANGE)
-text(s, Inches(0.9), Inches(5.2), Inches(11.5), Inches(1.5), [
-    "Brecha: las superficies cinéticas publicadas asumen que el actuador completa su trayectoria.",
-    "SOFIA une visión de la mano (MediaPipe) con servos MG90S y mide experimentalmente "
-    "qué pasa en bloqueo: corriente, temperatura y si la respuesta es bang-bang."],
-     size=18, anchor=MSO_ANCHOR.MIDDLE)
+py = Inches(1.8)
+for i, (p_t, p_s) in enumerate(pipe_items):
+    px = Inches(0.8 + i * 2.45)
+    rect(s4, px, py, pipe_w, Inches(1.15), fill=CARD, line=TEAL)
+    text_box(s4, px, py + Inches(0.12), pipe_w, Inches(0.4), p_t, size=18, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
+    text_box(s4, px, py + Inches(0.58), pipe_w, Inches(0.4), p_s, size=14, color=MUTED, align=PP_ALIGN.CENTER)
+    if i < 4:
+        arrow(s4, px + pipe_w, py + Inches(0.57), Inches(0.8 + (i + 1) * 2.45), py + Inches(0.57))
+
+# 3 Tarjetas inferiores
+tc_w = Inches(3.8)
+tc_y = Inches(3.25)
+tc_h = Inches(3.5)
+
+# Qué medimos
+rect(s4, Inches(0.8), tc_y, tc_w, tc_h, fill=CARD)
+text_box(s4, Inches(1.05), tc_y + Inches(0.2), tc_w - Inches(0.5), Inches(0.5),
+         "1. Qué medimos", size=26, bold=True, color=WHITE)
+text_box(s4, Inches(1.05), tc_y + Inches(0.85), tc_w - Inches(0.5), Inches(2.3),
+         ["▸ Velocidad de cámara",
+          "",
+          "▸ Respuesta al saludo",
+          "",
+          "▸ Calor del motor"], size=22, color=MUTED)
+
+# Con qué
+rect(s4, Inches(4.8), tc_y, tc_w, tc_h, fill=CARD)
+text_box(s4, Inches(5.05), tc_y + Inches(0.2), tc_w - Inches(0.5), Inches(0.5),
+         "2. Con qué", size=26, bold=True, color=WHITE)
+text_box(s4, Inches(5.05), tc_y + Inches(0.85), tc_w - Inches(0.5), Inches(2.3),
+         ["▸ Cámara web HD",
+          "",
+          "▸ Termómetro láser y osciloscopio",
+          "",
+          "▸ Sin sensor en motor (banco con tope)"], size=19, color=MUTED)
+
+# Aprobamos si
+rect(s4, Inches(8.8), tc_y, tc_w, tc_h, fill=CARD_HI, line=TEAL)
+text_box(s4, Inches(9.05), tc_y + Inches(0.2), tc_w - Inches(0.5), Inches(0.5),
+         "3. Aprobamos si", size=26, bold=True, color=TEAL)
+text_box(s4, Inches(9.05), tc_y + Inches(0.85), tc_w - Inches(0.5), Inches(2.3),
+         ["⭐ > 30 FPS y < 100 ms",
+          "",
+          "⭐ Bajo 55 °C",
+          "",
+          "⭐ Corte antes de 15 s"], size=22, color=WHITE, bold=True)
+
 
 # =====================================================================
-# 5. ARQUITECTURA
+# 5. EL SOFTWARE QUE TE VE (45 s)
 # =====================================================================
-s = new_slide(
-    "(60 s) Una cámara alimenta un pipeline en Python con MediaPipe. El software decide ángulos q1 y q2 "
-    "y los manda por BLE a un ESP32-C3. El ESP32 comanda dos PCA9685 por I2C que generan los 32 PWM. "
-    "Los servos van a un riel de 5 V con un INA219 midiendo corriente.")
-header(s, "Arquitectura del sistema", "Diseño e implementación", 5)
-bw, bh = Inches(2.15), Inches(1.2)
-y1 = Inches(2.3)
-blocks = [
-    ("Cámara RGB", "30 FPS", TEAL),
-    ("Python 3.11", "MediaPipe + OpenCV\nGUI PySide6", TEAL),
-    ("BLE / UDP", "ángulos (q1,q2)\n60°–120°", ORANGE),
-    ("ESP32-C3", "maestro · telemetría\nrutinas en firmware", TEAL),
-    ("2× PCA9685", "I²C · 32 canales\nPWM 50 Hz", TEAL),
+s5 = new_slide(
+    "Tiempo: 45 s\n"
+    "Nuestra estación de control procesa la mano a más de 30 cuadros por segundo en tiempo real. "
+    "Reconoce gestos como saludos y corazones, y simulamos los 16 paneles en Unity para que se muevan coordinados sin chocar.")
+
+title_header(s5, "Te sigue la mano a más de 30 cuadros por segundo", "Rúbrica: Desarrollo y Resultados (20%)", 5)
+
+# Captura de pantalla de la GUI GRANDE a la izquierda (62% del ancho)
+pic(s5, "sofia_gui.png", Inches(0.8), Inches(1.8), Inches(7.5), Inches(4.9), card=True,
+    caption="Estación de control en tiempo real (PySide6)")
+
+# Columna derecha: Stat gigante + gestos + Unity frames
+rect(s5, Inches(8.6), Inches(1.8), Inches(4.0), Inches(1.6), fill=CARD_HI, line=TEAL)
+text_box(s5, Inches(8.6), Inches(1.9), Inches(4.0), Inches(0.8), "30+ FPS", size=60, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
+text_box(s5, Inches(8.6), Inches(2.8), Inches(4.0), Inches(0.4), "Visión fluida en tiempo real", size=18, color=MUTED, align=PP_ALIGN.CENTER)
+
+rect(s5, Inches(8.6), Inches(3.6), Inches(4.0), Inches(1.4), fill=CARD)
+text_box(s5, Inches(8.8), Inches(3.72), Inches(3.6), Inches(0.35), "Gestos reconocidos:", size=18, bold=True, color=AMBER)
+text_box(s5, Inches(8.8), Inches(4.15), Inches(3.6), Inches(0.7),
+         "👋 Saludo   ·   💖 Corazón   ·   👊 Puño", size=18, color=WHITE, bold=True)
+
+# Frames de Unity debajo
+pic(s5, "fig_sim_1.png", Inches(8.6), Inches(5.2), Inches(1.9), Inches(1.5), card=True)
+pic(s5, "fig_sim_3.png", Inches(10.7), Inches(5.2), Inches(1.9), Inches(1.5), card=True)
+
+
+# =====================================================================
+# 6. EL PROTOTIPO FÍSICO RESPONDE (40 s)
+# =====================================================================
+s6 = new_slide(
+    "Tiempo: 40 s\n"
+    "Aquí vemos el prototipo físico real. Al detectar el saludo frente a la cámara, "
+    "el panel físico responde por Bluetooth en menos de 100 milisegundos con una oscilación suave.")
+
+title_header(s6, "Saludas, y el panel te contesta", "Rúbrica: Desarrollo y Resultados (20%)", 6)
+
+# Secuencia de 4 fotos grandes lado a lado ocupando 65% del área
+pic_w = Inches(2.8)
+pic_h = Inches(3.8)
+pic_y = Inches(1.8)
+
+pic(s6, "modulo_fisico.png", Inches(0.8), pic_y, pic_w, pic_h, card=True, caption="1. Módulo físico")
+pic(s6, "sofia_saludo1.png", Inches(3.8), pic_y, pic_w, pic_h, card=True, caption="2. Gesto detectado")
+pic(s6, "sofia_saludo2.png", Inches(6.8), pic_y, pic_w, pic_h, card=True, caption="3. Panel oscilando")
+pic(s6, "sofia_saludo3.png", Inches(9.8), pic_y, pic_w, pic_h, card=True, caption="4. Retorno a centro")
+
+# 3 Puntos punch debajo en barra horizontal
+rect(s6, Inches(0.8), Inches(5.95), Inches(11.8), Inches(0.9), fill=CARD)
+p6_items = [
+    "⚡ Enlace Bluetooth sin cables",
+    "⏱️ Respuesta en menos de 100 ms",
+    "🔄 Movimiento suave y sincronizado",
 ]
-xs = [Inches(0.5 + i * 2.55) for i in range(5)]
-for (t, d, c), x in zip(blocks, xs):
-    rect(s, x, y1, bw, bh, fill=CARD2, line=c)
-    text(s, x, y1 + Inches(0.08), bw, Inches(0.4), t, size=17, bold=True, color=c, align=PP_ALIGN.CENTER)
-    text(s, x, y1 + Inches(0.5), bw, Inches(0.7), d.split("\n"), size=12, color=MUTED, align=PP_ALIGN.CENTER)
-for i in range(4):
-    arrow(s, xs[i] + bw, y1 + bh // 2, xs[i + 1], y1 + bh // 2)
-# fila de abajo
-y2 = Inches(4.6)
-rect(s, xs[4], y2, bw, bh, fill=CARD2, line=ORANGE)
-text(s, xs[4], y2 + Inches(0.08), bw, Inches(0.4), "32× MG90S", size=17, bold=True, color=ORANGE, align=PP_ALIGN.CENTER)
-text(s, xs[4], y2 + Inches(0.5), bw, Inches(0.7), ["16 módulos × 2 GDL"], size=12, color=MUTED, align=PP_ALIGN.CENTER)
-arrow(s, xs[4] + bw // 2, y1 + bh, xs[4] + bw // 2, y2, ORANGE)
-rect(s, xs[3], y2, bw, bh, fill=CARD2, line=RED)
-text(s, xs[3], y2 + Inches(0.08), bw, Inches(0.4), "Fuente 5 V / 20 A", size=16, bold=True, color=RED, align=PP_ALIGN.CENTER)
-text(s, xs[3], y2 + Inches(0.5), bw, Inches(0.7), ["riel de actuadores"], size=12, color=MUTED, align=PP_ALIGN.CENTER)
-arrow(s, xs[3] + bw, y2 + bh // 2, xs[4], y2 + bh // 2, RED)
-rect(s, xs[2], y2, bw, bh, fill=CARD2, line=TEAL)
-text(s, xs[2], y2 + Inches(0.08), bw, Inches(0.4), "INA219", size=17, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
-text(s, xs[2], y2 + Inches(0.5), bw, Inches(0.7), ["corriente (shunt high-side)"], size=12, color=MUTED, align=PP_ALIGN.CENTER)
-arrow(s, xs[2] + bw, y2 + bh // 2, xs[3], y2 + bh // 2, TEAL)
-text(s, Inches(0.5), Inches(4.6), Inches(4.7), Inches(1.3), [
-    "Gestos estáticos → ángulos directos",
-    "Gestos dinámicos → rutinas en el ESP32",
-    "Futuro: RS-485 / Modbus entre módulos"], size=14, color=WHITE)
-bullets(s, Inches(0.5), Inches(6.05), Inches(12), Inches(0.9), [
-    ("Etapa actual (Discover → Learn): ", "validado con placas COTS en protoboard; PCB ya enviada a fabricación.")],
-    size=14.5)
+for i, pt in enumerate(p6_items):
+    text_box(s6, Inches(0.9 + i * 3.9), Inches(6.15), Inches(3.8), Inches(0.5),
+             pt, size=20, bold=True, color=WHITE, align=PP_ALIGN.CENTER)
+
 
 # =====================================================================
-# 6. HARDWARE: CAD + PCB
+# 7. EL HALLAZGO CLAVE (50 s)
 # =====================================================================
-s = new_slide(
-    "(30 s) Aquí el diseño mecánico: base, mecanismo central y tapa hexagonal; todo impreso en PLA. "
-    "A la derecha, esquemático y layout de la PCB que integra potencia, comunicación y los 32 servos; "
-    "ya está enviada a fabricación, falta validarla físicamente.")
-header(s, "Diseño mecánico y electrónico", "Hardware", 6)
-pic(s, "sofia_solid.png", Inches(0.6), Inches(1.75), Inches(3.0), Inches(3.0), caption="Ensamble 3D")
-pic(s, "sofia_exploded.png", Inches(3.8), Inches(1.75), Inches(2.4), Inches(3.0), caption="Vista explotada")
-pic(s, "sofia_schematic.png", Inches(6.6), Inches(1.75), Inches(3.05), Inches(2.0), caption="Esquemático PCB")
-pic(s, "sofia_pcb_layout.png", Inches(9.8), Inches(1.75), Inches(2.9), Inches(2.0), caption="Layout PCB")
-bullets(s, Inches(6.6), Inches(4.25), Inches(6.1), Inches(2.6), [
-    "Base estructural + soporte central + tapa hexagonal (PLA)",
-    "PCB: potencia, comunicación, PWM e interfaz para 32 servos",
-    "Estado: enviada a fabricación · validación pendiente",
-], size=16, gap=9)
-bullets(s, Inches(0.6), Inches(5.3), Inches(5.8), Inches(1.6), [
-    ("Mecanismo pan-tilt 2-GDL ", "con dos MG90S ortogonales por módulo."),
-], size=16)
+s7 = new_slide(
+    "Tiempo: 50 s\n"
+    "Este es nuestro hallazgo experimental más importante: sin carga el motor no se calienta. "
+    "Pero atorado con un tope, llegó a 64.8 grados en 226 segundos y a los 3 minutos supera los 60 grados, "
+    "donde el plástico 3D empieza a aflojarse. Por eso diseñamos un corte automático a los 15 segundos.")
+
+title_header(s7, "Si un panel se atora, en 3 minutos se quema", "Rúbrica: Desarrollo y Resultados (20%)", 7)
+
+# Gráfica térmica real ocupando el 60% del slide a la izquierda
+pic(s7, "fig_thermal_response.png", Inches(0.8), Inches(1.8), Inches(7.5), Inches(4.9), card=True,
+    caption="Medición en banco con termómetro láser y osciloscopio (el motor no tiene sensor interno)")
+
+# Columna derecha: 2 números enormes + frase punch
+# Número 1: 64.8 °C
+rect(s7, Inches(8.6), Inches(1.8), Inches(4.0), Inches(1.5), fill=CARD, line=CORAL)
+text_box(s7, Inches(8.6), Inches(1.9), Inches(4.0), Inches(0.75), "64.8 °C", size=60, bold=True, color=CORAL, align=PP_ALIGN.CENTER)
+text_box(s7, Inches(8.6), Inches(2.75), Inches(4.0), Inches(0.4), "a los 226 s (engrane forzándose)", size=16, color=MUTED, align=PP_ALIGN.CENTER)
+
+# Número 2: 3 min
+rect(s7, Inches(8.6), Inches(3.5), Inches(4.0), Inches(1.5), fill=CARD, line=AMBER)
+text_box(s7, Inches(8.6), Inches(3.6), Inches(4.0), Inches(0.75), "3 min", size=60, bold=True, color=AMBER, align=PP_ALIGN.CENTER)
+text_box(s7, Inches(8.6), Inches(4.45), Inches(4.0), Inches(0.4), "pasa de 60 °C (plástico se afloja)", size=16, color=MUTED, align=PP_ALIGN.CENTER)
+
+# Frase de decisión punch
+rect(s7, Inches(8.6), Inches(5.2), Inches(4.0), Inches(1.5), fill=CARD_HI, line=TEAL)
+text_box(s7, Inches(8.8), Inches(5.4), Inches(3.6), Inches(1.1),
+         "Por eso diseñamos un corte automático a los 15 s", size=24, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
+
 
 # =====================================================================
-# 7. VISIÓN Y GESTOS
+# 8. POR QUÉ TODAVÍA NO VA A UN MUSEO (I) - GENTE Y ENTORNO (40 s)
 # =====================================================================
-s = new_slide(
-    "(50 s) MediaPipe extrae 33 puntos del cuerpo y 21 por mano. Normalizamos por el tamaño de la palma para "
-    "no depender de la distancia. Un detector decide entre gestos estáticos, como corazón o piedra-papel-tijera, "
-    "y dinámicos, como el saludo, que se detecta por inversiones laterales de la palma. La GUI muestra FPS y latencia.")
-header(s, "Visión por computadora y gestos", "Percepción", 7)
-pic(s, "sofia_gui.png", Inches(0.6), Inches(1.75), Inches(6.6), Inches(4.3),
-    caption="Interfaz de SOFIA (PySide6): video, gesto, FPS, latencia, sliders y telemetría")
-bullets(s, Inches(7.5), Inches(1.75), Inches(5.3), Inches(5.2), [
-    ("MediaPipe + OpenCV: ", "33 puntos de pose y 2×21 de mano en 3D, ≥ 30 FPS en CPU."),
-    ("Normalización: ", "distancias por escala de palma → robusto a la distancia."),
-    ("Saludo (wave): ", "≥ 3 inversiones laterales con amplitud > 0.05."),
-    ("Piedra-papel-tijera: ", "máquina de estados con histéresis de contacto."),
-    ("Estáticos: ", "corazón, palma abierta, victoria, puño."),
-    ("Seguridad: ", "tracking suspendido durante rutinas del ESP32."),
-], size=16, gap=9)
+s8 = new_slide(
+    "Tiempo: 40 s\n"
+    "¿Por qué SOFÍA todavía no puede operar en un museo? En el laboratorio probamos con 1 persona a 1 metro y luz controlada. "
+    "En un museo hay multitud de personas cruzando manos, luz solar cambiante y se necesita un sistema embebido dentro del marco.")
 
-# =====================================================================
-# 8. CINEMÁTICA Y SIMULACIÓN
-# =====================================================================
-s = new_slide(
-    "(45 s) Cada módulo es una cadena de dos rotaciones: R = Rx(q1)·Ry(q2). Despejamos la cinemática inversa en "
-    "forma cerrada, q2 = arcsin(ux) y q1 = atan2(-uy, uz), con saturación a los límites del servo. "
-    "En Unity simulamos los 16 módulos apuntando hacia un objetivo móvil.")
-header(s, "Cinemática 2-GDL y simulación de 16 módulos", "Modelo", 8)
-rect(s, Inches(0.6), Inches(1.75), Inches(5.0), Inches(2.05), fill=CARD, line=TEAL)
-text(s, Inches(0.75), Inches(1.8), Inches(4.7), Inches(0.4), "Cinemática directa", size=15, bold=True, color=TEAL)
-text(s, Inches(0.75), Inches(2.2), Inches(4.7), Inches(0.6), "R₁,₃(q₁,q₂) = Rₓ(q₁) · R_y(q₂)", size=22, bold=True)
-text(s, Inches(0.75), Inches(2.9), Inches(4.7), Inches(0.8),
-     "Normal de la faceta: r̂ = R₁,₃ [0 0 1]ᵀ", size=15, color=MUTED)
-rect(s, Inches(0.6), Inches(4.0), Inches(5.0), Inches(2.0), fill=CARD, line=ORANGE)
-text(s, Inches(0.75), Inches(4.05), Inches(4.7), Inches(0.4), "Cinemática inversa (forma cerrada)", size=15, bold=True, color=ORANGE)
-text(s, Inches(0.75), Inches(4.45), Inches(4.7), Inches(1.4),
-     ["q₂ = arcsin(uₓ)", "q₁ = atan2(−u_y, u_z)", "+ saturación a los límites del servo"], size=17, bold=True)
-text(s, Inches(0.6), Inches(6.2), Inches(5.0), Inches(0.7),
-     "Simulación en Unity: 16 módulos orientándose hacia un objetivo p(t) en 3D.", size=13.5, color=MUTED)
-for i, nm in enumerate(["fig_sim_1.png", "fig_sim_3.png", "fig_sim_5.png", "fig_sim_2.png", "fig_sim_4.png", "fig_sim_6.png"]):
-    x = Inches(5.95 + (i % 2) * 3.45)
-    y = Inches(1.75 + (i // 2) * 1.75)
-    pic(s, nm, x, y, Inches(3.35), Inches(1.65), card=True)
+title_header(s8, "El laboratorio es fácil. Un museo no", "Rúbrica: Brecha con el Entorno Real (20%)", 8)
 
-# =====================================================================
-# 9. TÉRMICA
-# =====================================================================
-s = new_slide(
-    "(60 s) Bloqueamos mecánicamente el servo y medimos temperatura con un LM35. Resultado: calentamiento "
-    "casi lineal de 0.214 grados por segundo, con R cuadrada de 0.993. La corriente de bloqueo es de unos 918 mA, "
-    "y la carcasa llegó a 70.2 grados. Al ritmo medido, en unos 205 s se cruza el umbral de 65 grados, "
-    "donde el plástico empieza a ablandarse. Por eso proponemos un watchdog de 15 s.")
-header(s, "Resultado clave: el bloqueo calienta rápido", "Caracterización térmica del MG90S", 9)
-pic(s, "fig_characterization_6panels.png", Inches(0.6), Inches(1.7), Inches(8.2), Inches(4.55),
-    caption="Caracterización electromecánica y térmica del MG90S bajo bloqueo")
-stat(s, Inches(9.1), Inches(1.7), Inches(3.6), Inches(1.15), "0.214 °C/s", "pendiente de calentamiento (R² = 0.993)", ORANGE)
-stat(s, Inches(9.1), Inches(3.0), Inches(3.6), Inches(1.15), "918 mA", "corriente de bloqueo (≈ 4.4 W)", RED)
-stat(s, Inches(9.1), Inches(4.3), Inches(3.6), Inches(1.15), "70.21 °C", "temperatura máx. de carcasa")
-stat(s, Inches(9.1), Inches(5.6), Inches(3.6), Inches(1.15), "≈ 205 s", "para superar 65 °C desde ambiente", ORANGE)
-text(s, Inches(0.6), Inches(6.45), Inches(8.2), Inches(0.5),
-     "τ no es identificable con este registro → reportamos la pendiente (honestidad metodológica).",
-     size=13.5, color=MUTED, italic=True)
+# Encabezados de tabla
+rect(s8, Inches(0.8), Inches(1.8), Inches(5.7), Inches(0.6), fill=CARD)
+text_box(s8, Inches(0.8), Inches(1.9), Inches(5.7), Inches(0.4), "Hoy en Laboratorio", size=22, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
 
-# =====================================================================
-# 10. ¿BANG-BANG?
-# =====================================================================
-s = new_slide(
-    "(50 s) La curva térmica sola no distingue bang-bang de proporcional saturado, porque ambos meten voltaje "
-    "máximo al bloqueo. Por eso medimos corriente en tres condiciones: error de 5 grados, 90 grados y bloqueo. "
-    "Con 5 grados hay un pico breve y vuelve a reposo en 3 mA; con 90 grados dura más; en bloqueo satura. "
-    "Conclusión: es proporcional con zona muerta, que satura solo cuando algo lo traba.")
-header(s, "¿Es bang-bang? Lo medimos", "Corriente en 3 condiciones", 10)
-pic(s, "fig_current_characterization.png", Inches(0.6), Inches(1.7), Inches(12.1), Inches(3.4),
-    caption="Corriente del MG90S: (a) error 5°, (b) error 90°, (c) bloqueo sostenido")
-conds = [
-    ("Error 5°", "pico ≈ 583 mA < 50 ms\nreposo ≈ 3.1 mA", TEAL),
-    ("Error 90°", "transitorio 150–180 ms\nreposo ≈ 3.5 mA", TEAL),
-    ("Bloqueo", "saturación continua\n≈ 918 mA (picos 1.8 A)", RED),
+rect(s8, Inches(6.8), Inches(1.8), Inches(5.7), Inches(0.6), fill=CARD)
+text_box(s8, Inches(6.8), Inches(1.9), Inches(5.7), Inches(0.4), "Exigencia de un Museo", size=22, bold=True, color=AMBER, align=PP_ALIGN.CENTER)
+
+# 4 Filas de comparación
+b1_rows = [
+    ("👤 1 persona quieta", "👥 Multitud de visitantes cruzando manos"),
+    ("💡 Luz controlada", "☀️ Sol directo, reflejos y sombras dinámicas"),
+    ("📏 Distancia fija a 1 m", "📐 Público pasando a 3 o 5 metros"),
+    ("💻 Laptop con cables", "📦 Sistema embebido oculto en el marco"),
 ]
-for i, (t, d, c) in enumerate(conds):
-    x = Inches(0.6 + i * 2.5)
-    rect(s, x, Inches(5.45), Inches(2.35), Inches(1.45), fill=CARD, line=c)
-    text(s, x, Inches(5.5), Inches(2.35), Inches(0.4), t, size=16, bold=True, color=c, align=PP_ALIGN.CENTER)
-    text(s, x, Inches(5.95), Inches(2.35), Inches(0.9), d.split("\n"), size=12.5, color=MUTED, align=PP_ALIGN.CENTER)
-rect(s, Inches(8.2), Inches(5.45), Inches(4.5), Inches(1.45), fill=CARD2, line=ORANGE)
-text(s, Inches(8.3), Inches(5.5), Inches(4.3), Inches(1.4), [
-    "Conclusión: control proporcional por PWM con zona muerta; satura solo ante restricción física persistente."],
-     size=15, bold=True, anchor=MSO_ANCHOR.MIDDLE)
+for i, (hoy, mus) in enumerate(b1_rows):
+    ry = Inches(2.6 + i * 1.05)
+    # Celda Hoy
+    rect(s8, Inches(0.8), ry, Inches(5.7), Inches(0.9), fill=CARD)
+    text_box(s8, Inches(1.1), ry + Inches(0.25), Inches(5.2), Inches(0.5), hoy, size=22, color=WHITE)
+    
+    # Celda Museo
+    rect(s8, Inches(6.8), ry, Inches(5.7), Inches(0.9), fill=CARD_HI, line=AMBER)
+    text_box(s8, Inches(7.1), ry + Inches(0.25), Inches(5.2), Inches(0.5), mus, size=22, color=WHITE, bold=True)
+
 
 # =====================================================================
-# 11. PROTOTIPO FÍSICO
+# 9. POR QUÉ TODAVÍA NO VA A UN MUSEO (II) - OPERACIÓN Y SEGURIDAD (40 s)
 # =====================================================================
-s = new_slide(
-    "(45 s) Ya integramos todo en el prototipo físico: la cámara detecta el gesto, la GUI manda por BLE al ESP32 y "
-    "el módulo ejecuta. Aquí la rutina SALUDO en tres etapas. Los logs confirman conexión BLE, comandos de ángulos "
-    "durante el tracking y envío de las rutinas SALUDO y CORAZÓN. Aclaramos que esto es evidencia cualitativa: "
-    "falta medir precisión y latencia con cámara de alta velocidad.")
-header(s, "Validación en el prototipo físico", "Resultados funcionales", 11)
-pic(s, "modulo_fisico.png", Inches(0.6), Inches(1.75), Inches(4.3), Inches(2.3), caption="Módulo físico con ESP32-C3")
-for i, (nm, cap) in enumerate([("sofia_saludo1.png", "Inicio"), ("sofia_saludo2.png", "Intermedio"), ("sofia_saludo3.png", "Final")]):
-    pic(s, nm, Inches(5.2 + i * 2.5), Inches(1.75), Inches(2.4), Inches(1.5), caption=f"SALUDO · {cap}")
-logs = [("Arranque de visión", "modelos cargados, cámara activa"),
-        ("Conexión BLE", "conexión exitosa registrada"),
-        ("Seguimiento de articulaciones", "comandos de ángulo variables"),
-        ("Rutinas dinámicas", "SALUDO y CORAZÓN enviadas"),
-        ("Coordinación", "tracking se reanuda tras el temporizador"),
-        ("Apagado", "cámara detenida, BLE cerrado")]
-for i, (a, b) in enumerate(logs):
-    x = Inches(0.6 + (i % 2) * 6.15)
-    y = Inches(4.55 + (i // 2) * 0.78)
-    rect(s, x, y, Inches(5.95), Inches(0.68), fill=CARD)
-    text(s, x + Inches(0.1), y, Inches(0.5), Inches(0.68), "✓", size=22, bold=True, color=TEAL, anchor=MSO_ANCHOR.MIDDLE)
-    text(s, x + Inches(0.55), y, Inches(5.3), Inches(0.68), [f"{a}: {b}"], size=14.5, anchor=MSO_ANCHOR.MIDDLE)
-text(s, Inches(5.2), Inches(3.55), Inches(7.5), Inches(0.9),
-     "Evidencia cualitativa: los logs y fotos no cuantifican precisión, latencia ni repetibilidad (siguiente paso).",
-     size=13.5, color=ORANGE, italic=True)
+s9 = new_slide(
+    "Tiempo: 40 s\n"
+    "La segunda brecha se basa en nuestros datos: un museo opera 12 horas seguidas, los niños van a jalar los pétalos "
+    "requiriendo desacoples seguros, los 32 motores demandan hasta 25-30 amperes y la pared debe recuperarse sola.")
 
-# =====================================================================
-# 12. PROTECCIÓN + PROTOCOLO + FUTURO
-# =====================================================================
-s = new_slide(
-    "(50 s) Con lo medido, proponemos protecciones: limitar ángulos al rango verificado, y un watchdog que, si hay "
-    "bloqueo o desviación sostenida por más de 15 s, suspende el PWM de ese canal; el eje queda libre y deja de "
-    "calentarse. El siguiente paso es el protocolo de seguimiento mano-servo: 10 repeticiones, error angular en "
-    "grados, retardo en ms y ángulo real medido con video de alta velocidad.")
-header(s, "Protecciones y protocolo de validación", "Qué sigue", 12)
-rect(s, Inches(0.6), Inches(1.75), Inches(5.95), Inches(5.05), fill=CARD, line=RED)
-text(s, Inches(0.85), Inches(1.85), Inches(5.5), Inches(0.5), "Protecciones propuestas", size=20, bold=True, color=RED)
-bullets(s, Inches(0.85), Inches(2.45), Inches(5.5), Inches(4.3), [
-    ("Saturación de comandos: ", "ángulos limitados al rango verificado."),
-    ("Watchdog de bloqueo: ", "I > 450 mA o desviación > 15 s → se suspende el PWM del canal."),
-    ("Resultado: ", "eje libre, sin calentamiento Joule (umbral de seguridad 55 °C)."),
-    ("Limitación: ", "el LM35 mide la carcasa, no el devanado."),
-], size=15.5, gap=9, dot=RED)
-rect(s, Inches(6.75), Inches(1.75), Inches(5.95), Inches(5.05), fill=CARD, line=TEAL)
-text(s, Inches(7.0), Inches(1.85), Inches(5.5), Inches(0.5), "Protocolo de seguimiento (siguiente)", size=20, bold=True, color=TEAL)
-bullets(s, Inches(7.0), Inches(2.45), Inches(5.5), Inches(4.3), [
-    ("Trayectorias: ", "oscilación senoidal 0.2–0.8 Hz y escalones de 5°, 30° y 90°."),
-    ("Repeticiones: ", "N = 10 por condición."),
-    ("Métricas: ", "error angular (MAE, RMSE en °) y retardo mano→servo (ms)."),
-    ("Ángulo real: ", "cámara a 120 FPS con marcadores en la faceta."),
-    ("Meta: ", "validar los 16 módulos y suavizar trayectorias."),
-], size=15.5, gap=9)
+title_header(s9, "10 minutos vs 12 horas", "Rúbrica: Brecha con el Entorno Real (20%)", 9)
 
-# =====================================================================
-# 13. CONCLUSIONES
-# =====================================================================
-s = new_slide(
-    "(30 s) En resumen: SOFIA integra visión y robótica modular; el bloqueo calienta 0.214 grados por segundo; "
-    "el servo es proporcional con zona muerta y no bang-bang; y ya tenemos prototipo físico respondiendo a gestos. "
-    "Lo que sigue es cuantificar el seguimiento y escalar. Gracias; con gusto respondemos preguntas.")
-header(s, "Conclusiones", "Resumen", 13)
-concl = [
-    ("Arquitectura", "SOFIA integra visión 3D con 16 módulos 2-GDL (32 MG90S) vía ESP32-C3 y PCA9685.", TEAL),
-    ("Térmica", "Bloqueo sostenido → 0.214 °C/s y 70.21 °C: hacen falta límites y watchdog.", ORANGE),
-    ("Actuador", "El MG90S es proporcional con zona muerta, no bang-bang; satura solo si se traba.", TEAL),
-    ("Prototipo", "Ya responde a gestos (SALUDO, CORAZÓN) en el módulo físico.", ORANGE),
+# Encabezados de tabla
+rect(s9, Inches(0.8), Inches(1.8), Inches(5.7), Inches(0.6), fill=CARD)
+text_box(s9, Inches(0.8), Inches(1.9), Inches(5.7), Inches(0.4), "Nuestros Datos de Prueba", size=22, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
+
+rect(s9, Inches(6.8), Inches(1.8), Inches(5.7), Inches(0.6), fill=CARD)
+text_box(s9, Inches(6.8), Inches(1.9), Inches(5.7), Inches(0.4), "Exigencia de un Museo", size=22, bold=True, color=CORAL, align=PP_ALIGN.CENTER)
+
+# 4 Filas de comparación
+b2_rows = [
+    ("⏱️ Pruebas de 10 min", "⏳ 8 a 12 horas diarias ininterrumpidas"),
+    ("🚫 Nadie toca la pared", "👶 Niños jalando pétalos (acople que se zafe)"),
+    ("🔌 1 módulo probado", "⚡ 32 motores hasta 25-30 A (fuente industrial)"),
+    ("🛠️ Reinicia un ingeniero", "🔄 Se auto-recupera sola ante fallas"),
 ]
-for i, (t, d, c) in enumerate(concl):
-    x = Inches(0.6 + (i % 2) * 6.15)
-    y = Inches(1.75 + (i // 2) * 1.75)
-    rect(s, x, y, Inches(5.95), Inches(1.55), fill=CARD, line=c)
-    text(s, x + Inches(0.2), y + Inches(0.1), Inches(5.5), Inches(0.45), t, size=19, bold=True, color=c)
-    text(s, x + Inches(0.2), y + Inches(0.6), Inches(5.55), Inches(0.9), d, size=15, color=WHITE)
-rect(s, Inches(0.6), Inches(5.4), Inches(12.1), Inches(1.45), fill=CARD2)
-text(s, Inches(0.85), Inches(5.45), Inches(11.6), Inches(0.5), "Trabajo futuro", size=17, bold=True, color=ORANGE)
-text(s, Inches(0.85), Inches(5.95), Inches(11.6), Inches(0.9),
-     "Cuantificar precisión, latencia y repetibilidad del seguimiento · validar la PCB · "
-     "escalar de 1 módulo a los 16 · suavizado de trayectorias.", size=15.5)
+for i, (hoy, mus) in enumerate(b2_rows):
+    ry = Inches(2.6 + i * 1.05)
+    # Celda Hoy
+    rect(s9, Inches(0.8), ry, Inches(5.7), Inches(0.9), fill=CARD)
+    text_box(s9, Inches(1.1), ry + Inches(0.25), Inches(5.2), Inches(0.5), hoy, size=22, color=WHITE)
+    
+    # Celda Museo
+    rect(s9, Inches(6.8), ry, Inches(5.7), Inches(0.9), fill=CARD_HI, line=CORAL)
+    text_box(s9, Inches(7.1), ry + Inches(0.25), Inches(5.2), Inches(0.5), mus, size=22, color=WHITE, bold=True)
+
 
 # =====================================================================
-# 14. GRACIAS
+# 10. QUÉ CORREGIMOS Y QUÉ SIGUE (40 s + PREGUNTAS DE JUECES)
 # =====================================================================
-s = new_slide("Cierre y preguntas.")
-rect(s, 0, 0, W, H, fill=BG, shape=MSO_SHAPE.RECTANGLE)
-rect(s, 0, 0, Inches(0.18), H, fill=TEAL, shape=MSO_SHAPE.RECTANGLE)
-pic(s, "sofia_saludo2.png", Inches(8.3), Inches(1.4), Inches(4.5), Inches(2.6), card=True)
-pic(s, "fig_sim_3.png", Inches(8.3), Inches(4.2), Inches(4.5), Inches(2.4), card=True)
-text(s, Inches(0.8), Inches(1.8), Inches(7), Inches(1.4), "¡Gracias!", size=72, bold=True)
-text(s, Inches(0.8), Inches(3.3), Inches(7), Inches(0.8), "¿Preguntas?", size=34, color=TEAL, bold=True)
-rect(s, Inches(0.85), Inches(4.3), Inches(1.2), Inches(0.06), fill=ORANGE, shape=MSO_SHAPE.RECTANGLE)
-text(s, Inches(0.8), Inches(4.55), Inches(7), Inches(1.6), [
-    "SOFIA · Equipo 1 · LabDST · ITESO",
-    "github.com/PaolaCV14/IOT-SOFIA-2026",
-    "Release v0.2.0 · datos experimentales en docs/experimental-data/"], size=16, color=MUTED)
+notes_10 = (
+    "Tiempo: 40 s\n"
+    "Atendimos las observaciones del Corte 1 con objetivos delimitados y mediciones reales de calor. "
+    "Para el Corte 3 fabricaremos la PCB de potencia, el corte automático y montaremos los 16 paneles. "
+    "Muchas gracias, abrimos la sesión de preguntas.\n\n"
+    "--- PREGUNTAS PROBABLES DE LOS JUECES Y RESPUESTAS BREVES ---\n"
+    "1. ¿Por qué el servomotor MG90S?\n"
+    "R: Por engranaje metálico, bajo costo comercial, accesibilidad y facilidad de reemplazo modular en 32 actuadores.\n\n"
+    "2. ¿Cómo detecta el atasco si el motor no tiene sensor de temperatura?\n"
+    "R: El motor comercial NO tiene sensor térmico interno ni avisa que está forzado. En laboratorio caracterizamos su curva con termómetro láser y osciloscopio mecatrónico. En la pared final, la placa monitorea la corriente y el ESP32 corta la señal PWM tras 15 s para proteger la estructura de PLA.\n\n"
+    "3. ¿Cuánto cuesta frente a una pared comercial?\n"
+    "R: Una instalación comercial cuesta cientos de miles de pesos; SOFÍA cuesta una fracción gracias a impresión 3D y componentes IoT accesibles.\n\n"
+    "4. ¿Qué pasa con varias personas frente a la cámara?\n"
+    "R: Hoy prioriza a la persona más cercana al centro del encuadre; la siguiente etapa filtrará por usuario dominante.\n\n"
+    "5. ¿Cómo cierran la brecha hacia el espacio público real?\n"
+    "R: Con la PCB de potencia para 25-30 A, acoples mecánicos de desacople seguro y firmware con auto-recuperación."
+)
+
+s10 = new_slide(notes_10)
+
+title_header(s10, "De prototipo a pared completa", "Rúbrica: Revisión y Pasos (10%)", 10)
+
+# Columna izquierda: Corregimos del Corte 1
+rect(s10, Inches(0.8), Inches(1.8), Inches(5.7), Inches(4.3), fill=CARD, line=TEAL)
+text_box(s10, Inches(1.1), Inches(2.0), Inches(5.1), Inches(0.5),
+         "Corregimos del Corte 1", size=26, bold=True, color=TEAL)
+text_box(s10, Inches(1.1), Inches(2.7), Inches(5.1), Inches(3.2),
+         ["▸ Objetivos claros y delimitados",
+          "",
+          "▸ Mediciones con termómetro láser y osciloscopio",
+          "",
+          "▸ Comparativa internacional"], size=22, color=WHITE)
+
+# Columna derecha: Para el Corte 3
+rect(s10, Inches(6.8), Inches(1.8), Inches(5.7), Inches(4.3), fill=CARD_HI, line=AMBER)
+text_box(s10, Inches(7.1), Inches(2.0), Inches(5.1), Inches(0.5),
+         "Para el Corte 3", size=26, bold=True, color=AMBER)
+text_box(s10, Inches(7.1), Inches(2.6), Inches(5.1), Inches(1.8),
+         ["▸ PCB de potencia definitiva",
+          "▸ Apagado automático por software",
+          "▸ Colmena completa de 16 paneles"], size=20, color=WHITE, bold=True)
+pic(s10, "PCB1.png", Inches(7.2), Inches(4.5), Inches(4.9), Inches(1.5), card=True, caption="Diseño PCB de potencia para 32 motores")
+
+# Pie con enlace a GitHub y preguntas
+rect(s10, Inches(0.8), Inches(6.25), Inches(11.7), Inches(0.7), fill=CARD)
+text_box(s10, Inches(1.05), Inches(6.38), Inches(8.5), Inches(0.4),
+         "github.com/PaolaCV14/IOT-SOFIA-2026", size=18, color=TEAL, bold=True)
+text_box(s10, Inches(9.5), Inches(6.38), Inches(2.8), Inches(0.4),
+         "¿Preguntas?", size=22, color=WHITE, bold=True, align=PP_ALIGN.RIGHT)
 
 prs.save(OUT)
-print("OK ->", OUT, "| slides:", len(prs.slides))
+print("OK -> Presentación generada exitosamente en:", OUT, "| Diapositivas:", len(prs.slides))
