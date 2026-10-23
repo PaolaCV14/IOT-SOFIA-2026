@@ -133,19 +133,19 @@ class SofiaDashboard(QMainWindow):
         self.video_view.setAlignment(Qt.AlignCenter)
         self.video_view.setMinimumSize(640, 440)
         self.video_view.setStyleSheet(
-            "background-color: #0A0C0F; border: 2px dashed #2A303C; border-radius: 8px;"
+            "background-color: #080A10; border: 1.5px dashed #2A3047; border-radius: 4px;"
         )
         layout.addWidget(self.video_view, stretch=1)
 
         # Barra inferior con el gesto activo
         gesture_box = QHBoxLayout()
         lbl_title = QLabel("Gesto Detectado:")
-        lbl_title.setStyleSheet("font-weight: 600; color: #94A3B8;")
+        lbl_title.setStyleSheet("font-weight: 600; color: #94A3B8; font-size: 12px;")
         
         self.lbl_gesture_val = QLabel("NINGUNO")
         self.lbl_gesture_val.setObjectName("badge")
         self.lbl_gesture_val.setStyleSheet(
-            "font-size: 14px; font-weight: bold; color: #38BDF8; padding: 6px 12px;"
+            "font-size: 12.5px; font-weight: 700; color: #A5B4FC; background-color: #1E1B4B; border: 1px solid #4F46E5; border-radius: 3px; padding: 4px 10px;"
         )
         gesture_box.addWidget(lbl_title)
         gesture_box.addWidget(self.lbl_gesture_val)
@@ -251,7 +251,7 @@ class SofiaDashboard(QMainWindow):
         # Eje q1
         layout.addWidget(QLabel("q1 (Horizontal):"), 0, 0)
         self.lbl_q1_val = QLabel("90°")
-        self.lbl_q1_val.setStyleSheet("font-weight: bold; color: #38BDF8;")
+        self.lbl_q1_val.setStyleSheet("font-weight: bold; color: #818CF8;")
         layout.addWidget(self.lbl_q1_val, 0, 1)
         
         self.slider_q1 = QSlider(Qt.Horizontal)
@@ -263,7 +263,7 @@ class SofiaDashboard(QMainWindow):
         # Eje q2
         layout.addWidget(QLabel("q2 (Vertical):"), 2, 0)
         self.lbl_q2_val = QLabel("90°")
-        self.lbl_q2_val.setStyleSheet("font-weight: bold; color: #38BDF8;")
+        self.lbl_q2_val.setStyleSheet("font-weight: bold; color: #818CF8;")
         layout.addWidget(self.lbl_q2_val, 2, 1)
 
         self.slider_q2 = QSlider(Qt.Horizontal)
@@ -341,7 +341,7 @@ class SofiaDashboard(QMainWindow):
         if is_connected:
             self.btn_action.setText("Desconectar")
             self.btn_action.setStyleSheet(
-                "background-color: #065F46; border: 1px solid #10B981;"
+                "background-color: #312E81; border: 1px solid #6366F1; color: #EEF2FF;"
             )
         else:
             self.btn_action.setText("Conectar BLE")

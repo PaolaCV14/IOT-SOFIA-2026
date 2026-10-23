@@ -26,16 +26,16 @@ OUT = os.path.join(HERE, "SOFIA_LabDST_Presentacion.pptx")
 TMP = tempfile.mkdtemp()
 
 # =====================================================================
-# PALETA VISUAL ULTRA-LIMPIA Y PROFESIONAL
+# PALETA VISUAL MODERNA — DARK OBSIDIAN & VIBRANT FUCHSIA
 # =====================================================================
-BG = RGBColor(0x0B, 0x13, 0x2B)       # Azul noche profundo
-CARD = RGBColor(0x1C, 0x25, 0x41)     # Superficie de tarjeta
-CARD_HI = RGBColor(0x24, 0x33, 0x56)  # Tarjeta destacada
-TEAL = RGBColor(0x2D, 0xD4, 0xBF)     # Color de acento principal (Cyan / Teal vivo)
-AMBER = RGBColor(0xF5, 0x9E, 0x0B)    # Acento secundario (atención)
-CORAL = RGBColor(0xF8, 0x71, 0x71)    # Acento de alerta térmica
-WHITE = RGBColor(0xF8, 0xFA, 0xFC)    # Blanco nieve
-MUTED = RGBColor(0x94, 0xA3, 0xB8)    # Gris claro legible
+BG = RGBColor(0x0F, 0x10, 0x16)       # Fondo oscuro neutro / Slate Obsidian (#0F1016)
+CARD = RGBColor(0x18, 0x19, 0x26)     # Superficie de tarjeta oscura (#181926)
+CARD_HI = RGBColor(0x2A, 0x1B, 0x38)  # Tarjeta destacada con tinte fuchsia sutil (#2A1B38)
+TEAL = RGBColor(0xE0, 0x24, 0xA5)     # Acento principal: Fiusha chillón moderno (#E024A5)
+AMBER = RGBColor(0xF5, 0x9E, 0x0B)    # Acento secundario: Ámbar dorado cálido (#F59E0B)
+CORAL = RGBColor(0xFB, 0x71, 0x85)    # Acento de alerta térmica: Rose / Fuchsia (#FB7185)
+WHITE = RGBColor(0xFA, 0xF5, 0xFF)    # Blanco puro cristalino (#FAF5FF)
+MUTED = RGBColor(0xC4, 0xB5, 0xFD)    # Secundario suave (#C4B5FD)
 FONT = "Calibri"
 
 prs = Presentation()
@@ -296,7 +296,7 @@ title_header(s4, "Tres cosas medidas, tres líneas rojas", "Rúbrica: Diseño de
 # Cadena horizontal superior con íconos
 pipe_w = Inches(2.15)
 pipe_items = [
-    ("📷 Cámara web", "Te ve en vivo"),
+    ("📷 Cámara web", "30 FPS"),
     ("💻 Software PC", "Detecta tu mano"),
     ("📶 Bluetooth", "Sin cables LE"),
     ("⚡ ESP32 + 2x PCA", "Control 32 canales"),
@@ -332,7 +332,7 @@ rect(s4, Inches(4.8), tc_y, tc_w, tc_h, fill=CARD)
 text_box(s4, Inches(5.05), tc_y + Inches(0.2), tc_w - Inches(0.5), Inches(0.5),
          "2. Con qué", size=26, bold=True, color=WHITE)
 text_box(s4, Inches(5.05), tc_y + Inches(0.85), tc_w - Inches(0.5), Inches(2.3),
-         ["▸ Cámara web HD",
+         ["▸ Cámara web HD (30 FPS)",
           "",
           "▸ Termómetro láser y osciloscopio",
           "",
@@ -384,8 +384,8 @@ pic(s5, "fig_sim_3.png", Inches(10.7), Inches(5.2), Inches(1.9), Inches(1.5), ca
 # =====================================================================
 s6 = new_slide(
     "Tiempo: 40 s\n"
-    "Aquí vemos el prototipo físico real. Al detectar el saludo frente a la cámara, "
-    "el panel físico responde por Bluetooth en menos de 100 milisegundos con una oscilación suave.")
+    "Aquí vemos el prototipo físico real. Cámara y Bluetooth tardan 45 a 50 milisegundos, "
+    "y el servo 75 a 180 ms en moverse. Ensayos repetidos con N=10 validan la fluidez.")
 
 title_header(s6, "Saludas, y el panel te contesta", "Rúbrica: Desarrollo y Resultados (20%)", 6)
 
@@ -402,9 +402,9 @@ pic(s6, "sofia_saludo3.png", Inches(9.8), pic_y, pic_w, pic_h, card=True, captio
 # 3 Puntos punch debajo en barra horizontal
 rect(s6, Inches(0.8), Inches(5.95), Inches(11.8), Inches(0.9), fill=CARD)
 p6_items = [
-    "⚡ Enlace Bluetooth sin cables",
-    "⏱️ Respuesta en menos de 100 ms",
-    "🔄 Movimiento suave y sincronizado",
+    "⏱️ Cámara + BLE: ~45–50 ms",
+    "🔄 Ensayos repetidos (N=10)",
+    "🛡️ Corte < 15 s diseñado",
 ]
 for i, pt in enumerate(p6_items):
     text_box(s6, Inches(0.9 + i * 3.9), Inches(6.15), Inches(3.8), Inches(0.5),
@@ -417,10 +417,10 @@ for i, pt in enumerate(p6_items):
 s7 = new_slide(
     "Tiempo: 50 s\n"
     "Este es nuestro hallazgo experimental más importante: sin carga el motor no se calienta. "
-    "Pero atorado con un tope, llegó a 64.8 grados en 226 segundos y a los 3 minutos supera los 60 grados, "
-    "donde el plástico 3D empieza a aflojarse. Por eso diseñamos un corte automático a los 15 segundos.")
+    "Pero atorado con un tope, sube unos 13 grados por minuto hasta llegar a 64.8 grados en menos de cuatro minutos; "
+    "a los 3 minutos ya pasa de 55 grados, entrando a zona de riesgo. Con corte a 15 segundos solo sube unos 3 grados.")
 
-title_header(s7, "Si un panel se atora, en 3 minutos se quema", "Rúbrica: Desarrollo y Resultados (20%)", 7)
+title_header(s7, "Si un panel se atora, en menos de 4 minutos se quema", "Rúbrica: Desarrollo y Resultados (20%)", 7)
 
 # Gráfica térmica real ocupando el 60% del slide a la izquierda
 pic(s7, "fig_thermal_response.png", Inches(0.8), Inches(1.8), Inches(7.5), Inches(4.9), card=True,
@@ -430,17 +430,17 @@ pic(s7, "fig_thermal_response.png", Inches(0.8), Inches(1.8), Inches(7.5), Inche
 # Número 1: 64.8 °C
 rect(s7, Inches(8.6), Inches(1.8), Inches(4.0), Inches(1.5), fill=CARD, line=CORAL)
 text_box(s7, Inches(8.6), Inches(1.9), Inches(4.0), Inches(0.75), "64.8 °C", size=60, bold=True, color=CORAL, align=PP_ALIGN.CENTER)
-text_box(s7, Inches(8.6), Inches(2.75), Inches(4.0), Inches(0.4), "a los 226 s (engrane forzándose)", size=16, color=MUTED, align=PP_ALIGN.CENTER)
+text_box(s7, Inches(8.6), Inches(2.75), Inches(4.0), Inches(0.4), "a los 226 s (engrane forzado)", size=16, color=MUTED, align=PP_ALIGN.CENTER)
 
-# Número 2: 3 min
+# Número 2: 13 °C / min
 rect(s7, Inches(8.6), Inches(3.5), Inches(4.0), Inches(1.5), fill=CARD, line=AMBER)
-text_box(s7, Inches(8.6), Inches(3.6), Inches(4.0), Inches(0.75), "3 min", size=60, bold=True, color=AMBER, align=PP_ALIGN.CENTER)
-text_box(s7, Inches(8.6), Inches(4.45), Inches(4.0), Inches(0.4), "pasa de 60 °C (plástico se afloja)", size=16, color=MUTED, align=PP_ALIGN.CENTER)
+text_box(s7, Inches(8.6), Inches(3.6), Inches(4.0), Inches(0.75), "13 °C/min", size=52, bold=True, color=AMBER, align=PP_ALIGN.CENTER)
+text_box(s7, Inches(8.6), Inches(4.45), Inches(4.0), Inches(0.4), "a 3 min: 55 °C límite seguro", size=16, color=MUTED, align=PP_ALIGN.CENTER)
 
 # Frase de decisión punch
 rect(s7, Inches(8.6), Inches(5.2), Inches(4.0), Inches(1.5), fill=CARD_HI, line=TEAL)
 text_box(s7, Inches(8.8), Inches(5.4), Inches(3.6), Inches(1.1),
-         "Por eso diseñamos un corte automático a los 15 s", size=24, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
+         "Con corte a 15 s: sube solo ~3 °C", size=24, bold=True, color=TEAL, align=PP_ALIGN.CENTER)
 
 
 # =====================================================================
@@ -484,7 +484,9 @@ for i, (hoy, mus) in enumerate(b1_rows):
 s9 = new_slide(
     "Tiempo: 40 s\n"
     "La segunda brecha se basa en nuestros datos: un museo opera 12 horas seguidas, los niños van a jalar los pétalos "
-    "requiriendo desacoples seguros, los 32 motores demandan hasta 25-30 amperes y la pared debe recuperarse sola.")
+    "demandando 0.9 amperes y disipando 4.6 watts de calor. Los 32 motores piden hasta 23 amperes al arrancar juntos "
+    "requiriendo fuente de 25 amperes. Aun sin público, los pétalos se rozan por tolerancias de impresión (±0.4 mm); "
+    "falta un acople mecánico que ceda sin romper engranes.")
 
 title_header(s9, "10 minutos vs 12 horas", "Rúbrica: Brecha con el Entorno Real (20%)", 9)
 
@@ -498,8 +500,8 @@ text_box(s9, Inches(6.8), Inches(1.9), Inches(5.7), Inches(0.4), "Exigencia de u
 # 4 Filas de comparación
 b2_rows = [
     ("⏱️ Pruebas de 10 min", "⏳ 8 a 12 horas diarias ininterrumpidas"),
-    ("🚫 Nadie toca la pared", "👶 Niños jalando pétalos (acople que se zafe)"),
-    ("🔌 1 módulo probado", "⚡ 32 motores hasta 25-30 A (fuente industrial)"),
+    ("🚫 Nadie toca la pared", "👶 Niños jalando pétalos (atasco: 0.9 A y 4.6 W)"),
+    ("🔌 1 módulo probado", "⚡ 32 motores: ~23 A al arrancar (fuente 25 A)"),
     ("🛠️ Reinicia un ingeniero", "🔄 Se auto-recupera sola ante fallas"),
 ]
 for i, (hoy, mus) in enumerate(b2_rows):
@@ -531,7 +533,7 @@ notes_10 = (
     "4. ¿Qué pasa con varias personas frente a la cámara?\n"
     "R: Hoy prioriza a la persona más cercana al centro del encuadre; la siguiente etapa filtrará por usuario dominante.\n\n"
     "5. ¿Cómo cierran la brecha hacia el espacio público real?\n"
-    "R: Con la PCB de potencia para 25-30 A, acoples mecánicos de desacople seguro y firmware con auto-recuperación."
+    "R: Con la PCB de potencia para 25 A, acoples mecánicos de desacople seguro y firmware con auto-recuperación."
 )
 
 s10 = new_slide(notes_10)
@@ -545,16 +547,16 @@ text_box(s10, Inches(1.1), Inches(2.0), Inches(5.1), Inches(0.5),
 text_box(s10, Inches(1.1), Inches(2.7), Inches(5.1), Inches(3.2),
          ["▸ Objetivos claros y delimitados",
           "",
-          "▸ Mediciones con termómetro láser y osciloscopio",
+          "▸ Mediciones reales: 682 lecturas, 0.9 A atorado",
           "",
-          "▸ Comparativa internacional"], size=22, color=WHITE)
+          "▸ Comparativa con MIT y comercial"], size=21, color=WHITE)
 
 # Columna derecha: Para el Corte 3
 rect(s10, Inches(6.8), Inches(1.8), Inches(5.7), Inches(4.3), fill=CARD_HI, line=AMBER)
 text_box(s10, Inches(7.1), Inches(2.0), Inches(5.1), Inches(0.5),
          "Para el Corte 3", size=26, bold=True, color=AMBER)
 text_box(s10, Inches(7.1), Inches(2.6), Inches(5.1), Inches(1.8),
-         ["▸ PCB de potencia definitiva",
+         ["▸ PCB de potencia definitiva (25 A)",
           "▸ Apagado automático por software",
           "▸ Colmena completa de 16 paneles"], size=20, color=WHITE, bold=True)
 pic(s10, "PCB1.png", Inches(7.2), Inches(4.5), Inches(4.9), Inches(1.5), card=True, caption="Diseño PCB de potencia para 32 motores")

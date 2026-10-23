@@ -36,28 +36,33 @@ OUT = os.path.join(HERE, "SOFIA_LabDST_Presentacion_v2.pptx")
 TMP = tempfile.mkdtemp()
 
 # =====================================================================
-# CONSTANTES DE PALETA Y FUENTES
+# CONSTANTES DE PALETA Y FUENTES — MODERN DARK OBSIDIAN & ELECTRIC FUCHSIA
 # =====================================================================
 # Fondos
-BG_DARK = RGBColor(0x0B, 0x13, 0x2B)     # Azul marino noche profundo
-BG_LIGHT = RGBColor(0xF8, 0xFA, 0xFC)    # Blanco hueso suave
-CARD_DARK = RGBColor(0x1C, 0x25, 0x41)   # Tarjeta en modo oscuro
-CARD_LIGHT = RGBColor(0xEE, 0xF2, 0xF6)  # Tarjeta en modo claro (#EEF2F6)
+BG_DARK = RGBColor(0x0F, 0x10, 0x16)     # Fondo oscuro neutro / Modern Dark Slate (#0F1016)
+BG_LIGHT = RGBColor(0xFA, 0xF9, 0xFC)    # Blanco lavanda suave y ultra limpio (#FAF9FC)
+CARD_DARK = RGBColor(0x17, 0x18, 0x24)   # Tarjeta oscura moderna (#171824)
+CARD_LIGHT = RGBColor(0xF5, 0xF3, 0xF8)  # Tarjeta clara sutil (#F5F3F8)
 CARD_WHITE = RGBColor(0xFF, 0xFF, 0xFF)  # Tarjeta blanca pura
 
 # Textos
-TEXT_DARK = RGBColor(0x0F, 0x17, 0x2A)   # Texto principal en modo claro (Slate 900)
-TEXT_WHITE = RGBColor(0xF8, 0xFA, 0xFC)  # Texto principal en modo oscuro
+TEXT_DARK = RGBColor(0x18, 0x18, 0x24)   # Texto oscuro de alto contraste (#181824)
+TEXT_WHITE = RGBColor(0xFA, 0xF5, 0xFF)  # Texto blanco radiante en modo oscuro (#FAF5FF)
 WHITE = RGBColor(0xFF, 0xFF, 0xFF)       # Blanco puro
-MUTED_LIGHT = RGBColor(0x47, 0x55, 0x69) # Texto secundario en modo claro (Slate 600)
-MUTED_DARK = RGBColor(0x94, 0xA3, 0xB8)  # Texto secundario en modo oscuro (Slate 400)
+MUTED_LIGHT = RGBColor(0x66, 0x54, 0x80) # Texto secundario lavanda grisáceo (#665480)
+MUTED_DARK = RGBColor(0xC4, 0xB5, 0xFD)  # Texto secundario lavanda metálico (#C4B5FD)
 
-# Acentos
-TEAL = RGBColor(0x14, 0xB8, 0xA6)        # Acento principal (Teal #14B8A6)
-TEAL_DARK = RGBColor(0x0D, 0x94, 0x88)   # Teal oscuro para alto contraste (#0D9488)
-TEAL_BG = RGBColor(0xCC, 0xFB, 0xF1)     # Teal pastel para chips activos (#CCFBF1)
-RED_ALERT = RGBColor(0xDC, 0x26, 0x26)   # Alerta de calor/riesgo (#DC2626)
-AMBER_ALERT = RGBColor(0xD9, 0x77, 0x06) # Alerta ámbar (#D97706)
+# Acentos Modernos Fiusha Chillón / Magenta Eléctrico
+PURPLE_NEON = RGBColor(0xE0, 0x24, 0xA5) # Fiusha chillón vibrante (#E024A5 / #FF2A85)
+PURPLE_DARK = RGBColor(0xC0, 0x26, 0xD3) # Fiusha fuerte moderno para alto contraste (#C026D3)
+PURPLE_BG = RGBColor(0xFD, 0xE8, 0xF5)   # Fiusha pastel para chips activos (#FDE8F5)
+RED_ALERT = RGBColor(0xF4, 0x3F, 0x5E)   # Alerta Rose / Fuchsia (#F43F5E)
+AMBER_ALERT = RGBColor(0xF5, 0x9E, 0x0B) # Alerta ámbar dorado cálido (#F59E0B)
+
+# Mapeo de acentos al nuevo sistema fiusha moderno
+TEAL = PURPLE_NEON                       # Fiusha chillón vibrante
+TEAL_DARK = PURPLE_DARK                  # Fiusha intenso de alto contraste
+TEAL_BG = PURPLE_BG                      # Fondo fiusha pastel
 
 FONT = "Calibri"
 
@@ -197,28 +202,29 @@ def prep_image(name, maxw=2200):
     return dst, im.size
 
 
-def add_image(s, name, x, y, w, h, card=True, caption=None, fallback_desc=""):
+def add_image(s, name, x, y, w, h, card=True, caption=None, fallback_desc="", dark=False):
     """Inserta imagen grande sin deformar; si falta, coloca recuadro visible."""
     path, size = prep_image(name)
     if path is None:
         # Recuadro visible de imagen faltante
-        rect(s, x, y, w, h, fill=CARD_LIGHT, line=MUTED_LIGHT, radius=0.03)
+        rect(s, x, y, w, h, fill=CARD_LIGHT if not dark else CARD_DARK, line=MUTED_LIGHT, radius=0.03)
         text_box(s, x + Inches(0.2), y + h // 2 - Inches(0.3), w - Inches(0.4), Inches(0.6),
-                 f"IMAGEN: {fallback_desc or name}", size=16, color=MUTED_LIGHT,
+                 f"IMAGEN: {fallback_desc or name}", size=16, color=MUTED_LIGHT if not dark else MUTED_DARK,
                  align=PP_ALIGN.CENTER, italic=True)
         return False
 
     iw, ih = size
     pad = Inches(0.04)
     if card:
-        rect(s, x, y, w, h, fill=CARD_WHITE, line=MUTED_LIGHT, radius=0.02)
+        rect(s, x, y, w, h, fill=CARD_WHITE if not dark else CARD_DARK, line=MUTED_LIGHT if not dark else TEAL, radius=0.02)
     bw, bh = w - 2 * pad, h - 2 * pad
     ratio = min(bw / iw, bh / ih)
     pw, ph = int(iw * ratio), int(ih * ratio)
     s.shapes.add_picture(path, x + (w - pw) // 2, y + (h - ph) // 2, pw, ph)
     if caption:
-        text_box(s, x, y + h + Inches(0.02), w, Inches(0.26), caption, size=12,
-                 color=MUTED_LIGHT, align=PP_ALIGN.CENTER, italic=True)
+        cap_c = MUTED_DARK if dark else MUTED_LIGHT
+        text_box(s, x, y + h + Inches(0.04), w, Inches(0.26), caption, size=12,
+                 color=cap_c, align=PP_ALIGN.CENTER, italic=True)
     return True
 
 
@@ -265,11 +271,11 @@ def build_slide_1():
               "Equipo: Paola Covarrubias · Lizeth Méndez · Bernardo Orozco · Karen Sánchez · Alan Fuentes"],
              size=13, color=MUTED_DARK)
 
-    # Imágenes a la derecha: Render 3D grande (60% del alto) + recuadro físico pequeño
-    add_image(s, "sofia_solid.png", Inches(6.6), Inches(1.0), Inches(5.9), Inches(4.3),
-              card=True, caption="Módulo cinético en panal")
-    add_image(s, "modulo_fisico.png", Inches(10.1), Inches(4.7), Inches(2.4), Inches(1.9),
-              card=True, caption="Prototipo físico armado")
+    # Imágenes a la derecha: Render 3D arriba + foto física abajo, sin encimarse
+    add_image(s, "sofia_solid.png", Inches(6.6), Inches(1.0), Inches(5.9), Inches(3.2),
+              card=True, caption="Módulo cinético en panal", dark=True)
+    add_image(s, "modulo_fisico.png", Inches(6.6), Inches(4.7), Inches(5.9), Inches(1.8),
+              card=True, caption="Prototipo físico armado", dark=True)
     return s
 
 
@@ -291,42 +297,42 @@ def build_slide_2():
     rect(s, Inches(0.8), Inches(1.8), col1_w, Inches(4.0), fill=CARD_WHITE, line=MUTED_LIGHT)
     
     filas = [
-        ("💰 Carísimas", "Motores industriales inaccesibles"),
-        ("🔒 Cerradas", "Difíciles de adaptar y reparar"),
+        ("💰 Carísimas", "Motores inaccesibles de alto costo"),
+        ("🔒 Cerradas", "Mecánica compleja, difícil de reparar"),
         ("🔥 Se queman", "Un motor forzado se sobrecalienta"),
     ]
     for i, (tit_f, desc_f) in enumerate(filas):
         fy = Inches(1.95 + i * 1.05)
         text_box(s, Inches(1.0), fy, col1_w - Inches(0.4), Inches(0.4),
                  tit_f, size=22, color=RED_ALERT if i == 2 else TEXT_DARK, bold=True)
-        text_box(s, Inches(1.0), fy + Inches(0.4), col1_w - Inches(0.4), Inches(0.4),
-                 desc_f, size=18, color=MUTED_LIGHT)
+        text_box(s, Inches(1.0), fy + Inches(0.42), col1_w - Inches(0.4), Inches(0.45),
+                 desc_f, size=20, color=MUTED_LIGHT)
                  
-    text_box(s, Inches(1.0), Inches(5.1), col1_w - Inches(0.4), Inches(0.6),
-             "En museos y aeropuertos trabajan todo el día y la gente las toca.",
-             size=16, color=TEXT_DARK, italic=True)
+    text_box(s, Inches(1.0), Inches(5.15), col1_w - Inches(0.4), Inches(0.55),
+             "En museos operan 12 horas y el público las toca.",
+             size=18, color=TEXT_DARK, italic=True)
 
     # Derecha: Objetivo general + 3 específicos + imagen de piezas
     col2_x = Inches(6.7)
     col2_w = Inches(5.8)
     rect(s, col2_x, Inches(1.8), col2_w, Inches(4.0), fill=CARD_LIGHT)
     
-    text_box(s, col2_x + Inches(0.2), Inches(1.9), col2_w - Inches(2.2), Inches(1.1),
-             "Objetivo general: pared robótica modular, accesible y segura que sigue a las personas y reacciona a sus gestos.",
-             size=18, color=TEXT_DARK, bold=True)
+    text_box(s, col2_x + Inches(0.2), Inches(1.9), col2_w - Inches(2.2), Inches(1.15),
+             "Objetivo: pared modular accesible que sigue a las personas y reacciona a gestos.",
+             size=20, color=TEXT_DARK, bold=True)
              
-    # Imagen pequeña de piezas impresas junto a los objetivos
+    # Imagen de piezas impresas junto a los objetivos
     add_image(s, "sofia_exploded.png", col2_x + Inches(3.9), Inches(1.9), Inches(1.7), Inches(2.1),
               card=True, caption="Piezas 3D")
               
     especificos = [
-        "1  Paneles modulares impresos en 3D",
-        "2  Seguimiento y gestos en vivo (>30 FPS)",
-        "3  Medir calor y diseñar protección",
+        "1  Paneles modulares en 3D",
+        "2  Seguimiento en vivo (>30 FPS)",
+        "3  Medir calor y autoprotección",
     ]
     for idx, esp in enumerate(especificos):
-        text_box(s, col2_x + Inches(0.2), Inches(3.1 + idx * 0.45), col2_w - Inches(0.4), Inches(0.4),
-                 esp, size=18, color=TEAL_DARK, bold=True)
+        text_box(s, col2_x + Inches(0.2), Inches(3.15 + idx * 0.48), col2_w - Inches(0.4), Inches(0.45),
+                 esp, size=20, color=TEAL_DARK, bold=True)
 
     # Bloque 3: Línea de tiempo D-Lab + Materiales
     rect(s, Inches(0.8), Inches(6.0), Inches(11.7), Inches(0.85), fill=CARD_WHITE, line=TEAL)
@@ -334,8 +340,8 @@ def build_slide_2():
              "Corte 1 · Diseño ✓    ➔    Corte 2 · Prototipo que te sigue ● ESTAMOS AQUÍ    ➔    Corte 3 · Pared completa",
              size=18, color=TEAL_DARK, bold=True, align=PP_ALIGN.CENTER)
     text_box(s, Inches(1.0), Inches(6.45), Inches(11.3), Inches(0.35),
-             "Materiales: 16 módulos PLA SOFIA003, 32 servos MG90S, 64 tornillos M3, 2 PCA9685, 1 ESP32-C3 y cámara web.",
-             size=15, color=MUTED_LIGHT, align=PP_ALIGN.CENTER)
+             "Materiales: 16 módulos PLA SOFIA003, 32 servos MG90S, 64 tornillos M3, 2 PCA9685 y 1 ESP32-C3.",
+             size=16, color=MUTED_LIGHT, align=PP_ALIGN.CENTER)
     return s
 
 
@@ -345,9 +351,8 @@ def build_slide_3():
         "Tiempo: 40 s\n"
         "Hay obras espectaculares como inFORM del MIT, que mueve 900 pines pero vive en un laboratorio, "
         "y esculturas de aeropuerto que repiten una coreografía grabada sin verte. SOFÍA te ve en vivo, "
-        "es modular e imprimible en 3D, y además estudia cuánto calor aguanta su motor. "
-        "Como el servomotor no tiene sensor interno, medimos su calentamiento en laboratorio con osciloscopio "
-        "y termómetro láser. Nos apoyamos en robótica modular, interacción humano-robot y visión por computadora."
+        "es modular en 3D, y además mide cuánto calor y corriente aguanta su motor atorado. "
+        "Instrumentamos el motor con un sensor LM35 y un INA219 para diseñar su autoprotección."
     )
     s = create_slide(dark=False, notes=notes)
     tracker(s, active_stage="PLANTEAMIENTO", slide_n=3)
@@ -357,8 +362,10 @@ def build_slide_3():
     
     # Col 1: inFORM
     rect(s, Inches(0.8), Inches(1.8), col_w, Inches(3.7), fill=CARD_WHITE, line=MUTED_LIGHT)
-    add_image(s, "inform_placeholder.png", Inches(1.0), Inches(1.95), col_w - Inches(0.4), Inches(1.5),
+    add_image(s, "inform_placeholder.png", Inches(1.0), Inches(1.95), col_w - Inches(0.4), Inches(1.3),
               card=True, fallback_desc="inFORM (MIT Media Lab)")
+    text_box(s, Inches(1.0), Inches(3.3), col_w - Inches(0.4), Inches(0.25),
+             "MIT Media Lab", size=12, color=MUTED_LIGHT, align=PP_ALIGN.CENTER, italic=True)
     text_box(s, Inches(1.0), Inches(3.6), col_w - Inches(0.4), Inches(0.4),
              "MIT inFORM", size=22, bold=True, color=TEXT_DARK)
     text_box(s, Inches(1.0), Inches(4.05), col_w - Inches(0.4), Inches(1.3),
@@ -367,8 +374,10 @@ def build_slide_3():
 
     # Col 2: Esculturas de aeropuerto
     rect(s, Inches(4.8), Inches(1.8), col_w, Inches(3.7), fill=CARD_WHITE, line=MUTED_LIGHT)
-    add_image(s, "aeropuerto_placeholder.png", Inches(5.0), Inches(1.95), col_w - Inches(0.4), Inches(1.5),
+    add_image(s, "aeropuerto_placeholder.png", Inches(5.0), Inches(1.95), col_w - Inches(0.4), Inches(1.3),
               card=True, fallback_desc="Escultura cinética de aeropuerto")
+    text_box(s, Inches(5.0), Inches(3.3), col_w - Inches(0.4), Inches(0.25),
+             "Escultura de aeropuerto", size=12, color=MUTED_LIGHT, align=PP_ALIGN.CENTER, italic=True)
     text_box(s, Inches(5.0), Inches(3.6), col_w - Inches(0.4), Inches(0.4),
              "Arte Comercial", size=22, bold=True, color=TEXT_DARK)
     text_box(s, Inches(5.0), Inches(4.05), col_w - Inches(0.4), Inches(1.3),
@@ -377,19 +386,21 @@ def build_slide_3():
 
     # Col 3: SOFÍA (resaltada con Teal)
     rect(s, Inches(8.8), Inches(1.8), col_w, Inches(3.7), fill=CARD_LIGHT, line=TEAL)
-    add_image(s, "modulo_fisico.png", Inches(9.0), Inches(1.95), col_w - Inches(0.4), Inches(1.5),
-              card=True, caption="Prototipo SOFÍA")
+    add_image(s, "modulo_fisico.png", Inches(9.0), Inches(1.95), col_w - Inches(0.4), Inches(1.3),
+              card=True)
+    text_box(s, Inches(9.0), Inches(3.3), col_w - Inches(0.4), Inches(0.25),
+             "Prototipo físico SOFÍA", size=12, color=MUTED_LIGHT, align=PP_ALIGN.CENTER, italic=True)
     text_box(s, Inches(9.0), Inches(3.6), col_w - Inches(0.4), Inches(0.4),
              "SOFÍA (ITESO)", size=22, bold=True, color=TEAL_DARK)
     text_box(s, Inches(9.0), Inches(4.05), col_w - Inches(0.4), Inches(1.3),
-             "Te ve en vivo · Modular en 3D · Sin sensor interno: medido con láser y osciloscopio",
+             "Te ve en vivo · Modular en 3D · Accesible · Mide su calor y su corriente",
              size=18, color=TEXT_DARK, bold=True)
 
     # Banda de diferenciador
     rect(s, Inches(0.8), Inches(5.65), Inches(11.7), Inches(0.8), fill=CARD_WHITE, line=AMBER_ALERT)
     text_box(s, Inches(1.0), Inches(5.72), Inches(11.3), Inches(0.35),
-             "Diferenciador: el motor no avisa calor; medimos en banco con láser y osciloscopio.",
-             size=19, color=TEXT_DARK, bold=True)
+             "Diferenciador: además de moverse, medimos cuánto calor y corriente aguanta su motor atorado.",
+             size=18, color=TEXT_DARK, bold=True)
     text_box(s, Inches(1.0), Inches(6.12), Inches(11.3), Inches(0.3),
              "Robótica modular · Interacción humano-robot · Visión por computadora",
              size=14, color=TEAL_DARK, bold=True)
@@ -405,9 +416,9 @@ def build_slide_4():
     """SLIDE 4 — Diseño de la Investigación: 3 medidas y líneas rojas · Tiempo: 55 s"""
     notes = (
         "Tiempo: 55 s\n"
-        "Medimos tres cosas, cada una con su línea roja: la velocidad de la cámara, la respuesta a gestos "
-        "y el calor del motor. Para medir el calor usamos termómetro láser y osciloscopio en banco de pruebas con un tope físico. "
-        "Y probamos todo el prototipo completo: cámara, software, Bluetooth, la tarjeta ESP32 y los paneles."
+        "Medimos tres cosas, cada una con su línea roja: la velocidad de la cámara a 30 FPS con referencia rápida a 120 FPS, "
+        "la respuesta a gestos y el calor y corriente del motor con sensores LM35 e INA219 bajo un tope de atasco. "
+        "Y probamos la cadena completa: cámara web a 30 FPS, MediaPipe, Bluetooth, ESP32 con dos PCA9685 y los paneles."
     )
     s = create_slide(dark=False, notes=notes)
     tracker(s, active_stage="DISEÑO", slide_n=4)
@@ -418,35 +429,35 @@ def build_slide_4():
     tw = Inches(11.7)
     
     headers = ["QUÉ MEDIMOS", "CÓMO", "APROBAMOS SI"]
-    col_ws = [Inches(3.2), Inches(4.8), Inches(3.7)]
+    col_ws = [Inches(2.8), Inches(5.4), Inches(3.5)]
     
     # Cabecera
     cx = Inches(0.8)
     for h_txt, cw in zip(headers, col_ws):
         rect(s, cx, ty, cw, Inches(0.4), fill=TEAL_BG, line=None, radius=0.1)
-        text_box(s, cx, ty + Inches(0.06), cw, Inches(0.3), h_txt, size=13,
+        text_box(s, cx, ty + Inches(0.06), cw, Inches(0.3), h_txt, size=14,
                  color=TEAL_DARK, bold=True, align=PP_ALIGN.CENTER)
         cx += cw
         
     filas_matriz = [
-        ("Velocidad de cámara", "Ensayos frente a cámara web (FPS y retraso)", "> 30 FPS y < 100 ms"),
-        ("Respuesta a gestos", "Saludo, corazón y juego frente a la cámara", "El panel responde al saludo en vivo"),
-        ("Calor del motor", "Termómetro láser y osciloscopio con tope de atasco", "Bajo 55 °C y corte antes de 15 s"),
+        ("Velocidad de cámara", "N=10 repeticiones; cámara rápida 120 FPS de referencia", "> 30 FPS y < 100 ms"),
+        ("Respuesta a gestos", "Saludo, corazón y juego frente a la cámara web", "El panel responde en vivo"),
+        ("Calor y corriente", "Sensor LM35 + sensor INA219 + tope físico de atasco", "Bajo 55 °C y corte < 15 s"),
     ]
     for r_i, (c1, c2, c3) in enumerate(filas_matriz):
-        ry = ty + Inches(0.48 + r_i * 0.95)
-        rect(s, Inches(0.8), ry, tw, Inches(0.88), fill=CARD_WHITE, line=MUTED_LIGHT)
-        text_box(s, Inches(1.0), ry + Inches(0.18), Inches(3.0), Inches(0.5), c1, size=20, color=TEXT_DARK, bold=True)
-        text_box(s, Inches(4.1), ry + Inches(0.18), Inches(4.6), Inches(0.6), c2, size=18, color=MUTED_LIGHT)
-        text_box(s, Inches(8.9), ry + Inches(0.18), Inches(3.4), Inches(0.6), c3, size=18, color=TEAL_DARK, bold=True)
+        ry = ty + Inches(0.48 + r_i * 0.98)
+        rect(s, Inches(0.8), ry, tw, Inches(0.92), fill=CARD_WHITE, line=MUTED_LIGHT)
+        text_box(s, Inches(1.0), ry + Inches(0.18), Inches(2.6), Inches(0.55), c1, size=20, color=TEXT_DARK, bold=True)
+        text_box(s, Inches(3.7), ry + Inches(0.18), Inches(5.2), Inches(0.65), c2, size=20, color=MUTED_LIGHT)
+        text_box(s, Inches(9.1), ry + Inches(0.18), Inches(3.2), Inches(0.65), c3, size=20, color=TEAL_DARK, bold=True)
 
     # Cadena horizontal de 5 bloques
-    rect(s, Inches(0.8), Inches(4.9), tw, Inches(1.85), fill=CARD_LIGHT)
-    text_box(s, Inches(1.0), Inches(5.0), tw - Inches(0.4), Inches(0.3),
+    rect(s, Inches(0.8), Inches(4.95), tw, Inches(1.8), fill=CARD_LIGHT)
+    text_box(s, Inches(1.0), Inches(5.02), tw - Inches(0.4), Inches(0.3),
              "El prototipo puesto a prueba (cadena completa):", size=15, color=TEXT_DARK, bold=True)
-             
+              
     cadena = [
-        ("Cámara web", "60 Hz"),
+        ("Cámara web", "30 FPS"),
         ("Software PC", "MediaPipe"),
         ("Bluetooth", "BLE"),
         ("ESP32-C3", "2x PCA9685"),
@@ -457,8 +468,8 @@ def build_slide_4():
     for i, (b_t, b_s) in enumerate(cadena):
         bx = Inches(1.0 + i * 2.32)
         rect(s, bx, by, bw, Inches(1.05), fill=CARD_WHITE, line=TEAL)
-        text_box(s, bx, by + Inches(0.12), bw, Inches(0.4), b_t, size=17, color=TEXT_DARK, bold=True, align=PP_ALIGN.CENTER)
-        text_box(s, bx, by + Inches(0.55), bw, Inches(0.4), b_s, size=14, color=MUTED_LIGHT, align=PP_ALIGN.CENTER)
+        text_box(s, bx, by + Inches(0.12), bw, Inches(0.4), b_t, size=18, color=TEXT_DARK, bold=True, align=PP_ALIGN.CENTER)
+        text_box(s, bx, by + Inches(0.55), bw, Inches(0.4), b_s, size=15, color=MUTED_LIGHT, align=PP_ALIGN.CENTER)
         if i < 4:
             arrow_line(s, bx + bw, by + Inches(0.52), Inches(1.0 + (i + 1) * 2.32), by + Inches(0.52))
     return s
@@ -510,10 +521,9 @@ def build_slide_6():
     """SLIDE 6 — Resultados: Prototipo físico responde · Tiempo: 45 s"""
     notes = (
         "Tiempo: 45 s\n"
-        "En el prototipo físico, la persona saluda frente a la cámara y el panel responde con su movimiento. "
-        "Hicimos decenas de ensayos de gestos y rutinas. Y siendo honestos con los criterios: la fluidez y el "
-        "calor en uso normal ya cumplen; la respuesta en milisegundos está en validación, y el corte automático "
-        "está diseñado pero falta programarlo."
+        "En el prototipo físico, la persona saluda y el panel responde. Cámara y Bluetooth tardan 45 a 50 milisegundos, "
+        "y el servo 75 a 180 ms. En uso normal el motor está bajo 30 grados; el corte a 15 segundos ya está diseñado "
+        "y falta programarlo en el firmware."
     )
     s = create_slide(dark=False, notes=notes)
     tracker(s, active_stage="RESULTADOS", slide_n=6)
@@ -531,27 +541,29 @@ def build_slide_6():
     # Banda
     rect(s, Inches(0.8), Inches(5.95), Inches(7.05), Inches(0.7), fill=CARD_LIGHT)
     text_box(s, Inches(1.0), Inches(6.12), Inches(6.65), Inches(0.4),
-             "Decenas de ensayos de gestos y rutinas grabados", size=18, color=TEAL_DARK, bold=True)
+             "Ensayos repetidos (N=10 por prueba)", size=18, color=TEAL_DARK, bold=True)
 
     # Derecha: Tarjeta "¿Cumplimos?" con 4 filas
     rx = Inches(8.2)
     rw = Inches(4.3)
     rect(s, rx, Inches(1.8), rw, Inches(4.85), fill=CARD_WHITE, line=TEAL)
-    text_box(s, rx + Inches(0.3), Inches(2.0), rw - Inches(0.6), Inches(0.4),
-             "¿Cumplimos los criterios?", size=24, color=TEXT_DARK, bold=True)
-             
+    text_box(s, rx + Inches(0.3), Inches(1.95), rw - Inches(0.6), Inches(0.4),
+             "¿Cumplimos los criterios?", size=22, color=TEXT_DARK, bold=True)
+              
     check_items = [
-        ("Más de 30 FPS", "✓ Cumplido", TEAL_DARK),
-        ("Menos de 100 ms", "◐ En validación", AMBER_ALERT),
-        ("Bajo 55 °C", "✓ En uso normal", TEAL_DARK),
-        ("Corte < 15 s", "◐ Diseñado (falta código)", AMBER_ALERT),
+        ("Más de 30 FPS", "✓ Cumplido (>30 FPS)", TEAL_DARK, False),
+        ("Cámara + Bluetooth: ~45–50 ms ✓", "el servo tarda 75–180 ms en moverse", TEAL_DARK, True),
+        ("Bajo 55 °C", "✓ En uso normal (< 30 °C)", TEAL_DARK, False),
+        ("Corte en menos de 15 s", "◐ Diseñado, falta programarlo", AMBER_ALERT, False),
     ]
-    for i, (crit, stat_txt, c_col) in enumerate(check_items):
-        cy = Inches(2.65 + i * 0.95)
+    for i, (crit, stat_txt, c_col, is_sub) in enumerate(check_items):
+        cy = Inches(2.55 + i * 1.0)
         text_box(s, rx + Inches(0.3), cy, rw - Inches(0.6), Inches(0.35),
-                 crit, size=20, color=TEXT_DARK, bold=True)
-        text_box(s, rx + Inches(0.3), cy + Inches(0.38), rw - Inches(0.6), Inches(0.4),
-                 stat_txt, size=18, color=c_col, bold=True)
+                 crit, size=18, color=c_col if is_sub else TEXT_DARK, bold=True)
+        sub_size = 14 if is_sub else 17
+        sub_color = MUTED_LIGHT if is_sub else c_col
+        text_box(s, rx + Inches(0.3), cy + Inches(0.38), rw - Inches(0.6), Inches(0.35),
+                 stat_txt, size=sub_size, color=sub_color, bold=not is_sub, italic=is_sub)
     return s
 
 
@@ -559,38 +571,42 @@ def build_slide_7():
     """SLIDE 7 — Hallazgo Clave: Gráfica térmica y límite de 60 °C · Tiempo: 50 s"""
     notes = (
         "Tiempo: 50 s\n"
-        "Este es nuestro hallazgo clave. Con el motor libre no se calienta, pero atorado a propósito "
-        "llegó a 64.8 grados en menos de cuatro minutos, y a los tres minutos ya pasaba de 60, donde el "
-        "plástico se afloja. Por eso diseñamos el corte automático a los 15 segundos: según nuestra curva, "
-        "ahí el motor solo ha subido unos siete grados."
+        "Este es nuestro hallazgo clave: sin carga el motor no se calienta. Pero atorado con un tope, "
+        "sube unos 13 grados por minuto hasta llegar a 64.8 grados en menos de cuatro minutos; "
+        "a los tres minutos ya pasa de 55 grados, entrando a zona de riesgo. "
+        "Con nuestro corte automático a 15 segundos solo sube 3 grados, protegiendo el plástico."
     )
     s = create_slide(dark=False, notes=notes)
     tracker(s, active_stage="RESULTADOS", slide_n=7)
-    title(s, "Si un panel se atora, en 3 minutos pasa de 60 °C", is_alert=True)
+    title(s, "Si un panel se atora, en menos de 4 minutos se quema", is_alert=True)
     
     # Gráfica térmica grande a la izquierda (62% del ancho)
     add_image(s, "grafica_termica_reconstruida.png", Inches(0.8), Inches(1.8), Inches(7.5), Inches(4.9),
-              card=True, caption="Medición en banco con osciloscopio y termómetro láser (sin sensor en motor)")
+              card=True, caption="Sensor LM35 pegado al motor, 1 lectura por segundo")
               
     # Derecha: 64.8 °C enorme + textos
     rx = Inches(8.6)
     rw = Inches(3.9)
     
-    # Número 64.8 °C
-    rect(s, rx, Inches(1.8), rw, Inches(1.8), fill=CARD_WHITE, line=RED_ALERT)
-    text_box(s, rx, Inches(1.9), rw, Inches(0.8), "64.8 °C", size=68, color=RED_ALERT, bold=True, align=PP_ALIGN.CENTER)
-    text_box(s, rx + Inches(0.2), Inches(2.75), rw - Inches(0.4), Inches(0.7),
-             "a los 226 s, hasta que se oyó el engrane forzarse", size=18, color=MUTED_LIGHT, align=PP_ALIGN.CENTER)
+    # Número 64.8 °C (sin encimarse con subtítulo)
+    rect(s, rx, Inches(1.8), rw, Inches(1.45), fill=CARD_WHITE, line=RED_ALERT)
+    text_box(s, rx, Inches(1.85), rw, Inches(0.7), "64.8 °C", size=58, color=RED_ALERT, bold=True, align=PP_ALIGN.CENTER)
+    text_box(s, rx + Inches(0.2), Inches(2.55), rw - Inches(0.4), Inches(0.55),
+             "a los 226 s (engrane forzado)", size=17, color=MUTED_LIGHT, align=PP_ALIGN.CENTER)
 
-    # Texto 1: Sin carga
-    rect(s, rx, Inches(3.8), rw, Inches(1.2), fill=CARD_LIGHT)
-    text_box(s, rx + Inches(0.2), Inches(4.0), rw - Inches(0.4), Inches(0.8),
-             "Sin carga: no se calienta.", size=22, color=TEXT_DARK, bold=True)
+    # Texto 1: Atorado sube ~13 °C por minuto + Sin carga
+    rect(s, rx, Inches(3.4), rw, Inches(1.55), fill=CARD_LIGHT)
+    text_box(s, rx + Inches(0.2), Inches(3.5), rw - Inches(0.4), Inches(0.65),
+             "Atorado sube ~13 °C por minuto", size=19, color=RED_ALERT, bold=True)
+    text_box(s, rx + Inches(0.2), Inches(4.2), rw - Inches(0.4), Inches(0.6),
+             "Sin carga: no se calienta.", size=18, color=TEXT_DARK)
 
     # Texto 2: Corte a 15 s
-    rect(s, rx, Inches(5.2), rw, Inches(1.5), fill=TEAL_BG, line=TEAL)
-    text_box(s, rx + Inches(0.2), Inches(5.4), rw - Inches(0.4), Inches(1.1),
-             "Con corte a 15 s: sube solo ~7 °C", size=22, color=TEAL_DARK, bold=True)
+    rect(s, rx, Inches(5.1), rw, Inches(1.55), fill=TEAL_BG, line=TEAL)
+    text_box(s, rx + Inches(0.2), Inches(5.2), rw - Inches(0.4), Inches(0.65),
+             "Con corte a 15 s: sube solo ~3 °C", size=19, color=TEAL_DARK, bold=True)
+    text_box(s, rx + Inches(0.2), Inches(5.9), rw - Inches(0.4), Inches(0.6),
+             "Protege engranes y plástico PLA.", size=16, color=MUTED_LIGHT)
     return s
 
 
@@ -635,45 +651,44 @@ def build_slide_8():
 
 
 def build_slide_9():
-    """SLIDE 9 — Brecha con el Entorno Real: 10 minutos vs 12 horas · Tiempo: 45 s"""
+    """SLIDE 9 — Brecha con el Entorno Real: Operación y Seguridad · Tiempo: 45 s"""
     notes = (
         "Tiempo: 45 s\n"
-        "Probamos diez minutos; un museo abre de ocho a doce horas, entre cincuenta y setenta veces más. "
-        "Y un niño que sujeta un pétalo es exactamente nuestro ensayo de atasco: 60 grados en tres minutos. "
-        "Además, 32 motores juntos piden hasta 25 o 30 amperes, y si un panel falla hoy lo reinicia un "
-        "ingeniero; en un museo debe recuperarse solo."
+        "En operación, un museo exige 12 horas seguidas. Los 32 motores demandan hasta 23 amperes al arrancar juntos, "
+        "requiriendo fuente de 25 amperes. Si un niño jala un pétalo, el motor consume 0.9 amperes y disipa 4.6 watts "
+        "de calor. Además, los pétalos se rozan por tolerancias de impresión, exigiendo un acople que ceda sin romperse."
     )
     s = create_slide(dark=False, notes=notes)
     tracker(s, active_stage="BRECHA", slide_n=9)
     title(s, "10 minutos vs 12 horas")
     
     # Número destacado arriba
-    rect(s, Inches(0.8), Inches(1.75), Inches(11.7), Inches(0.95), fill=CARD_LIGHT)
-    text_box(s, Inches(1.1), Inches(1.8), Inches(3.2), Inches(0.8),
-             "50–70×", size=66, color=AMBER_ALERT, bold=True)
-    text_box(s, Inches(4.5), Inches(2.0), Inches(7.5), Inches(0.5),
+    rect(s, Inches(0.8), Inches(1.75), Inches(11.7), Inches(0.9), fill=CARD_LIGHT)
+    text_box(s, Inches(1.1), Inches(1.8), Inches(3.2), Inches(0.75),
+             "50–70×", size=62, color=AMBER_ALERT, bold=True)
+    text_box(s, Inches(4.5), Inches(1.95), Inches(7.5), Inches(0.55),
              "más tiempo de operación diaria en un museo frente a nuestras pruebas",
-             size=22, color=TEXT_DARK, bold=True)
+             size=20, color=TEXT_DARK, bold=True)
 
     # Tabla de 4 filas
     filas_b2 = [
         ("Pruebas de 10 min", "8 a 12 h cada día", "Calor acumulado"),
-        ("Nadie la toca", "Niños sujetando pétalos", "Es nuestro ensayo de atasco: 60 °C en 3 min"),
-        ("1 módulo en banco", "32 motores: hasta 25–30 A", "Fuente industrial"),
+        ("Nadie la toca", "Niños sujetando pétalos", "Es nuestro ensayo de atasco: 0.9 A y 4.6 W de calor por motor"),
+        ("1 módulo en banco", "32 motores: ~23 A al arrancar juntos", "Fuente 5 V y 25 A"),
         ("Reinicia un ingeniero", "Se auto-recupera", "Un panel falla, la pared sigue"),
     ]
     for r_i, (c1, c2, c3) in enumerate(filas_b2):
-        ry = Inches(2.85 + r_i * 0.88)
-        rect(s, Inches(0.8), ry, Inches(11.7), Inches(0.78), fill=CARD_WHITE, line=MUTED_LIGHT)
-        text_box(s, Inches(1.0), ry + Inches(0.18), Inches(3.0), Inches(0.4), c1, size=18, color=TEXT_DARK, bold=True)
-        text_box(s, Inches(4.2), ry + Inches(0.18), Inches(4.2), Inches(0.4), c2, size=18, color=TEXT_DARK)
-        text_box(s, Inches(8.6), ry + Inches(0.18), Inches(3.7), Inches(0.4), c3, size=17, color=RED_ALERT, bold=True)
+        ry = Inches(2.78 + r_i * 0.78)
+        rect(s, Inches(0.8), ry, Inches(11.7), Inches(0.7), fill=CARD_WHITE, line=MUTED_LIGHT)
+        text_box(s, Inches(1.0), ry + Inches(0.15), Inches(2.8), Inches(0.4), c1, size=18, color=TEXT_DARK, bold=True)
+        text_box(s, Inches(4.0), ry + Inches(0.15), Inches(4.2), Inches(0.4), c2, size=18, color=TEXT_DARK)
+        text_box(s, Inches(8.4), ry + Inches(0.15), Inches(3.9), Inches(0.4), c3, size=16, color=RED_ALERT, bold=True)
 
-    # Banda de conclusión mecánica
-    rect(s, Inches(0.8), Inches(6.5), Inches(11.7), Inches(0.6), fill=TEAL_BG, line=TEAL)
-    text_box(s, Inches(1.0), Inches(6.62), Inches(11.3), Inches(0.35),
-             "Falta un acople mecánico: que el pétalo ceda sin romper engranes ni lastimar dedos.",
-             size=18, color=TEAL_DARK, bold=True, align=PP_ALIGN.CENTER)
+    # Banda de conclusión mecánica (ancho 11.0 in para NO chocar con el número de página en 12.0, 7.05)
+    rect(s, Inches(0.8), Inches(6.0), Inches(11.0), Inches(0.85), fill=TEAL_BG, line=TEAL)
+    text_box(s, Inches(1.0), Inches(6.08), Inches(10.6), Inches(0.7),
+             "Aun sin público, los pétalos vecinos se rozan por tolerancias de impresión (±0.4 mm).\nFalta un acople mecánico que ceda sin romper engranes ni lastimar dedos.",
+             size=15, color=TEAL_DARK, bold=True, align=PP_ALIGN.CENTER)
     return s
 
 
@@ -681,10 +696,10 @@ def build_slide_10():
     """SLIDE 10 — Cierre: Qué corregimos y qué sigue · Tiempo: 40 s (fondo oscuro)"""
     notes = (
         "Tiempo: 40 s\n"
-        "De los comentarios del Primer Corte atendimos tres cosas: objetivos claros, mediciones reales con sensores "
-        "y una comparativa formal. Para el Corte 3 faltan la tarjeta de potencia definitiva, programar el apagado "
-        "automático y armar la colmena de 16 paneles. SOFÍA ya te mira; falta que aguante todo el día. "
-        "Gracias, quedamos atentos a sus preguntas."
+        "De los comentarios del Primer Corte atendimos tres cosas: objetivos delimitados, mediciones reales con "
+        "682 lecturas térmicas y corriente de 0.9 amperes en atasco, y comparativa formal. "
+        "Para el Corte 3 fabricaremos la PCB de potencia de 25 amperes, el apagado automático por software "
+        "y los 16 paneles. SOFÍA ya te mira; falta que aguante todo el día. Gracias, abrimos preguntas."
     )
     s = create_slide(dark=True, notes=notes)
     tracker(s, active_stage="SIGUIENTES", slide_n=10, dark=True)
@@ -700,7 +715,7 @@ def build_slide_10():
              
     c1_items = [
         "✓ Objetivos claros y delimitados (1 gen + 3 esp)",
-        "✓ Mediciones reales (682 lecturas térmicas)",
+        "✓ Mediciones reales: temperatura (682 lecturas) y corriente (0.9 A atorado)",
         "✓ Comparativa formal (MIT inFORM y comerciales)",
     ]
     for i, itm in enumerate(c1_items):
@@ -713,7 +728,7 @@ def build_slide_10():
              "Para el Corte 3", size=24, color=AMBER_ALERT, bold=True)
              
     c3_items = [
-        "1  PCB de potencia definitiva (30 A)",
+        "1  PCB de potencia definitiva (25 A)",
         "2  Apagado automático por software (< 15 s)",
         "3  Colmena completa de 16 paneles",
     ]
@@ -728,7 +743,7 @@ def build_slide_10():
              size=26, color=TEAL, bold=True, align=PP_ALIGN.CENTER)
 
     # Pie con QR + enlace a GitHub y ¿Preguntas?
-    add_image(s, "qr_github.png", Inches(0.8), Inches(6.2), Inches(0.95), Inches(0.95), card=False)
+    add_image(s, "qr_github.png", Inches(0.8), Inches(6.2), Inches(0.95), Inches(0.95), card=False, dark=True)
     text_box(s, Inches(1.9), Inches(6.45), Inches(7.0), Inches(0.4),
              "github.com/PaolaCV14/IOT-SOFIA-2026", size=18, color=WHITE, bold=True)
     text_box(s, Inches(9.5), Inches(6.35), Inches(3.0), Inches(0.5),
@@ -767,7 +782,7 @@ def build_slide_b1():
         "• 64 tornillos M3 × 10 mm (sujeción de servos y armazón)",
         "• 2 controladores PWM I²C PCA9685 de 16 canales",
         "• 1 microcontrolador ESP32-C3 Master (Wi-Fi / BLE)",
-        "• Banco: osciloscopio y termómetro láser (sin sensor en motor)",
+        "• Instrumentación de prueba: sensor LM35 + sensor INA219",
     ]
     for i, itm in enumerate(bom_items):
         text_box(s, Inches(1.0), Inches(3.75 + i * 0.48), Inches(6.1), Inches(0.4),
@@ -793,8 +808,8 @@ def build_slide_b2():
     
     qa_list = [
         ("¿Por qué MG90S?", "Engranes metálicos, bajo costo y fácil de conseguir en volumen."),
-        ("¿Cómo detectan el atasco?", "El servo no tiene sensor interno ni avisa calor; usamos corte por software a 15 s."),
-        ("¿Por qué 15 segundos?", "En 15 s solo sube ~7 °C; llegar a 60 °C toma 3 min (medido con láser y osciloscopio)."),
+        ("¿Cómo detectan el atasco?", "Con el sensor de corriente (más de 450 mA sostenido) o un temporizador de 15 s."),
+        ("¿Por qué 15 segundos?", "A 0.2 °C por segundo, en 15 s solo sube ~3 °C; llegar al límite seguro de 55 °C toma unos 3 minutos."),
         ("¿Qué pasa con varias personas?", "Es la brecha número 1 que identificamos; hoy probamos con una."),
         ("¿Cuánto cuesta vs comercial?", "Aún no tenemos costeo final; usamos piezas comerciales de bajo costo (servo, ESP32, PLA)."),
         ("¿Cumplen menos de 100 ms?", "Es el criterio de diseño; está en proceso de validación con video de alta velocidad."),
