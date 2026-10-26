@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>SOFÍA 2026 - Diagrama de Estado Oficial</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 30px;
+      background-color: #0B0F19;
+      color: #F8FAFC;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    h1 {
+      margin-bottom: 8px;
+      color: #818CF8;
+      font-size: 26px;
+    }
+    p {
+      color: #94A3B8;
+      margin-top: 0;
+      margin-bottom: 24px;
+      font-size: 15px;
+    }
+    .card {
+      background: #111827;
+      border: 1px solid #1F2937;
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+      max-width: 1000px;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>SOFÍA 2026 - Diagrama de Estados Visual</h1>
+  <p>Control Cinemático, Ciclo de Vida de Comandos y Ejecución de Gestos</p>
+
+  <div class="card">
+    <div class="mermaid">
+flowchart TD
+    INICIO([Captura MediaPipe / GUI]) --> RECIBIDO["1. RECIBIDO<br>(Recepción de Paquete)"]
+
+    RECIBIDO -->|val_ok: 60° a 120°| VALIDADO["2. VALIDADO<br>(Comando Verificado)"]
+    RECIBIDO -->|val_error: Fuera de rango| DESCARTADO["DESCARTADO<br>(Alarma de Límite)"]
+    DESCARTADO --> FIN_ERR([Fin de Paquete])
+
+    VALIDADO -->|Encolar en buffer FIFO| ESPERA["3. ESPERA<br>(Reposo en Neutro)"]
+
+    ESPERA -->|T1: t_estado ≥ T_ESPERA y cola con gestos| MOVER["4. MOVER<br>(Rate Limiter Activo)"]
+
+    MOVER -->|T2: e_y < 1e-6<br>Comando llegó a pose| ASENTAR["5. ASENTAR<br>(Esperando Sensor)"]
+
+    ASENTAR -->|T3a: e_p < TOL y faltan poses| MOVER
+    ASENTAR -->|T3b: e_p < TOL y última pose| SOSTENER["6. SOSTENER<br>(Pose Final del Gesto)"]
+    ASENTAR -->|T3c: e_p < TOL y fin regreso| ESPERA
+
+    SOSTENER -->|T4: t_estado ≥ T_SOSTENER<br>Ruta a Neutro| MOVER
+
+    classDef default fill:#1E293B,stroke:#475569,stroke-width:2px,color:#F8FAFC;
+    classDef highlight fill:#1E1B4B,stroke:#6366F1,stroke-width:2px,color:#EEF2FF;
+    classDef success fill:#064E3B,stroke:#10B981,stroke-width:2px,color:#ECFDF5;
+    classDef danger fill:#450A0A,stroke:#EF4444,stroke-width:2px,color:#FEF2F2;
+
+    class INICIO,FIN_ERR default;
+    class VALIDADO success;
+    class DESCARTADO danger;
+    class ESPERA,MOVER,ASENTAR,SOSTENER highlight;
+    </div>
+  </div>
+
+  <script>
+    mermaid.initialize({ startOnLoad: true, theme: 'dark' });
+  </script>
+</body>
+</html>
