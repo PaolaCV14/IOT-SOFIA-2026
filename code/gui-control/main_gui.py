@@ -8,6 +8,11 @@ control manual de los servomotores.
 import os
 import sys
 
+import socket
+
+UNITY_IP = "127.0.0.1"
+UNITY_PUERTO = 5005
+
 from PySide6.QtCore import Qt, Slot, Signal, QObject, QTimer
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
@@ -59,6 +64,10 @@ class SofiaDashboard(QMainWindow):
 
     def __init__(self):
         super().__init__()
+        self.unity_sock = socket.socket(
+            socket.AF_INET,
+            socket.SOCK_DGRAM
+        )
         self.setWindowTitle("SOFIA 2026 - Centro de Control, Vision 3D y Telemetria")
         self.resize(1200, 760)
         self.setStyleSheet(MODERN_DARK_THEME)
@@ -84,6 +93,20 @@ class SofiaDashboard(QMainWindow):
         self.ciclo_saludo = 0
 
         self._build_ui()
+
+
+    # -------------------------------------------------------------------------
+    # Enviar a unity
+    # -------------------------------------------------------------------------
+    def enviar_unity(self, comando):
+        try:
+            self.unity_sock.sendto(
+                comando.encode("utf-8"),
+                (UNITY_IP, UNITY_PUERTO)
+            )
+            self.log_event(f"[Unity UDP] Enviado: {comando}")
+        except Exception as error:
+            self.log_event(f"Error enviando a Unity: {error}")
 
     # -------------------------------------------------------------------------
     # Construccion de la interfaz (layouts y componentes)
@@ -133,19 +156,19 @@ class SofiaDashboard(QMainWindow):
         self.video_view.setAlignment(Qt.AlignCenter)
         self.video_view.setMinimumSize(640, 440)
         self.video_view.setStyleSheet(
-            "background-color: #080A10; border: 1.5px dashed #2A3047; border-radius: 4px;"
+            "background-color: #0A0C0F; border: 2px dashed #2A303C; border-radius: 8px;"
         )
         layout.addWidget(self.video_view, stretch=1)
 
         # Barra inferior con el gesto activo
         gesture_box = QHBoxLayout()
         lbl_title = QLabel("Gesto Detectado:")
-        lbl_title.setStyleSheet("font-weight: 600; color: #94A3B8; font-size: 12px;")
+        lbl_title.setStyleSheet("font-weight: 600; color: #94A3B8;")
         
         self.lbl_gesture_val = QLabel("NINGUNO")
         self.lbl_gesture_val.setObjectName("badge")
         self.lbl_gesture_val.setStyleSheet(
-            "font-size: 12.5px; font-weight: 700; color: #A5B4FC; background-color: #1E1B4B; border: 1px solid #4F46E5; border-radius: 3px; padding: 4px 10px;"
+            "font-size: 14px; font-weight: bold; color: #38BDF8; padding: 6px 12px;"
         )
         gesture_box.addWidget(lbl_title)
         gesture_box.addWidget(self.lbl_gesture_val)
@@ -251,7 +274,7 @@ class SofiaDashboard(QMainWindow):
         # Eje q1
         layout.addWidget(QLabel("q1 (Horizontal):"), 0, 0)
         self.lbl_q1_val = QLabel("90°")
-        self.lbl_q1_val.setStyleSheet("font-weight: bold; color: #818CF8;")
+        self.lbl_q1_val.setStyleSheet("font-weight: bold; color: #38BDF8;")
         layout.addWidget(self.lbl_q1_val, 0, 1)
         
         self.slider_q1 = QSlider(Qt.Horizontal)
@@ -263,7 +286,7 @@ class SofiaDashboard(QMainWindow):
         # Eje q2
         layout.addWidget(QLabel("q2 (Vertical):"), 2, 0)
         self.lbl_q2_val = QLabel("90°")
-        self.lbl_q2_val.setStyleSheet("font-weight: bold; color: #818CF8;")
+        self.lbl_q2_val.setStyleSheet("font-weight: bold; color: #38BDF8;")
         layout.addWidget(self.lbl_q2_val, 2, 1)
 
         self.slider_q2 = QSlider(Qt.Horizontal)
@@ -341,7 +364,7 @@ class SofiaDashboard(QMainWindow):
         if is_connected:
             self.btn_action.setText("Desconectar")
             self.btn_action.setStyleSheet(
-                "background-color: #312E81; border: 1px solid #6366F1; color: #EEF2FF;"
+                "background-color: #065F46; border: 1px solid #10B981;"
             )
         else:
             self.btn_action.setText("Conectar BLE")
@@ -463,48 +486,63 @@ class SofiaDashboard(QMainWindow):
             ))
 
             self._update_joint_display(q1, q2)
-            self.comm.send_angles(q1, q2)
+
+            if self.radio_udp.isChecked():
+                self.enviar_unity(f"{q1},{q2}")
+            else:
+                self.comm.send_angles(q1, q2)
 
     # -------------------------------------------------------------------------
-    # Rutinas locales en ESP32
+    # Rutinas locales en ESP32 y Unity
     # -------------------------------------------------------------------------
+
     def _enviar_comando_rutina(self, comando):
-        """Envia comando de rutina y bloquea seguimiento temporalmente."""
+        """Envía una rutina al destino seleccionado y pausa el seguimiento."""
         if self.rutina_esp32_activa:
-            self.log_event(f"Comando {comando} ignorado: rutina en ejecucion.")
+            self.log_event(
+                f"Comando {comando} ignorado: rutina en ejecución."
+            )
             return
 
-        if not self.radio_ble.isChecked():
-            self.log_event(f"Gesto {comando} detectado, pero BLE no esta activo.")
+        if comando not in {"SALUDO", "CORAZON"}:
+            self.log_event(f"Rutina desconocida: {comando}")
             return
 
-        if not self.comm.is_ble_connected():
-            self.log_event(f"Gesto {comando} detectado, pero no hay conexion BLE.")
+        # En BLE se requiere una conexión activa con el ESP32.
+        if self.radio_ble.isChecked() and not self.comm.is_ble_connected():
+            self.log_event(
+                f"Gesto {comando} detectado, pero no hay conexión BLE."
+            )
             return
 
         duracion_ms = {
             "SALUDO": 3000,
             "CORAZON": 2000,
-        }.get(comando)
-
-        if duracion_ms is None:
-            self.log_event(f"Rutina desconocida: {comando}")
-            return
+        }[comando]
 
         try:
-            enviado = self.comm.send_command(comando)
+            if self.radio_udp.isChecked():
+                self.enviar_unity(comando)
+                enviado = True
+            else:
+                enviado = self.comm.send_command(comando)
+
             if not enviado:
                 self.log_event(f"No se pudo enviar {comando}.")
                 return
 
             self.rutina_esp32_activa = True
-            self.log_event(f"{comando} enviado. ESP32 ejecutando rutina.")
+            destino = "Unity" if self.radio_udp.isChecked() else "ESP32"
+            self.log_event(f"{comando} enviado a {destino}.")
 
-            # Temporizador no bloqueante para liberar el seguimiento al finalizar
-            QTimer.singleShot(duracion_ms, self._finalizar_rutina_esp32)
+            QTimer.singleShot(
+                duracion_ms,
+                self._finalizar_rutina_esp32
+            )
 
         except Exception as error:
             self.log_event(f"Error al enviar {comando}: {error}")
+
 
     def _finalizar_rutina_esp32(self):
         self.rutina_esp32_activa = False
@@ -552,10 +590,12 @@ class SofiaDashboard(QMainWindow):
         """Cierre ordenado de hilos y conexiones al cerrar la ventana."""
         self._handle_stop_vision()
         self.comm.close()
+        self.unity_sock.close()
         event.accept()
 
 
 if __name__ == "__main__":
+    
     app = QApplication(sys.argv)
     window = SofiaDashboard()
     window.show()
