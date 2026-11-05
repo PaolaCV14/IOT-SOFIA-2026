@@ -2,6 +2,11 @@
 Worker de visión por computadora para la interfaz gráfica de SOFIA.
 Ejecuta la captura de video y la inferencia de MediaPipe en un hilo
 secundario (QThread) para no bloquear el hilo principal de la GUI.
+
+Incluye tolerancia a fallos:
+- Recuperación automática ante desconexión física de la cámara web.
+- Marco visual informativo cuando el dispositivo de video no responde.
+- Notificaciones de ciclo de vida para sincronizar el estado de los botones.
 """
 
 import time
@@ -31,6 +36,8 @@ class VisionWorker(QThread):
     metrics_ready = Signal(float, float, str)     # FPS, latencia en ms y gesto detectado
     angles_ready = Signal(float, float)           # Angulos calculados (q1 horizontal, q2 vertical)
     status_message = Signal(str)                  # Mensajes de estado para la terminal
+    camera_status = Signal(bool, str)             # Estado de conexión física de la cámara (conectada, detalle)
+    worker_finished = Signal(bool, str)           # Fin del hilo (éxito_limpio, mensaje_error)
 
     def __init__(self, camera_id=0, models_dir=None):
         super().__init__()
@@ -41,11 +48,36 @@ class VisionWorker(QThread):
         self._running = False
         self._paused = False
         self.use_smoothing = True
+        self._camera_online = False
+
+    def _generar_frame_aviso(self, texto_principal, subtexto=""):
+        """Genera un fotograma sintético cuando la cámara física no entrega video."""
+        h, w = 480, 640
+        canvas = np.full((h, w, 3), 15, dtype=np.uint8)  # Fondo oscuro
+
+        # Recuadro central
+        cv2.rectangle(canvas, (30, 30), (w - 30, h - 30), (45, 50, 65), 2)
+
+        # Texto principal
+        font = cv2.FONT_HERSHEY_SIMPLEX
+        cv2.putText(canvas, texto_principal, (50, int(h * 0.45)), font, 0.75, (0, 165, 255), 2, cv2.LINE_AA)
+
+        # Subtexto
+        if subtexto:
+            cv2.putText(canvas, subtexto, (50, int(h * 0.55)), font, 0.55, (180, 190, 205), 1, cv2.LINE_AA)
+
+        rgb = cv2.cvtColor(canvas, cv2.COLOR_BGR2RGB)
+        return QImage(rgb.data, w, h, 3 * w, QImage.Format_RGB888).copy()
 
     def run(self):
-        """Bucle principal de captura e inferencia del hilo."""
+        """Bucle principal de captura e inferencia con recuperación automática."""
         self._running = True
-        self.status_message.emit("Iniciando pipeline de vision...")
+        error_fatal = None
+        cap = None
+        hand_detector = None
+        pose_detector = None
+
+        self.status_message.emit("Iniciando pipeline de visión...")
 
         # 1. Cargar modelos de MediaPipe
         try:
@@ -55,150 +87,215 @@ class VisionWorker(QThread):
             hand_detector = HandDetector(model_path=hand_path)
             pose_detector = PoseDetector(model_path=pose_path)
             gesture_detector = GestureDetector()
-            
-            # Filtro EMA (alpha=0.35) para reducir temblor en landmarks
             smoother = LandmarkSmoother(alpha=0.35)
             self.status_message.emit("Modelos de MediaPipe cargados correctamente.")
         except Exception as e:
-            self.status_message.emit(f"Error al cargar detectores: {e}")
+            error_fatal = f"Error al cargar detectores de MediaPipe: {e}"
+            self.status_message.emit(error_fatal)
+            self.worker_finished.emit(False, error_fatal)
             return
 
-        # 2. Inicializar camara con OpenCV
+        # 2. Inicializar cámara con OpenCV
         cap = cv2.VideoCapture(self.camera_id)
         if not cap.isOpened():
-            self.status_message.emit(f"Error: No se pudo abrir la camara {self.camera_id}.")
-            return
-
-        self.status_message.emit("Camara activa. Procesando frames...")
+            # Si no abre de inmediato, no matamos la GUI; informamos y permitimos reintentos
+            self.camera_status.emit(False, f"No se pudo acceder a la cámara ID {self.camera_id}")
+            self.status_message.emit(f"Advertencia: Cámara {self.camera_id} no disponible inicialmente. Reintentando...")
+            self.frame_ready.emit(self._generar_frame_aviso(
+                "[ CÁMARA NO DISPONIBLE ]",
+                f"Verifica la conexión USB del sensor {self.camera_id}."
+            ))
+            self._camera_online = False
+        else:
+            self._camera_online = True
+            self.camera_status.emit(True, "Cámara activa")
+            self.status_message.emit("Cámara activa. Procesando frames...")
 
         start_time = time.time()
         prev_time = time.time()
         fps_smooth = 30.0
+        consecutive_read_failures = 0
+        last_reconnect_attempt = 0.0
 
-        # 3. Bucle continuo de captura
-        while self._running:
-            ret, frame = cap.read()
-            if not ret:
-                time.sleep(0.01)
-                continue
+        try:
+            # 3. Bucle continuo de captura
+            while self._running:
+                ahora_loop = time.time()
 
-            # Espejo horizontal para que la interaccion sea intuitiva
-            frame = cv2.flip(frame, 1)
-            h, w, _ = frame.shape
+                # Manejo de reconexión si la cámara se desconectó
+                if cap is None or not cap.isOpened() or consecutive_read_failures >= 15:
+                    if self._camera_online:
+                        self._camera_online = False
+                        self.camera_status.emit(False, "Pérdida de señal de cámara")
+                        self.status_message.emit("Alerta: Pérdida de señal en cámara. Intentando reconectar...")
 
-            # Si la deteccion esta en pausa, no corremos inferencia pesada
-            # pero mantenemos el stream de la camara activo
-            if self._paused:
-                cv2.putText(
-                    frame,
-                    "[ DETECCION PAUSADA ]",
-                    (max(20, int(w * 0.22)), int(h * 0.5)),
-                    cv2.FONT_HERSHEY_SIMPLEX,
-                    1.0,
-                    (0, 165, 255),
-                    2,
-                    cv2.LINE_AA,
-                )
-                self.metrics_ready.emit(0.0, 0.0, "PAUSADO")
-                
+                    # Mostrar aviso al usuario
+                    self.metrics_ready.emit(0.0, 0.0, "CÁMARA DESCONECTADA")
+                    self.frame_ready.emit(self._generar_frame_aviso(
+                        "[ CÁMARA DESCONECTADA ]",
+                        "Reintentando enlace con el dispositivo de video..."
+                    ))
+
+                    # Reintento con intervalo de 1.5s
+                    if ahora_loop - last_reconnect_attempt > 1.5:
+                        last_reconnect_attempt = ahora_loop
+                        if cap is not None:
+                            try:
+                                cap.release()
+                            except Exception:
+                                pass
+                        cap = cv2.VideoCapture(self.camera_id)
+                        if cap.isOpened():
+                            ret_test, _ = cap.read()
+                            if ret_test:
+                                consecutive_read_failures = 0
+                                self._camera_online = True
+                                self.camera_status.emit(True, "Cámara reconectada exitosamente")
+                                self.status_message.emit("Cámara física reconectada exitosamente.")
+                                continue
+
+                    time.sleep(0.1)
+                    continue
+
+                # Lectura normal de frame
+                ret, frame = cap.read()
+                if not ret or frame is None:
+                    consecutive_read_failures += 1
+                    time.sleep(0.02)
+                    continue
+
+                # Lectura exitosa: restablecer contador de fallos
+                consecutive_read_failures = 0
+                if not self._camera_online:
+                    self._camera_online = True
+                    self.camera_status.emit(True, "Cámara activa")
+
+                # Espejo horizontal para interacción intuitiva
+                frame = cv2.flip(frame, 1)
+                h, w, _ = frame.shape
+
+                # Si está pausado: mostrar stream pero omitir inferencia
+                if self._paused:
+                    cv2.putText(
+                        frame,
+                        "[ DETECCIÓN PAUSADA ]",
+                        (max(20, int(w * 0.22)), int(h * 0.5)),
+                        cv2.FONT_HERSHEY_SIMPLEX,
+                        1.0,
+                        (0, 165, 255),
+                        2,
+                        cv2.LINE_AA,
+                    )
+                    self.metrics_ready.emit(0.0, 0.0, "PAUSADO")
+                    rgb_render = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    q_img = QImage(rgb_render.data, w, h, 3 * w, QImage.Format_RGB888).copy()
+                    self.frame_ready.emit(q_img)
+                    time.sleep(0.03)
+                    continue
+
+                # Inferencia MediaPipe protegida ante frames anómalos
+                try:
+                    rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                    mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
+                    timestamp_ms = int((time.time() - start_time) * 1000)
+
+                    t0 = time.perf_counter()
+                    raw_hands = hand_detector.detect(mp_image, timestamp_ms)
+                    raw_pose = pose_detector.detect(mp_image, timestamp_ms)
+
+                    # Suavizado de landmarks
+                    if self.use_smoothing:
+                        hands = smoother.smooth_hands(raw_hands)
+                        pose = smoother.smooth_pose(raw_pose)
+                    else:
+                        hands = raw_hands
+                        pose = raw_pose
+
+                    # Renderizado sobre el frame
+                    dibujar_pose(frame, pose, w, h)
+                    dibujar_manos(frame, hands, w, h)
+
+                    # Clasificación de gestos
+                    ppt_det, ppt_txt = gesture_detector.detectar_intencion_ppt(hands)
+                    saludo_det = gesture_detector.detectar_saludo(hands)
+                    swipe_det, swipe_txt = gesture_detector.detectar_swipe(hands)
+
+                    gestos = [
+                        (gesture_detector.detectar_corazon(hands), "CORAZON"),
+                        (ppt_det, ppt_txt),
+                        (saludo_det, "HOLA! SALUDO"),
+                        (swipe_det, swipe_txt),
+                        (gesture_detector.detectar_tijera(hands), "TIJERA"),
+                        (gesture_detector.detectar_papel(hands), "PAPEL"),
+                        (gesture_detector.detectar_roca(hands), "ROCA")
+                    ]
+
+                    gesto_activo = "NINGUNO"
+                    for detectado, texto in gestos:
+                        if detectado:
+                            gesto_activo = texto
+                            break
+
+                    latencia_ms = (time.perf_counter() - t0) * 1000
+
+                    # Ángulos para seguimiento (-90 a 90 grados)
+                    if hands and hands.hand_landmarks:
+                        muneca = hands.hand_landmarks[0][0]
+                        q1 = (muneca.x - 0.5) * 180.0
+                        q2 = (0.5 - muneca.y) * 180.0
+                        self.angles_ready.emit(round(q1, 1), round(q2, 1))
+
+                    # FPS suave
+                    now = time.time()
+                    fps_instant = 1.0 / max(now - prev_time, 1e-5)
+                    prev_time = now
+                    fps_smooth = 0.9 * fps_smooth + 0.1 * fps_instant
+
+                    self.metrics_ready.emit(fps_smooth, latencia_ms, gesto_activo)
+
+                except Exception as infer_err:
+                    self.status_message.emit(f"Advertencia frame: {infer_err}")
+
+                # Emitir frame renderizado
                 rgb_render = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-                bytes_per_line = 3 * w
-                q_img = QImage(rgb_render.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
+                q_img = QImage(rgb_render.data, w, h, 3 * w, QImage.Format_RGB888).copy()
                 self.frame_ready.emit(q_img)
-                time.sleep(0.03)
-                continue
 
-            # MediaPipe requiere formato RGB
-            rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            mp_image = mp.Image(image_format=mp.ImageFormat.SRGB, data=rgb_frame)
-            timestamp_ms = int((time.time() - start_time) * 1000)
+        finally:
+            if cap is not None:
+                try:
+                    cap.release()
+                except Exception:
+                    pass
+            if hand_detector is not None:
+                try:
+                    hand_detector.close()
+                except Exception:
+                    pass
+            if pose_detector is not None:
+                try:
+                    pose_detector.close()
+                except Exception:
+                    pass
 
-            # Inferencia y calculo de tiempo de procesamiento
-            t0 = time.perf_counter()
-            raw_hands = hand_detector.detect(mp_image, timestamp_ms)
-            raw_pose = pose_detector.detect(mp_image, timestamp_ms)
+            self.status_message.emit("Cámara y detectores detenidos limpiamente.")
+            self.worker_finished.emit(error_fatal is None, error_fatal or "OK")
 
-            # Suavizado de landmarks
-            if self.use_smoothing:
-                hands = smoother.smooth_hands(raw_hands)
-                pose = smoother.smooth_pose(raw_pose)
-            else:
-                hands = raw_hands
-                pose = raw_pose
-
-            # Dibujo de esqueleto sobre el frame
-            dibujar_pose(frame, pose, w, h)
-            dibujar_manos(frame, hands, w, h)
-
-            # Deteccion de gestos definidos para SOFIA
-            ppt_det, ppt_txt = gesture_detector.detectar_intencion_ppt(hands)
-            saludo_det = gesture_detector.detectar_saludo(hands)
-            swipe_det, swipe_txt = gesture_detector.detectar_swipe(hands)
-
-            gestos = [
-                (gesture_detector.detectar_corazon(hands), "CORAZON"),
-                (ppt_det, ppt_txt),
-                (saludo_det, "HOLA! SALUDO"),
-                (swipe_det, swipe_txt),
-                (gesture_detector.detectar_tijera(hands), "TIJERA"),
-                (gesture_detector.detectar_papel(hands), "PAPEL"),
-                (gesture_detector.detectar_roca(hands), "ROCA")
-            ]
-
-            gesto_activo = "NINGUNO"
-            for detectado, texto in gestos:
-                if detectado:
-                    gesto_activo = texto
-                    break
-
-            latencia_ms = (time.perf_counter() - t0) * 1000
-
-            # Calculo de orientacion respecto al centro de la imagen (-90 a 90 grados)
-            # q1: Yaw horizontal, q2: Pitch vertical usando la muneca como referencia
-            q1, q2 = 0.0, 0.0
-            if hands and hands.hand_landmarks:
-                muneca = hands.hand_landmarks[0][0]
-                q1 = (muneca.x - 0.5) * 180.0
-                q2 = (0.5 - muneca.y) * 180.0
-                self.angles_ready.emit(round(q1, 1), round(q2, 1))
-
-            # Calculo de FPS con filtro suave para visualizacion estable
-            now = time.time()
-            fps_instant = 1.0 / max(now - prev_time, 1e-5)
-            prev_time = now
-            fps_smooth = 0.9 * fps_smooth + 0.1 * fps_instant
-
-            self.metrics_ready.emit(fps_smooth, latencia_ms, gesto_activo)
-
-            # Convertir frame de OpenCV (BGR) a QImage para pintarlo en Qt
-            rgb_render = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            bytes_per_line = 3 * w
-            q_img = QImage(rgb_render.data, w, h, bytes_per_line, QImage.Format_RGB888).copy()
-            self.frame_ready.emit(q_img)
-
-        # Liberar camara y detectores al salir
-        cap.release()
-        hand_detector.close()
-        pose_detector.close()
-        self.status_message.emit("Camara y detectores detenidos limpiamente.")
-
-    # Control de ciclo de vida del hilo desde la interfaz
     def stop(self):
         """Detiene el bucle y espera a que el hilo termine."""
         self._running = False
         self._paused = False
-        self.wait(1000)
+        self.wait(1200)
 
     def pause(self):
-        """Pausa la deteccion sin apagar la camara ni destruir el hilo."""
+        """Pausa la detección sin apagar la cámara ni destruir el hilo."""
         self._paused = True
-        self.status_message.emit("Deteccion pausada.")
+        self.status_message.emit("Detección pausada.")
 
     def resume(self):
-        """Reanuda la deteccion de posturas y gestos."""
+        """Reanuda la detección de posturas y gestos."""
         self._paused = False
-        self.status_message.emit("Deteccion reanudada.")
+        self.status_message.emit("Detección reanudada.")
 
     def is_paused(self):
-        """Retorna True si la deteccion esta en pausa."""
         return self._paused

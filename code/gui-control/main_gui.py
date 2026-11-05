@@ -8,11 +8,6 @@ control manual de los servomotores.
 import os
 import sys
 
-import socket
-
-UNITY_IP = "127.0.0.1"
-UNITY_PUERTO = 5005
-
 from PySide6.QtCore import Qt, Slot, Signal, QObject, QTimer
 from PySide6.QtGui import QPixmap
 from PySide6.QtWidgets import (
@@ -45,8 +40,14 @@ for path in (TRACKING_DIR, COMM_DIR):
 
 from vision_worker import VisionWorker
 from dispatcher import SofiaCommDispatcher
-from ble_sender import ANGULO_MIN, ANGULO_MAX, ESP32_DEFAULT_MAC
+from ble_sender import ANGULO_MIN, ANGULO_MAX, ESP32_DEFAULT_MAC, RUTINAS
+from posture_mapper import PostureTrigger
+from error_logger import logger, instalar_manejador_excepciones_global
 from styles import MODERN_DARK_THEME
+
+# Margen extra sobre la duracion nominal de una rutina antes de liberar el
+# seguimiento si el ESP32 no envia el evento DONE.
+MARGEN_RESPALDO_MS = 2000
 
 
 class BleStateBridge(QObject):
@@ -57,6 +58,7 @@ class BleStateBridge(QObject):
     """
     state_changed = Signal(bool)
     log_received = Signal(str)
+    event_received = Signal(object)   # Eventos del protocolo (dict)
 
 
 class SofiaDashboard(QMainWindow):
@@ -64,10 +66,6 @@ class SofiaDashboard(QMainWindow):
 
     def __init__(self):
         super().__init__()
-        self.unity_sock = socket.socket(
-            socket.AF_INET,
-            socket.SOCK_DGRAM
-        )
         self.setWindowTitle("SOFIA 2026 - Centro de Control, Vision 3D y Telemetria")
         self.resize(1200, 760)
         self.setStyleSheet(MODERN_DARK_THEME)
@@ -76,37 +74,27 @@ class SofiaDashboard(QMainWindow):
         self.ble_bridge = BleStateBridge()
         self.ble_bridge.state_changed.connect(self._set_ble_button_state)
         self.ble_bridge.log_received.connect(self.log_event)
+        self.ble_bridge.event_received.connect(self._on_esp32_event)
 
         # Despachador de comunicaciones (UDP o BLE)
         self.comm = SofiaCommDispatcher(
             log_callback=self.ble_bridge.log_received.emit,
             ble_state_callback=self.ble_bridge.state_changed.emit,
+            ble_event_callback=self.ble_bridge.event_received.emit,
         )
 
         self.models_dir = os.path.join(TRACKING_DIR, "models")
         self.worker = None
 
-        # Banderas de estado para rutinas ejecutadas en el robot
+        # Estado de rutinas ejecutadas en el robot
         self.rutina_esp32_activa = False
-        self.hola_detectado = False
-        self.corazon_detectado = False
-        self.ciclo_saludo = 0
+        self.rutina_actual = None
+        self._token_rutina = 0     # Invalida temporizadores de respaldo viejos
+
+        # Postura reconocida -> comando (con confirmacion y enfriamiento)
+        self.posture_trigger = PostureTrigger()
 
         self._build_ui()
-
-
-    # -------------------------------------------------------------------------
-    # Enviar a unity
-    # -------------------------------------------------------------------------
-    def enviar_unity(self, comando):
-        try:
-            self.unity_sock.sendto(
-                comando.encode("utf-8"),
-                (UNITY_IP, UNITY_PUERTO)
-            )
-            self.log_event(f"[Unity UDP] Enviado: {comando}")
-        except Exception as error:
-            self.log_event(f"Error enviando a Unity: {error}")
 
     # -------------------------------------------------------------------------
     # Construccion de la interfaz (layouts y componentes)
@@ -144,11 +132,16 @@ class SofiaDashboard(QMainWindow):
         
         self.lbl_latency_badge = QLabel("Latencia: -- ms")
         self.lbl_latency_badge.setObjectName("badge")
+
+        # Tiempo de ida y vuelta comando -> ACK del ESP32
+        self.lbl_rtt_badge = QLabel("ESP32: -- ms")
+        self.lbl_rtt_badge.setObjectName("badge")
         
         header.addWidget(title)
         header.addStretch()
         header.addWidget(self.lbl_fps_badge)
         header.addWidget(self.lbl_latency_badge)
+        header.addWidget(self.lbl_rtt_badge)
         layout.addLayout(header)
 
         # Area de renderizado de la camara
@@ -313,8 +306,9 @@ class SofiaDashboard(QMainWindow):
     # Comunicaciones
     # -------------------------------------------------------------------------
     def log_event(self, text):
-        """Escribe un mensaje en la terminal de la GUI."""
+        """Escribe un mensaje en la terminal de la GUI y lo persiste en la bitácora CSV."""
         self.log_terminal.append(f"> {text}")
+        logger.log("SISTEMA", "INFO", "LOG", text)
 
     def _on_channel_radio_toggled(self):
         """Conmuta entre canal UDP y BLE segun el radio button activo."""
@@ -387,12 +381,37 @@ class SofiaDashboard(QMainWindow):
         self.worker.metrics_ready.connect(self._on_metrics_ready)
         self.worker.angles_ready.connect(self._on_angles_ready)
         self.worker.status_message.connect(self.log_event)
+        self.worker.camera_status.connect(self._on_camera_status)
+        self.worker.worker_finished.connect(self._on_worker_finished)
         self.worker.start()
 
         self.btn_start.setEnabled(False)
         self.btn_pause.setEnabled(True)
         self.btn_pause.setText("Pausar")
         self.btn_stop.setEnabled(True)
+
+    @Slot(bool, str)
+    def _on_camera_status(self, is_online, message):
+        """Notificación de estado del hardware de video."""
+        if is_online:
+            self.lbl_fps_badge.setStyleSheet("")
+        else:
+            self.lbl_fps_badge.setText("CAM: DESCONECTADA")
+            self.lbl_fps_badge.setStyleSheet("color: #F87171; font-weight: bold;")
+        logger.log("CAMARA", "INFO" if is_online else "WARNING", "ESTADO_CAMARA", message)
+
+    @Slot(bool, str)
+    def _on_worker_finished(self, success, message):
+        """Restaura los controles de la interfaz si el pipeline se detiene."""
+        self.btn_start.setEnabled(True)
+        self.btn_pause.setEnabled(False)
+        self.btn_pause.setText("Pausar")
+        self.btn_stop.setEnabled(False)
+        self.worker = None
+
+        if not success:
+            self.log_event(f"Atención: Pipeline de visión detenido con error: {message}")
+            logger.log("VISION", "ERROR", "CIERRE_ANOMALO", message)
 
     @Slot()
     def _handle_pause_resume_vision(self):
@@ -435,42 +454,26 @@ class SofiaDashboard(QMainWindow):
 
     @Slot(float, float, str)
     def _on_metrics_ready(self, fps, latency, gesto):
-        """Actualiza telemetria y dispara rutinas al reconocer gestos clave."""
+        """Actualiza telemetria y dispara rutinas al reconocer posturas confirmadas."""
         self.lbl_fps_badge.setText(f"FPS: {fps:.1f}")
         self.lbl_latency_badge.setText(f"Lat: {latency:.1f} ms")
         self.lbl_gesture_val.setText(gesto)
 
-        gesto_actual = str(gesto).strip().lower()
-        gesto_actual = (
-            gesto_actual
-            .replace("á", "a")
-            .replace("é", "e")
-            .replace("í", "i")
-            .replace("ó", "o")
-            .replace("ú", "u")
+        # Evaluar con el disparador de posturas (filtro temporal y estabilidad)
+        disparo = self.posture_trigger.actualizar(
+            gesto, bloqueado=self.rutina_esp32_activa
         )
-
-        es_hola = "hola" in gesto_actual or "saludo" in gesto_actual
-        es_corazon = "corazon" in gesto_actual
-
-        if not es_hola:
-            self.hola_detectado = False
-
-        if not es_corazon:
-            self.corazon_detectado = False
-
-        # Disparo unico por deteccion
-        if es_hola and not self.hola_detectado:
-            self.hola_detectado = True
-            self._enviar_comando_rutina("SALUDO")
-
-        elif es_corazon and not self.corazon_detectado:
-            self.corazon_detectado = True
-            self._enviar_comando_rutina("CORAZON")
+        if disparo is not None:
+            postura, rutina = disparo
+            self.log_event(f"Postura confirmada: {postura} -> Disparando {rutina}")
+            self._enviar_comando_rutina(rutina)
 
     @Slot(float, float)
     def _on_angles_ready(self, q1_raw, q2_raw):
-        """Mapea los angulos detectados al rango seguro y los despacha."""
+        """Registra estabilidad de muñeca y despacha ángulos al robot o simulación."""
+        # Alimenta el clasificador para exigir muñeca quieta en posturas estáticas
+        self.posture_trigger.registrar_muneca(q1_raw, q2_raw)
+
         if self.rutina_esp32_activa:
             return
 
@@ -486,11 +489,63 @@ class SofiaDashboard(QMainWindow):
             ))
 
             self._update_joint_display(q1, q2)
+            # El dispatcher enruta a UDP o BLE segun el canal activo
+            self.comm.send_angles(q1, q2)
 
-            if self.radio_udp.isChecked():
-                self.enviar_unity(f"{q1},{q2}")
-            else:
-                self.comm.send_angles(q1, q2)
+    # -------------------------------------------------------------------------
+    # Eventos asíncronos del protocolo ESP32 (ACK, NACK, DONE, RTT)
+    # -------------------------------------------------------------------------
+    @Slot(object)
+    def _on_esp32_event(self, event):
+        """Maneja notificaciones del protocolo emitidas por el firmware."""
+        if not isinstance(event, dict):
+            return
+
+        tipo = event.get("type")
+
+        if tipo == "RECONNECTING":
+            intento = event.get("attempt", 1)
+            self.btn_action.setText(f"Reconectando ({intento})...")
+            self.btn_action.setStyleSheet("background-color: #92400E; border: 1px solid #F59E0B; color: #FEF3C7;")
+            self.lbl_rtt_badge.setText("ESP32: RECONECTANDO")
+            logger.log("BLE", "WARNING", "INTENTO_RECONEXION", f"Intento {intento}")
+
+        elif tipo == "CONNECTED":
+            self.btn_action.setText("Desconectar")
+            self.btn_action.setStyleSheet("background-color: #065F46; border: 1px solid #10B981; color: #ECFDF5;")
+            logger.log("BLE", "INFO", "CONEXION_ESTABLECIDA", "Enlace activo con ESP32")
+
+        elif tipo == "DISCONNECTED":
+            self.lbl_rtt_badge.setText("ESP32: DESCONECTADO")
+            logger.log("BLE", "WARNING", "DESCONEXION_DETECTADA", "Pérdida de enlace BLE")
+
+        elif tipo == "RTT":
+            rtt = event.get("rtt_ms", 0.0)
+            self.lbl_rtt_badge.setText(f"ESP32: {rtt:.0f} ms")
+
+        elif tipo == "ACK":
+            rtt = event.get("rtt_ms")
+            if rtt is not None:
+                self.lbl_rtt_badge.setText(f"ESP32: {rtt:.0f} ms")
+            logger.log("BLE", "INFO", "ACK_RECIBIDO", f"SEQ {event.get('seq')}: {event.get('cmd')}")
+
+        elif tipo == "DONE":
+            # El ESP32 notificó que terminó la coreografía
+            rutina = event.get("routine", "")
+            self.log_event(f"ESP32 confirmó fin de {rutina}.")
+            logger.log("ROBOT", "INFO", "RUTINA_COMPLETADA", rutina)
+            self._finalizar_rutina_esp32()
+
+        elif tipo == "NACK":
+            codigo = event.get("code", "")
+            logger.log("BLE", "ERROR", "NACK_RECIBIDO", f"Código {codigo}")
+            # Si el microcontrolador rechazó la rutina, no bloqueamos el seguimiento
+            if self.rutina_esp32_activa and codigo in ("ERR_04", "ERR_02", "ERR_05"):
+                self._finalizar_rutina_esp32()
+
+        elif tipo == "LINK_DEGRADED":
+            self.lbl_rtt_badge.setText("ESP32: LENTO")
+            logger.log("BLE", "WARNING", "ENLACE_DEGRADADO", f"Timeouts consecutivos: {event.get('timeouts')}")
 
     # -------------------------------------------------------------------------
     # Rutinas locales en ESP32 y Unity
@@ -498,13 +553,15 @@ class SofiaDashboard(QMainWindow):
 
     def _enviar_comando_rutina(self, comando):
         """Envía una rutina al destino seleccionado y pausa el seguimiento."""
+        comando = str(comando).strip().upper()
+
         if self.rutina_esp32_activa:
             self.log_event(
-                f"Comando {comando} ignorado: rutina en ejecución."
+                f"Comando {comando} ignorado: rutina {self.rutina_actual} en ejecución."
             )
             return
 
-        if comando not in {"SALUDO", "CORAZON"}:
+        if comando not in RUTINAS:
             self.log_event(f"Rutina desconocida: {comando}")
             return
 
@@ -515,37 +572,54 @@ class SofiaDashboard(QMainWindow):
             )
             return
 
-        duracion_ms = {
-            "SALUDO": 3000,
-            "CORAZON": 2000,
-        }[comando]
+        # Duración estimada según catálogo oficial
+        duracion_nominal = RUTINAS.get(comando, 2000)
 
         try:
-            if self.radio_udp.isChecked():
-                self.enviar_unity(comando)
-                enviado = True
-            else:
-                enviado = self.comm.send_command(comando)
+            # El dispatcher enruta a UDP (destino configurado) o BLE
+            enviado = self.comm.send_command(comando)
 
             if not enviado:
                 self.log_event(f"No se pudo enviar {comando}.")
                 return
 
-            self.rutina_esp32_activa = True
-            destino = "Unity" if self.radio_udp.isChecked() else "ESP32"
-            self.log_event(f"{comando} enviado a {destino}.")
+            if self.radio_udp.isChecked():
+                # La simulacion no ejecuta la rutina en hardware ni confirma
+                # su fin, por lo que no se bloquea el seguimiento.
+                self.log_event(f"{comando} enviado a simulación (UDP).")
+                return
 
+            # En el ESP32 la rutina se ejecuta localmente: se pausa el
+            # seguimiento hasta que llegue EVT,DONE (con temporizador de respaldo)
+            self.rutina_esp32_activa = True
+            self.rutina_actual = comando
+            self._token_rutina += 1
+            token_actual = self._token_rutina
+
+            self.log_event(f"{comando} transmitido a ESP32. Esperando confirmación de fin...")
+
+            # Respaldo: si por pérdida de paquete no llega EVT,DONE, se libera tras margen de seguridad
+            timeout_respaldo = duracion_nominal + MARGEN_RESPALDO_MS
             QTimer.singleShot(
-                duracion_ms,
-                self._finalizar_rutina_esp32
+                timeout_respaldo,
+                lambda t=token_actual: self._timeout_respaldo_rutina(t)
             )
 
         except Exception as error:
             self.log_event(f"Error al enviar {comando}: {error}")
+            self.rutina_esp32_activa = False
+            self.rutina_actual = None
 
+    def _timeout_respaldo_rutina(self, token):
+        """Libera el seguimiento si no llegó la notificación de fin del ESP32."""
+        if self.rutina_esp32_activa and self._token_rutina == token:
+            self.log_event(f"Respaldo: rutina {self.rutina_actual} concluida por tiempo.")
+            self._finalizar_rutina_esp32()
 
     def _finalizar_rutina_esp32(self):
         self.rutina_esp32_activa = False
+        self.rutina_actual = None
+        self.posture_trigger.reset()
         self.log_event("Rutina finalizada. Seguimiento habilitado.")
 
     # -------------------------------------------------------------------------
@@ -567,12 +641,12 @@ class SofiaDashboard(QMainWindow):
         mode = self.combo_mode.currentText()
         if mode == "Calibracion (Home)":
             self._update_joint_display(90, 90)
-            self.comm.send_angles(90, 90)
-            self.log_event("Calibracion: servomotores centrados a 90, 90.")
+            self.comm.send_control("HOME")
+            self.log_event("Calibracion: comando HOME enviado (90, 90).")
         elif mode == "Reposo":
             self._update_joint_display(90, 60)
-            self.comm.send_angles(90, 60)
-            self.log_event("Reposo: postura de descanso activada.")
+            self.comm.send_control("REST")
+            self.log_event("Reposo: comando REST enviado (90, 60).")
 
     def _update_joint_display(self, q1, q2):
         """Actualiza etiquetas y posiciones de los sliders sin disparar senales recursivas."""
@@ -590,13 +664,15 @@ class SofiaDashboard(QMainWindow):
         """Cierre ordenado de hilos y conexiones al cerrar la ventana."""
         self._handle_stop_vision()
         self.comm.close()
-        self.unity_sock.close()
         event.accept()
 
 
 if __name__ == "__main__":
-    
     app = QApplication(sys.argv)
     window = SofiaDashboard()
+
+    # Hook global de excepciones para evitar cierres inesperados
+    instalar_manejador_excepciones_global(callback_alerta=window.log_event)
+
     window.show()
     sys.exit(app.exec())

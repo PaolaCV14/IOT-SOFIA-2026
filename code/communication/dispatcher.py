@@ -8,17 +8,18 @@ Módulo desacoplado para enrutar datos de control hacia:
 - Simulación virtual (Unity / Webots) mediante sockets UDP
 
 Soporta:
-- Envío de ángulos: "90,90", "Q1,90", "Q2,90"
-- Rutinas BLE: "SALUDO", "CORAZON"
+- Envío de ángulos: "90,90" (UDP) / "$SEQ,ANG,90,90#" (BLE)
+- Rutinas (BLE o UDP): SALUDO, CORAZON, BAILE, NEGAR, PPT, CENTRAR, REPOSO
+- Comandos de control: HOME, REST, STOP, PING
 ==============================================================
 """
 
 import socket
 
 try:
-    from .ble_sender import SofiaBleClient, ANGULO_MIN, ANGULO_MAX
+    from .ble_sender import SofiaBleClient, ANGULO_MIN, ANGULO_MAX, RUTINAS
 except ImportError:
-    from ble_sender import SofiaBleClient, ANGULO_MIN, ANGULO_MAX
+    from ble_sender import SofiaBleClient, ANGULO_MIN, ANGULO_MAX, RUTINAS
 
 
 class SofiaCommDispatcher:
@@ -27,14 +28,19 @@ class SofiaCommDispatcher:
     MODE_UDP = "UDP"
     MODE_BLE = "BLE"
 
-    RUTINAS_BLE = {"SALUDO", "CORAZON"}
+    # Rutinas almacenadas en el ESP32 (nombre -> duración nominal en ms)
+    RUTINAS_BLE = set(RUTINAS)
+
+    # Posiciones fijas para comandos HOME / REST en el canal UDP
+    POSES_UDP = {"HOME": (90, 90), "REST": (90, 60)}
 
     def __init__(
         self,
         target_ip="127.0.0.1",
         target_port=5005,
         log_callback=None,
-        ble_state_callback=None
+        ble_state_callback=None,
+        ble_event_callback=None
     ):
         self.target_ip = target_ip
         self.target_port = target_port
@@ -42,6 +48,10 @@ class SofiaCommDispatcher:
         self.log = log_callback or (lambda msg: None)
         self.ble_state_callback = (
             ble_state_callback or (lambda is_connected: None)
+        )
+        # Eventos del protocolo (ACK, NACK, DONE, TIMEOUT, RTT, ...)
+        self.ble_event_callback = (
+            ble_event_callback or (lambda event: None)
         )
 
         self.current_channel = self.MODE_UDP
@@ -128,7 +138,8 @@ class SofiaCommDispatcher:
             self.ble_client = SofiaBleClient(
                 mac_address=mac_address,
                 status_callback=self.log,
-                connection_callback=self.ble_state_callback
+                connection_callback=self.ble_state_callback,
+                event_callback=self.ble_event_callback
             )
 
             self.ble_client.start()
@@ -197,11 +208,10 @@ class SofiaCommDispatcher:
                 return False
 
             try:
-                mensaje = f"{q1},{q2}"
-                resultado = self.ble_client.send_command(mensaje)
+                resultado = self.ble_client.send_angles(q1, q2)
 
                 if resultado is False:
-                    self._log(f"No se pudo encolar el comando: {mensaje}")
+                    self._log(f"No se pudo encolar el comando: {q1},{q2}")
                     return False
 
                 return True
@@ -211,33 +221,45 @@ class SofiaCommDispatcher:
                 return False
 
         if self.current_channel == self.MODE_UDP:
-            try:
-                mensaje = f"{float(q1):.2f},{float(q2):.2f}".encode("utf-8")
-                self.sock.sendto(
-                    mensaje,
-                    (self.target_ip, self.target_port)
-                )
-                return True
-
-            except OSError as error:
-                self._log(f"Error en socket UDP: {error}")
-                return False
+            # Mismo formato entero "q1,q2" que en BLE. No se registra cada
+            # envío exitoso para no saturar la terminal (~30 envíos/s).
+            return self._send_udp(f"{q1},{q2}")
 
         self._log(f"Canal desconocido: {self.current_channel}")
         return False
 
     # ---------------------------------------------------------
-    # ENVÍO DE RUTINAS BLE
+    # ENVÍO UDP (SIMULACIÓN)
+    # ---------------------------------------------------------
+    def _send_udp(self, mensaje):
+        """Envía una cadena ASCII al destino UDP configurado."""
+        if self.sock is None:
+            self._log("No se pudo enviar por UDP: socket cerrado.")
+            return False
+
+        try:
+            self.sock.sendto(
+                mensaje.encode("utf-8"),
+                (self.target_ip, self.target_port)
+            )
+            return True
+
+        except OSError as error:
+            self._log(f"Error en socket UDP: {error}")
+            return False
+
+    # ---------------------------------------------------------
+    # ENVÍO DE RUTINAS (BLE o UDP)
     # ---------------------------------------------------------
     def send_command(self, command):
         """
-        Envía una rutina al ESP32.
+        Envía una rutina por el canal activo.
 
-        Comandos admitidos:
-        - SALUDO
-        - CORAZON
+        Comandos admitidos: las rutinas de RUTINAS_BLE
+        (SALUDO, CORAZON, BAILE, NEGAR, PPT, CENTRAR, REPOSO).
 
-        Las rutinas solo se envían por BLE.
+        En BLE se encola hacia el ESP32; en UDP se envía a la
+        simulación (Unity / Webots) al destino configurado.
         """
         if self._closed:
             self._log("No se puede enviar el comando: dispatcher cerrado.")
@@ -249,10 +271,17 @@ class SofiaCommDispatcher:
             self._log(f"Comando de rutina no reconocido: {comando}")
             return False
 
+        if self.current_channel == self.MODE_UDP:
+            if self._send_udp(comando):
+                self._log(
+                    f"[UDP] Rutina enviada a "
+                    f"{self.target_ip}:{self.target_port}: {comando}"
+                )
+                return True
+            return False
+
         if self.current_channel != self.MODE_BLE:
-            self._log(
-                f"No se envió {comando}: selecciona el canal BLE."
-            )
+            self._log(f"Canal desconocido: {self.current_channel}")
             return False
 
         if not self.is_ble_connected():
@@ -262,7 +291,7 @@ class SofiaCommDispatcher:
             return False
 
         try:
-            resultado = self.ble_client.send_command(comando)
+            resultado = self.ble_client.send_routine(comando)
 
             if resultado is False:
                 self._log(f"No se pudo encolar la rutina: {comando}")
@@ -273,6 +302,40 @@ class SofiaCommDispatcher:
 
         except Exception as error:
             self._log(f"Error al enviar la rutina {comando}: {error}")
+            return False
+
+    # ---------------------------------------------------------
+    # COMANDOS DE CONTROL (HOME, REST, STOP, PING)
+    # ---------------------------------------------------------
+    def send_control(self, command):
+        """
+        Envía un comando simple del protocolo.
+
+        En BLE se transmite como trama ($SEQ,HOME#, ...) y se espera
+        ACK. En UDP, HOME y REST se traducen a la pose equivalente;
+        STOP y PING no aplican a la simulación.
+        """
+        if self._closed:
+            self._log("No se puede enviar el comando: dispatcher cerrado.")
+            return False
+
+        comando = str(command).strip().upper()
+
+        if self.current_channel == self.MODE_UDP:
+            pose = self.POSES_UDP.get(comando)
+            if pose is None:
+                self._log(f"{comando} no aplica al canal UDP.")
+                return False
+            return self.send_angles(*pose)
+
+        if not self.is_ble_connected():
+            self._log(f"No se envió {comando}: ESP32 no conectado por BLE.")
+            return False
+
+        try:
+            return bool(self.ble_client.send_simple(comando))
+        except Exception as error:
+            self._log(f"Error al enviar {comando}: {error}")
             return False
 
     # ---------------------------------------------------------
