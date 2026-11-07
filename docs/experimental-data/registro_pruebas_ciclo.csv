@@ -1,13 +1,15 @@
-Prueba,Condicion,Postura_Entrada,Rutina_Comando,Trama_Generada,Respuesta_Simulada,Latencia_Proc_ms,Resultado
-CICLO_DETECCION_ACCION,Postura SALUDO (Dinamica),SALUDO,SALUDO,"$10,ROUTINE,SALUDO#","$10,ACK,STARTED,SALUDO#",0.02,EXITOSA
-CICLO_DETECCION_ACCION,Postura CORAZON (Estatica),CORAZON,CORAZON,"$20,ROUTINE,CORAZON#","$20,ACK,STARTED,CORAZON#",0.01,EXITOSA
-CICLO_DETECCION_ACCION,Postura TIJERA (Estatica),TIJERA,BAILE,"$30,ROUTINE,BAILE#","$30,ACK,STARTED,BAILE#",0.01,EXITOSA
-CICLO_DETECCION_ACCION,Postura ROCA (Estatica),ROCA,CENTRAR,"$40,ROUTINE,CENTRAR#","$40,ACK,STARTED,CENTRAR#",0.00,EXITOSA
-CICLO_DETECCION_ACCION,Postura SWIPE (Dinamica),SWIPE,NEGAR,"$50,ROUTINE,NEGAR#","$50,ACK,STARTED,NEGAR#",0.00,EXITOSA
-CICLO_DETECCION_ACCION,Postura PAPEL (Estatica),PAPEL,REPOSO,"$60,ROUTINE,REPOSO#","$60,ACK,STARTED,REPOSO#",0.00,EXITOSA
-CICLO_DETECCION_ACCION,Postura PPT (Dinamica),PPT,PPT,"$70,ROUTINE,PPT#","$70,ACK,STARTED,PPT#",0.00,EXITOSA
-ESTRES_CAMBIOS_RAPIDOS,60 transiciones de postura a 20 Hz con movimiento,MULTIPLES,NINGUNA,N/A,N/A,0.00,EXITOSA
-MANEJO_ERRORES_SINTAXIS,Fuera de rango inferior,N/A,ANG,"$101,ANG,50,90#","$101,NACK,ERR_01#",0.10,EXITOSA
-MANEJO_ERRORES_SINTAXIS,Fuera de rango superior,N/A,ANG,"$102,ANG,90,130#","$102,NACK,ERR_01#",0.10,EXITOSA
-MANEJO_ERRORES_SINTAXIS,Comando no registrado,N/A,VOLAR,"$103,VOLAR#","$103,NACK,ERR_02#",0.10,EXITOSA
-MANEJO_ERRORES_SINTAXIS,Trama incompleta,N/A,ANG,"$104,ANG,90#","$104,NACK,ERR_03#",0.10,EXITOSA
+Categoria,Condicion_Operacion,Entrada_Gesto,Comando_Generado,Trama_TX,Respuesta_RX,Latencia_ms,Comportamiento_Robot,Resultado
+CICLO_DETECCION_ACCION,Postura SALUDO (Dinamica),SALUDO,SALUDO,"$10,ROUTINE,SALUDO#","$10,ACK,STARTED,SALUDO#",0.01,Ejecuta SALUDO sin interrupciones,EXITOSA
+CICLO_DETECCION_ACCION,Postura CORAZON (Estatica),CORAZON,CORAZON,"$20,ROUTINE,CORAZON#","$20,ACK,STARTED,CORAZON#",0.01,Ejecuta CORAZON sin interrupciones,EXITOSA
+CICLO_DETECCION_ACCION,Postura TIJERA (Estatica),TIJERA,BAILE,"$30,ROUTINE,BAILE#","$30,ACK,STARTED,BAILE#",0.01,Ejecuta BAILE sin interrupciones,EXITOSA
+CICLO_DETECCION_ACCION,Postura ROCA (Estatica),ROCA,CENTRAR,"$40,ROUTINE,CENTRAR#","$40,ACK,STARTED,CENTRAR#",0.00,Ejecuta CENTRAR sin interrupciones,EXITOSA
+CICLO_DETECCION_ACCION,Postura SWIPE (Dinamica),SWIPE,NEGAR,"$50,ROUTINE,NEGAR#","$50,ACK,STARTED,NEGAR#",0.00,Ejecuta NEGAR sin interrupciones,EXITOSA
+CICLO_DETECCION_ACCION,Postura PAPEL (Estatica),PAPEL,REPOSO,"$60,ROUTINE,REPOSO#","$60,ACK,STARTED,REPOSO#",0.00,Ejecuta REPOSO sin interrupciones,EXITOSA
+CICLO_DETECCION_ACCION,Postura PPT (Dinamica),PPT,PPT,"$70,ROUTINE,PPT#","$70,ACK,STARTED,PPT#",0.00,Ejecuta PPT sin interrupciones,EXITOSA
+ESTRES_CAMBIOS_RAPIDOS,60 transiciones a 20 Hz con muñeca en movimiento,TRANSICIONES_ALEATORIAS,NINGUNO,N/A,N/A,0.05,"Inmóvil, descarta falsos disparos por filtro temporal",EXITOSA
+ESTRES_MULTIPLES_USUARIOS,2 usuarios en cuadro; salto de 80° en muñeca seguido de estabilización,TIJERA_COMPETENCIA,BAILE (únicamente al estabilizar),"$210,ROUTINE,BAILE#","$210,ACK,STARTED,BAILE#",0.12,No oscila bruscamente; ejecuta acción solo cuando el usuario se estabiliza,EXITOSA
+ESTRES_ILUMINACION_VARIABLE,Baja iluminación con 50% dropouts intercalados seguido de luz normal,TIJERA_PARPADEO,BAILE (al recuperar señal continua),"$310,ROUTINE,BAILE#","$310,ACK,STARTED,BAILE#",0.10,Ignora parpadeos lumínicos y ejecuta comando al restablecerse la visibilidad,EXITOSA
+MANEJO_ERRORES_PROTOCOLO,Fuera de rango inferior (q1=50°),N/A,ANG,"$101,ANG,50,90#","$101,NACK,ERR_01#",0.08,Comando rechazado con NACK; servomotores protegidos sin moverse,EXITOSA
+MANEJO_ERRORES_PROTOCOLO,Fuera de rango superior (q2=130°),N/A,ANG,"$102,ANG,90,130#","$102,NACK,ERR_01#",0.08,Comando rechazado con NACK; servomotores protegidos sin moverse,EXITOSA
+MANEJO_ERRORES_PROTOCOLO,Comando no registrado (VOLAR),N/A,VOLAR,"$103,VOLAR#","$103,NACK,ERR_02#",0.08,Comando rechazado con NACK; servomotores protegidos sin moverse,EXITOSA
+MANEJO_ERRORES_PROTOCOLO,Trama incompleta (falta q2),N/A,ANG,"$104,ANG,90#","$104,NACK,ERR_03#",0.08,Comando rechazado con NACK; servomotores protegidos sin moverse,EXITOSA

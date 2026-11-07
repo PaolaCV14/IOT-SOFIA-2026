@@ -110,20 +110,62 @@ def clean_markdown_math_symbols(text):
     text = text.replace("$\\approx", "≈").replace("$$", "")
     return text
 
+def add_hyperlink(paragraph, url, text, color="0369A1", underline=True, font_name="Segoe UI", font_size=10.5):
+    """Inserta un hipervínculo nativo clickeable XML de Word en el párrafo."""
+    try:
+        part = paragraph.part
+        r_id = part.relate_to(url, docx.opc.constants.RELATIONSHIP_TYPE.HYPERLINK, is_external=True)
+        hyperlink = parse_xml(f'<w:hyperlink {nsdecls("w")} r:id="{r_id}" {nsdecls("r")}/>')
+
+        rPr_parts = [f'<w:rFont {nsdecls("w")} w:ascii="{font_name}" w:hAnsi="{font_name}"/>']
+        if font_size:
+            rPr_parts.append(f'<w:sz {nsdecls("w")} w:val="{int(font_size * 2)}"/>')
+        if color:
+            rPr_parts.append(f'<w:color {nsdecls("w")} w:val="{color}"/>')
+        if underline:
+            rPr_parts.append(f'<w:u {nsdecls("w")} w:val="single"/>')
+
+        r_xml = f'<w:r {nsdecls("w")}><w:rPr>{"".join(rPr_parts)}</w:rPr><w:t xml:space="preserve">{clean_markdown_math_symbols(text)}</w:t></w:r>'
+        r = parse_xml(r_xml)
+        hyperlink.append(r)
+        paragraph._p.append(hyperlink)
+        return hyperlink
+    except Exception:
+        run = paragraph.add_run(text)
+        run.font.name = font_name
+        run.font.size = Pt(font_size)
+        run.font.color.rgb = COLOR_PRIMARY_BLUE
+        run.underline = True
+        return run
+
 def add_formatted_runs(paragraph, text, base_font_name="Segoe UI", base_font_size=10.5, is_italic=False, color=COLOR_BODY):
     """
-    Parsea fragmentos en negrita (**texto**), cursiva (*texto*) y código inline (`texto`)
-    y los agrega como Runs con formato al párrafo.
+    Parsea fragmentos en negrita (**texto**), cursiva (*texto*), código inline (`texto`)
+    e hipervínculos ([texto](url) o URLs directas) y los agrega como Runs/Hyperlinks al párrafo.
     """
     text = clean_markdown_math_symbols(text)
-    
-    # Expresión regular que separa negritas, código inline y texto normal
-    pattern = re.compile(r'(\*\*.*?\*\*|`.*?`|\*.*?\*)')
+
+    # Expresión regular que separa negritas, enlaces markdown, URLs directas, código inline y cursivas
+    pattern = re.compile(r'(\*\*.*?\*\*|\[.*?\]\(https?://[^\)]+\)|https?://[^\s\)]+|`.*?`|\*.*?\*)')
     tokens = pattern.split(text)
 
     for token in tokens:
         if not token:
             continue
+
+        # Enlace markdown: [Texto](URL)
+        if token.startswith("[") and "](" in token and token.endswith(")"):
+            m = re.match(r'\[(.*?)\]\((https?://[^\)]+)\)', token)
+            if m:
+                label, url = m.groups()
+                add_hyperlink(paragraph, url, label, color="0369A1", underline=True, font_name=base_font_name, font_size=base_font_size)
+                continue
+
+        # URL directa: https://...
+        if token.startswith("http://") or token.startswith("https://"):
+            add_hyperlink(paragraph, token, token, color="0369A1", underline=True, font_name=base_font_name, font_size=base_font_size)
+            continue
+
         run = paragraph.add_run()
         run.font.name = base_font_name
         run.font.size = Pt(base_font_size)
