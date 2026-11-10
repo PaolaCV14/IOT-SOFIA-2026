@@ -613,3 +613,1319 @@ Timestamp,Componente,Nivel,Evento,Detalle
 2026-11-05 17:12:14.058,SISTEMA,INFO,LOG,Enlace BLE desconectado.
 2026-11-05 17:12:14.061,SISTEMA,INFO,LOG,Dispatcher cerrado.
 2026-11-05 17:12:14.081,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:10:58.575,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:11:04.723,SISTEMA,INFO,LOG,Canal de transmisión activo: BLE
+2026-11-09 19:11:04.730,SISTEMA,INFO,LOG,Canal de transmisión activo: BLE
+2026-11-09 19:11:24.730,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:11:24.735,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:11:32.878,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:11:32.878,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:11:35.622,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 2) con 24:DC:C3:48:82:76...
+2026-11-09 19:11:35.622,BLE,WARNING,INTENTO_RECONEXION,Intento 2
+2026-11-09 19:11:43.668,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:11:43.668,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:11:46.432,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 3) con 24:DC:C3:48:82:76...
+2026-11-09 19:11:46.432,BLE,WARNING,INTENTO_RECONEXION,Intento 3
+2026-11-09 19:11:54.444,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:11:54.444,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:11:54.778,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:11:54.780,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:11:54.781,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:11:54.808,SISTEMA,INFO,LOG,[BLE] Sesión BLE cerrada. Estadísticas: {'fallos_conexion': 3}
+2026-11-09 19:12:42.547,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:12:45.266,SISTEMA,INFO,LOG,Canal de transmisión activo: BLE
+2026-11-09 19:12:45.267,SISTEMA,INFO,LOG,Canal de transmisión activo: BLE
+2026-11-09 19:12:51.255,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:12:51.259,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:12:53.643,SISTEMA,INFO,LOG,[BLE] No se pudo suscribir a respuestas del ESP32 (Characteristic 6e400003-b5a3-f393-e0a9-e50e24dcca9e was not found!). ¿Firmware sin característica TX?
+2026-11-09 19:12:53.644,SISTEMA,INFO,LOG,[BLE] Bleak notificó desconexión del ESP32.
+2026-11-09 19:12:53.644,BLE,WARNING,DESCONEXION_DETECTADA,Pérdida de enlace BLE
+2026-11-09 19:12:53.752,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Characteristic 6e400003-b5a3-f393-e0a9-e50e24dcca9e was not found!
+2026-11-09 19:12:53.753,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:12:56.479,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:13:00.944,SISTEMA,INFO,LOG,Iniciando pipeline de visión...
+2026-11-09 19:13:01.760,SISTEMA,INFO,LOG,Modelos de MediaPipe cargados correctamente.
+2026-11-09 19:13:04.119,CAMARA,INFO,ESTADO_CAMARA,Cámara activa
+2026-11-09 19:13:04.120,SISTEMA,INFO,LOG,Cámara activa. Procesando frames...
+2026-11-09 19:13:04.476,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.504,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:13:04.505,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:13:04.512,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.542,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.582,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.613,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.648,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.679,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.712,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.742,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.777,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.808,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.839,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.868,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.899,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.949,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:04.980,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.014,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.043,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.077,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.109,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.144,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.173,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.206,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.237,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.269,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.302,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.348,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.385,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.418,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.450,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.480,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.514,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.547,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.589,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:05.625,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:07.213,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 2) con 24:DC:C3:48:82:76...
+2026-11-09 19:13:07.214,BLE,WARNING,INTENTO_RECONEXION,Intento 2
+2026-11-09 19:13:07.941,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:07.981,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.023,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.065,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.106,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.148,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.181,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.225,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.266,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.308,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.348,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.381,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.414,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.452,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.485,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.518,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.560,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.613,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.680,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.734,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.783,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.833,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.882,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.883,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:13:08.884,SISTEMA,INFO,LOG,"Gesto REPOSO detectado, pero no hay conexión BLE."
+2026-11-09 19:13:08.917,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.952,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:08.995,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.030,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.065,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.101,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.134,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.169,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.205,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.239,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.272,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.306,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.340,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.374,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.409,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.445,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.482,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.517,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.553,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.588,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.625,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.663,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.698,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.735,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.773,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.813,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.859,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.896,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.940,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:09.981,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:10.017,SISTEMA,INFO,LOG,No se enviaron ángulos: ESP32 no conectado por BLE.
+2026-11-09 19:13:15.253,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:13:15.255,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:13:17.956,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 3) con 24:DC:C3:48:82:76...
+2026-11-09 19:13:17.957,BLE,WARNING,INTENTO_RECONEXION,Intento 3
+2026-11-09 19:13:24.844,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:13:25.997,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:13:25.999,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:13:28.735,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 4) con 24:DC:C3:48:82:76...
+2026-11-09 19:13:28.736,BLE,WARNING,INTENTO_RECONEXION,Intento 4
+2026-11-09 19:13:36.772,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:13:36.772,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:13:39.510,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 5) con 24:DC:C3:48:82:76...
+2026-11-09 19:13:39.512,BLE,WARNING,INTENTO_RECONEXION,Intento 5
+2026-11-09 19:13:47.557,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:13:47.560,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:13:50.281,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 6) con 24:DC:C3:48:82:76...
+2026-11-09 19:13:50.282,BLE,WARNING,INTENTO_RECONEXION,Intento 6
+2026-11-09 19:13:58.317,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:13:58.318,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:14:01.065,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 7) con 24:DC:C3:48:82:76...
+2026-11-09 19:14:01.066,BLE,WARNING,INTENTO_RECONEXION,Intento 7
+2026-11-09 19:14:09.103,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:14:09.105,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:14:11.830,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 8) con 24:DC:C3:48:82:76...
+2026-11-09 19:14:11.832,BLE,WARNING,INTENTO_RECONEXION,Intento 8
+2026-11-09 19:14:19.871,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:14:19.872,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:14:22.603,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 9) con 24:DC:C3:48:82:76...
+2026-11-09 19:14:22.605,BLE,WARNING,INTENTO_RECONEXION,Intento 9
+2026-11-09 19:14:30.620,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:14:30.621,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:14:33.289,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 10) con 24:DC:C3:48:82:76...
+2026-11-09 19:14:33.293,BLE,WARNING,INTENTO_RECONEXION,Intento 10
+2026-11-09 19:14:41.319,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:14:41.321,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:14:43.974,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 11) con 24:DC:C3:48:82:76...
+2026-11-09 19:14:43.976,BLE,WARNING,INTENTO_RECONEXION,Intento 11
+2026-11-09 19:14:52.011,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:14:52.012,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:14:54.686,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 12) con 24:DC:C3:48:82:76...
+2026-11-09 19:14:54.686,BLE,WARNING,INTENTO_RECONEXION,Intento 12
+2026-11-09 19:15:02.739,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:15:02.741,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:15:05.461,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 13) con 24:DC:C3:48:82:76...
+2026-11-09 19:15:05.463,BLE,WARNING,INTENTO_RECONEXION,Intento 13
+2026-11-09 19:15:13.501,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:15:13.506,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:15:16.221,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 14) con 24:DC:C3:48:82:76...
+2026-11-09 19:15:16.223,BLE,WARNING,INTENTO_RECONEXION,Intento 14
+2026-11-09 19:15:24.275,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:15:24.276,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:15:26.930,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 15) con 24:DC:C3:48:82:76...
+2026-11-09 19:15:26.933,BLE,WARNING,INTENTO_RECONEXION,Intento 15
+2026-11-09 19:15:34.998,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:15:35.000,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:15:37.658,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 16) con 24:DC:C3:48:82:76...
+2026-11-09 19:15:37.661,BLE,WARNING,INTENTO_RECONEXION,Intento 16
+2026-11-09 19:15:45.697,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:15:45.703,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:15:48.417,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 17) con 24:DC:C3:48:82:76...
+2026-11-09 19:15:48.419,BLE,WARNING,INTENTO_RECONEXION,Intento 17
+2026-11-09 19:15:56.463,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:15:56.463,SISTEMA,INFO,LOG,[BLE] Esperando 2.5s antes del siguiente reintento...
+2026-11-09 19:15:59.241,SISTEMA,INFO,LOG,[BLE] Reconexión automática (intento 18) con 24:DC:C3:48:82:76...
+2026-11-09 19:15:59.241,BLE,WARNING,INTENTO_RECONEXION,Intento 18
+2026-11-09 19:16:07.254,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:16:07.254,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:16:07.254,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:16:07.285,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:16:07.285,SISTEMA,INFO,LOG,[BLE] Sesión BLE cerrada. Estadísticas: {'fallos_conexion': 19}
+2026-11-09 19:16:12.618,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:16:14.930,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:16:14.930,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:16:16.043,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:16:16.043,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:16:24.116,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:16:24.116,SISTEMA,INFO,LOG,[BLE] Reintentando conexión en 2.5s...
+2026-11-09 19:16:26.882,SISTEMA,INFO,LOG,[BLE] Reconexión automática: intento 2
+2026-11-09 19:16:26.882,BLE,WARNING,INTENTO_RECONEXION,Intento 2
+2026-11-09 19:16:37.137,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:16:37.137,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:16:37.137,SISTEMA,INFO,LOG,[BLE] Conectado correctamente a SOFIA.
+2026-11-09 19:16:37.137,BLE,INFO,CONEXION_ESTABLECIDA,Enlace activo con ESP32
+2026-11-09 19:16:37.137,SISTEMA,INFO,LOG,[BLE] Se perdió la conexión BLE.
+2026-11-09 19:16:37.137,BLE,WARNING,DESCONEXION_DETECTADA,Pérdida de enlace BLE
+2026-11-09 19:16:37.147,SISTEMA,INFO,LOG,"[BLE] Sesión BLE cerrada. Estadísticas: {'comandos_enviados': 0, 'errores_envio': 0, 'fallos_conexion': 1}"
+2026-11-09 19:16:47.878,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:16:47.882,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:16:55.886,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:16:55.886,SISTEMA,INFO,LOG,[BLE] Reintentando conexión en 2.5s...
+2026-11-09 19:16:58.659,SISTEMA,INFO,LOG,[BLE] Reconexión automática: intento 2
+2026-11-09 19:16:58.659,BLE,WARNING,INTENTO_RECONEXION,Intento 2
+2026-11-09 19:17:06.679,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:17:06.679,SISTEMA,INFO,LOG,[BLE] Reintentando conexión en 2.5s...
+2026-11-09 19:17:09.452,SISTEMA,INFO,LOG,[BLE] Reconexión automática: intento 3
+2026-11-09 19:17:09.452,BLE,WARNING,INTENTO_RECONEXION,Intento 3
+2026-11-09 19:17:17.045,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:17:17.047,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:17:17.049,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:17:30.479,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:17:32.218,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:17:32.218,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:17:33.219,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:17:33.219,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:17:35.822,SISTEMA,INFO,LOG,[BLE] Conectado correctamente a SOFIA.
+2026-11-09 19:17:35.822,BLE,INFO,CONEXION_ESTABLECIDA,Enlace activo con ESP32
+2026-11-09 19:17:38.420,SISTEMA,INFO,LOG,Iniciando pipeline de visión...
+2026-11-09 19:17:38.627,SISTEMA,INFO,LOG,Modelos de MediaPipe cargados correctamente.
+2026-11-09 19:17:41.550,CAMARA,INFO,ESTADO_CAMARA,Cámara activa
+2026-11-09 19:17:41.552,SISTEMA,INFO,LOG,Cámara activa. Procesando frames...
+2026-11-09 19:17:42.996,SISTEMA,INFO,LOG,"[BLE] [TX] 91,74"
+2026-11-09 19:17:43.645,SISTEMA,INFO,LOG,"[BLE] [TX] 91,75"
+2026-11-09 19:17:43.855,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:17:43.856,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:17:43.857,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:17:44.308,SISTEMA,INFO,LOG,"[BLE] [TX] 89,82"
+2026-11-09 19:17:44.316,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:17:46.468,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:17:46.468,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:17:46.974,SISTEMA,INFO,LOG,"[BLE] [TX] 86,69"
+2026-11-09 19:17:47.630,SISTEMA,INFO,LOG,"[BLE] [TX] 86,66"
+2026-11-09 19:17:48.282,SISTEMA,INFO,LOG,"[BLE] [TX] 90,76"
+2026-11-09 19:17:48.950,SISTEMA,INFO,LOG,"[BLE] [TX] 97,79"
+2026-11-09 19:17:49.546,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:17:49.552,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:17:49.553,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:17:49.607,SISTEMA,INFO,LOG,"[BLE] [TX] 88,76"
+2026-11-09 19:17:49.607,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:17:55.157,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:17:55.158,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:17:55.165,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:17:55.167,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:17:55.168,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:17:55.192,SISTEMA,INFO,LOG,"[BLE] [TX] 94,82"
+2026-11-09 19:17:55.195,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:18:00.790,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:18:00.790,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:00.812,SISTEMA,INFO,LOG,"[BLE] [TX] 75,79"
+2026-11-09 19:18:01.416,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:18:01.416,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:18:01.416,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:01.463,SISTEMA,INFO,LOG,"[BLE] [TX] 75,79"
+2026-11-09 19:18:01.463,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:18:04.016,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:18:04.016,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:04.038,SISTEMA,INFO,LOG,"[BLE] [TX] 90,89"
+2026-11-09 19:18:04.684,SISTEMA,INFO,LOG,"[BLE] [TX] 90,89"
+2026-11-09 19:18:05.345,SISTEMA,INFO,LOG,"[BLE] [TX] 83,90"
+2026-11-09 19:18:06.000,SISTEMA,INFO,LOG,"[BLE] [TX] 79,105"
+2026-11-09 19:18:06.375,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:18:06.376,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:18:06.377,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:06.662,SISTEMA,INFO,LOG,"[BLE] [TX] 71,105"
+2026-11-09 19:18:06.662,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:18:08.986,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:18:08.986,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:09.037,SISTEMA,INFO,LOG,"[BLE] [TX] 109,96"
+2026-11-09 19:18:09.625,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:18:09.628,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:18:09.629,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:09.670,SISTEMA,INFO,LOG,"[BLE] [TX] 110,96"
+2026-11-09 19:18:09.670,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:18:12.230,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:18:12.230,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:12.285,SISTEMA,INFO,LOG,"[BLE] [TX] 103,60"
+2026-11-09 19:18:12.871,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:18:12.874,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:18:12.876,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:12.930,SISTEMA,INFO,LOG,"[BLE] [TX] 90,60"
+2026-11-09 19:18:12.954,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:18:18.497,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:18:18.497,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:18.548,SISTEMA,INFO,LOG,"[BLE] [TX] 93,88"
+2026-11-09 19:18:19.208,SISTEMA,INFO,LOG,"[BLE] [TX] 93,87"
+2026-11-09 19:18:19.875,SISTEMA,INFO,LOG,"[BLE] [TX] 87,75"
+2026-11-09 19:18:20.536,SISTEMA,INFO,LOG,"[BLE] [TX] 87,73"
+2026-11-09 19:18:21.192,SISTEMA,INFO,LOG,"[BLE] [TX] 93,83"
+2026-11-09 19:18:21.866,SISTEMA,INFO,LOG,"[BLE] [TX] 97,82"
+2026-11-09 19:18:22.528,SISTEMA,INFO,LOG,"[BLE] [TX] 97,82"
+2026-11-09 19:18:23.190,SISTEMA,INFO,LOG,"[BLE] [TX] 96,88"
+2026-11-09 19:18:23.853,SISTEMA,INFO,LOG,"[BLE] [TX] 95,87"
+2026-11-09 19:18:24.509,SISTEMA,INFO,LOG,"[BLE] [TX] 96,83"
+2026-11-09 19:18:24.817,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:18:24.830,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:18:24.831,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:25.163,SISTEMA,INFO,LOG,"[BLE] [TX] 96,81"
+2026-11-09 19:18:25.176,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:18:27.442,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:18:27.442,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:27.494,SISTEMA,INFO,LOG,"[BLE] [TX] 95,83"
+2026-11-09 19:18:28.109,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:18:28.111,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:18:28.111,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:28.130,SISTEMA,INFO,LOG,"[BLE] [TX] 95,83"
+2026-11-09 19:18:28.130,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:18:30.718,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:18:30.718,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:30.771,SISTEMA,INFO,LOG,"[BLE] [TX] 84,80"
+2026-11-09 19:18:31.420,SISTEMA,INFO,LOG,"[BLE] [TX] 86,78"
+2026-11-09 19:18:32.087,SISTEMA,INFO,LOG,"[BLE] [TX] 82,79"
+2026-11-09 19:18:32.741,SISTEMA,INFO,LOG,"[BLE] [TX] 77,80"
+2026-11-09 19:18:33.396,SISTEMA,INFO,LOG,"[BLE] [TX] 77,80"
+2026-11-09 19:18:34.058,SISTEMA,INFO,LOG,"[BLE] [TX] 76,75"
+2026-11-09 19:18:34.717,SISTEMA,INFO,LOG,"[BLE] [TX] 93,78"
+2026-11-09 19:18:35.378,SISTEMA,INFO,LOG,"[BLE] [TX] 90,71"
+2026-11-09 19:18:36.041,SISTEMA,INFO,LOG,"[BLE] [TX] 91,69"
+2026-11-09 19:18:36.695,SISTEMA,INFO,LOG,"[BLE] [TX] 84,63"
+2026-11-09 19:18:37.349,SISTEMA,INFO,LOG,"[BLE] [TX] 98,86"
+2026-11-09 19:18:38.014,SISTEMA,INFO,LOG,"[BLE] [TX] 98,85"
+2026-11-09 19:18:38.559,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:18:38.560,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:18:38.560,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:38.675,SISTEMA,INFO,LOG,"[BLE] [TX] 94,74"
+2026-11-09 19:18:38.687,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:18:41.181,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:18:41.185,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:41.231,SISTEMA,INFO,LOG,Postura confirmada: SALUDO -> Disparando SALUDO
+2026-11-09 19:18:41.235,SISTEMA,INFO,LOG,[BLE] Rutina enviada: SALUDO
+2026-11-09 19:18:41.236,SISTEMA,INFO,LOG,SALUDO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:41.271,SISTEMA,INFO,LOG,"[BLE] [TX] 79,70"
+2026-11-09 19:18:41.275,SISTEMA,INFO,LOG,[BLE] [TX] SALUDO
+2026-11-09 19:18:46.853,SISTEMA,INFO,LOG,Respaldo: rutina SALUDO concluida por tiempo.
+2026-11-09 19:18:46.853,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:46.890,SISTEMA,INFO,LOG,"[BLE] [TX] 87,61"
+2026-11-09 19:18:47.532,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:18:47.533,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:18:47.534,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:47.556,SISTEMA,INFO,LOG,"[BLE] [TX] 87,61"
+2026-11-09 19:18:47.561,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:18:50.139,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:18:50.141,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:50.151,SISTEMA,INFO,LOG,"[BLE] [TX] 86,60"
+2026-11-09 19:18:50.747,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:18:50.750,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:18:50.751,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:50.806,SISTEMA,INFO,LOG,"[BLE] [TX] 86,60"
+2026-11-09 19:18:50.812,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:18:53.365,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:18:53.367,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:53.401,SISTEMA,INFO,LOG,"[BLE] [TX] 97,79"
+2026-11-09 19:18:54.045,SISTEMA,INFO,LOG,"[BLE] [TX] 97,80"
+2026-11-09 19:18:54.621,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:18:54.622,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:18:54.624,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:54.700,SISTEMA,INFO,LOG,"[BLE] [TX] 105,90"
+2026-11-09 19:18:54.708,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:18:57.234,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:18:57.234,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:18:57.234,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:18:57.245,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:18:57.246,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:18:57.255,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:19:02.861,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:19:02.861,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:19:02.908,SISTEMA,INFO,LOG,"[BLE] [TX] 107,92"
+2026-11-09 19:19:03.552,SISTEMA,INFO,LOG,"[BLE] [TX] 107,92"
+2026-11-09 19:19:04.082,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:19:04.086,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:19:04.087,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:19:04.201,SISTEMA,INFO,LOG,"[BLE] [TX] 106,92"
+2026-11-09 19:19:04.208,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:19:06.715,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:19:06.716,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:19:06.754,SISTEMA,INFO,LOG,"[BLE] [TX] 74,81"
+2026-11-09 19:19:07.399,SISTEMA,INFO,LOG,"[BLE] [TX] 74,79"
+2026-11-09 19:19:07.630,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:19:07.643,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:19:07.644,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:19:08.061,SISTEMA,INFO,LOG,"[BLE] [TX] 75,67"
+2026-11-09 19:19:08.061,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:19:10.256,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:19:10.256,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:19:10.273,SISTEMA,INFO,LOG,"[BLE] [TX] 100,82"
+2026-11-09 19:19:10.922,SISTEMA,INFO,LOG,"[BLE] [TX] 101,82"
+2026-11-09 19:19:11.090,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:19:11.091,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:19:11.092,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:19:11.577,SISTEMA,INFO,LOG,"[BLE] [TX] 105,81"
+2026-11-09 19:19:11.577,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:19:13.710,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:19:13.710,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:19:13.729,SISTEMA,INFO,LOG,"[BLE] [TX] 109,101"
+2026-11-09 19:19:14.388,SISTEMA,INFO,LOG,"[BLE] [TX] 108,101"
+2026-11-09 19:19:15.052,SISTEMA,INFO,LOG,"[BLE] [TX] 105,97"
+2026-11-09 19:19:15.336,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:19:15.337,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:19:15.337,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:19:15.720,SISTEMA,INFO,LOG,"[BLE] [TX] 71,81"
+2026-11-09 19:19:15.723,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:19:17.942,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:19:17.942,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:19:18.786,SISTEMA,INFO,LOG,"[BLE] [TX] 85,63"
+2026-11-09 19:19:19.452,SISTEMA,INFO,LOG,"[BLE] [TX] 84,62"
+2026-11-09 19:19:20.107,SISTEMA,INFO,LOG,"[BLE] [TX] 84,61"
+2026-11-09 19:19:20.606,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:19:20.613,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:19:20.613,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:19:20.770,SISTEMA,INFO,LOG,"[BLE] [TX] 84,61"
+2026-11-09 19:19:20.775,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:19:23.223,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:19:23.225,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:19:33.076,SISTEMA,INFO,LOG,"[BLE] [TX] 65,78"
+2026-11-09 19:19:33.723,SISTEMA,INFO,LOG,"[BLE] [TX] 65,79"
+2026-11-09 19:19:34.391,SISTEMA,INFO,LOG,"[BLE] [TX] 65,77"
+2026-11-09 19:19:35.061,SISTEMA,INFO,LOG,"[BLE] [TX] 98,71"
+2026-11-09 19:19:35.485,SISTEMA,INFO,LOG,Postura confirmada: SALUDO -> Disparando SALUDO
+2026-11-09 19:19:35.486,SISTEMA,INFO,LOG,[BLE] Rutina enviada: SALUDO
+2026-11-09 19:19:35.487,SISTEMA,INFO,LOG,SALUDO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:19:35.719,SISTEMA,INFO,LOG,"[BLE] [TX] 94,75"
+2026-11-09 19:19:35.720,SISTEMA,INFO,LOG,[BLE] [TX] SALUDO
+2026-11-09 19:19:41.099,SISTEMA,INFO,LOG,Respaldo: rutina SALUDO concluida por tiempo.
+2026-11-09 19:19:41.103,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:19:48.527,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:19:48.527,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:19:48.527,SISTEMA,INFO,LOG,[BLE] Se perdió la conexión BLE.
+2026-11-09 19:19:48.527,BLE,WARNING,DESCONEXION_DETECTADA,Pérdida de enlace BLE
+2026-11-09 19:19:48.533,SISTEMA,INFO,LOG,"[BLE] Sesión BLE cerrada. Estadísticas: {'comandos_enviados': 97, 'errores_envio': 0, 'fallos_conexion': 0}"
+2026-11-09 19:19:54.421,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:20:04.052,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:20:04.052,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:31:03.669,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:31:06.796,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:31:06.798,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:31:07.903,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:31:07.903,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:31:15.990,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:31:15.990,SISTEMA,INFO,LOG,[BLE] Reintentando conexión en 2.5s...
+2026-11-09 19:31:18.753,SISTEMA,INFO,LOG,[BLE] Reconexión automática: intento 2
+2026-11-09 19:31:18.753,BLE,WARNING,INTENTO_RECONEXION,Intento 2
+2026-11-09 19:31:26.780,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:31:26.781,SISTEMA,INFO,LOG,[BLE] Reintentando conexión en 2.5s...
+2026-11-09 19:31:28.740,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:31:28.741,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:31:28.742,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:31:28.755,SISTEMA,INFO,LOG,"[BLE] Sesión BLE cerrada. Estadísticas: {'comandos_enviados': 0, 'errores_envio': 0, 'fallos_conexion': 2}"
+2026-11-09 19:31:33.507,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:31:36.209,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:31:36.210,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:31:37.166,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:31:37.182,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:31:39.460,SISTEMA,INFO,LOG,[BLE] Conectado correctamente a SOFIA.
+2026-11-09 19:31:39.460,BLE,INFO,CONEXION_ESTABLECIDA,Enlace activo con ESP32
+2026-11-09 19:31:41.689,SISTEMA,INFO,LOG,Iniciando pipeline de visión...
+2026-11-09 19:31:41.943,SISTEMA,INFO,LOG,Modelos de MediaPipe cargados correctamente.
+2026-11-09 19:31:44.711,CAMARA,INFO,ESTADO_CAMARA,Cámara activa
+2026-11-09 19:31:44.711,SISTEMA,INFO,LOG,Cámara activa. Procesando frames...
+2026-11-09 19:31:46.664,SISTEMA,INFO,LOG,"[BLE] [TX] 93,73"
+2026-11-09 19:31:47.309,SISTEMA,INFO,LOG,"[BLE] [TX] 93,74"
+2026-11-09 19:31:47.980,SISTEMA,INFO,LOG,"[BLE] [TX] 91,81"
+2026-11-09 19:31:48.640,SISTEMA,INFO,LOG,"[BLE] [TX] 95,79"
+2026-11-09 19:31:49.291,SISTEMA,INFO,LOG,"[BLE] [TX] 85,87"
+2026-11-09 19:31:49.943,SISTEMA,INFO,LOG,"[BLE] [TX] 93,95"
+2026-11-09 19:31:50.617,SISTEMA,INFO,LOG,"[BLE] [TX] 105,88"
+2026-11-09 19:31:51.275,SISTEMA,INFO,LOG,"[BLE] [TX] 101,74"
+2026-11-09 19:31:51.933,SISTEMA,INFO,LOG,"[BLE] [TX] 84,82"
+2026-11-09 19:31:52.265,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:31:52.276,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:31:52.276,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:31:52.596,SISTEMA,INFO,LOG,"[BLE] [TX] 92,91"
+2026-11-09 19:31:52.600,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:31:57.898,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:31:57.898,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:31:57.932,SISTEMA,INFO,LOG,"[BLE] [TX] 88,63"
+2026-11-09 19:31:58.382,SISTEMA,INFO,LOG,Postura confirmada: SALUDO -> Disparando SALUDO
+2026-11-09 19:31:58.386,SISTEMA,INFO,LOG,[BLE] Rutina enviada: SALUDO
+2026-11-09 19:31:58.386,SISTEMA,INFO,LOG,SALUDO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:31:58.592,SISTEMA,INFO,LOG,"[BLE] [TX] 90,64"
+2026-11-09 19:31:58.592,SISTEMA,INFO,LOG,[BLE] [TX] SALUDO
+2026-11-09 19:32:04.001,SISTEMA,INFO,LOG,Respaldo: rutina SALUDO concluida por tiempo.
+2026-11-09 19:32:04.001,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:32:05.112,SISTEMA,INFO,LOG,"[BLE] [TX] 93,61"
+2026-11-09 19:32:05.778,SISTEMA,INFO,LOG,"[BLE] [TX] 93,61"
+2026-11-09 19:32:06.040,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:32:06.041,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:32:06.041,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:32:06.444,SISTEMA,INFO,LOG,"[BLE] [TX] 92,70"
+2026-11-09 19:32:06.444,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:32:11.656,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:32:11.656,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:32:18.477,SISTEMA,INFO,LOG,"[BLE] [TX] 92,63"
+2026-11-09 19:32:19.124,SISTEMA,INFO,LOG,"[BLE] [TX] 92,64"
+2026-11-09 19:32:19.370,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:32:19.375,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:32:19.376,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:32:19.786,SISTEMA,INFO,LOG,"[BLE] [TX] 92,73"
+2026-11-09 19:32:19.786,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:32:21.983,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:32:21.985,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:32:22.359,SISTEMA,INFO,LOG,"[BLE] [TX] 91,62"
+2026-11-09 19:32:23.030,SISTEMA,INFO,LOG,"[BLE] [TX] 91,63"
+2026-11-09 19:32:23.700,SISTEMA,INFO,LOG,"[BLE] [TX] 91,85"
+2026-11-09 19:32:23.779,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:32:23.791,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:32:23.792,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:32:24.351,SISTEMA,INFO,LOG,"[BLE] [TX] 105,87"
+2026-11-09 19:32:24.356,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:32:29.404,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:32:29.404,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:32:30.126,SISTEMA,INFO,LOG,"[BLE] [TX] 91,64"
+2026-11-09 19:32:30.786,SISTEMA,INFO,LOG,"[BLE] [TX] 91,64"
+2026-11-09 19:32:31.013,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:32:31.019,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:32:31.019,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:32:31.444,SISTEMA,INFO,LOG,"[BLE] [TX] 91,79"
+2026-11-09 19:32:31.444,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:32:33.631,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:32:33.633,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:32:33.665,SISTEMA,INFO,LOG,"[BLE] [TX] 92,70"
+2026-11-09 19:32:34.264,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:32:34.265,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:32:34.265,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:32:34.316,SISTEMA,INFO,LOG,"[BLE] [TX] 92,70"
+2026-11-09 19:32:34.331,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:32:36.885,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:32:36.885,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:32:39.415,SISTEMA,INFO,LOG,"[BLE] [TX] 95,68"
+2026-11-09 19:32:40.071,SISTEMA,INFO,LOG,"[BLE] [TX] 95,69"
+2026-11-09 19:32:40.744,SISTEMA,INFO,LOG,"[BLE] [TX] 87,81"
+2026-11-09 19:32:41.406,SISTEMA,INFO,LOG,"[BLE] [TX] 92,90"
+2026-11-09 19:32:42.070,SISTEMA,INFO,LOG,"[BLE] [TX] 100,81"
+2026-11-09 19:32:42.734,SISTEMA,INFO,LOG,"[BLE] [TX] 87,78"
+2026-11-09 19:32:43.394,SISTEMA,INFO,LOG,"[BLE] [TX] 88,90"
+2026-11-09 19:32:44.049,SISTEMA,INFO,LOG,"[BLE] [TX] 104,89"
+2026-11-09 19:32:44.708,SISTEMA,INFO,LOG,"[BLE] [TX] 99,70"
+2026-11-09 19:32:45.041,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:32:45.055,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:32:45.056,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:32:45.369,SISTEMA,INFO,LOG,"[BLE] [TX] 92,87"
+2026-11-09 19:32:45.375,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:32:50.665,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:32:50.665,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:32:57.033,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:32:57.033,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:32:57.036,SISTEMA,INFO,LOG,[BLE] Se perdió la conexión BLE.
+2026-11-09 19:32:57.036,BLE,WARNING,DESCONEXION_DETECTADA,Pérdida de enlace BLE
+2026-11-09 19:32:57.036,SISTEMA,INFO,LOG,"[BLE] Sesión BLE cerrada. Estadísticas: {'comandos_enviados': 45, 'errores_envio': 0, 'fallos_conexion': 0}"
+2026-11-09 19:32:58.352,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:32:58.353,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:32:58.378,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:33:09.986,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:33:12.966,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:33:12.967,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:33:14.114,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:33:14.114,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:33:16.539,SISTEMA,INFO,LOG,[BLE] Conectado correctamente a SOFIA.
+2026-11-09 19:33:16.539,BLE,INFO,CONEXION_ESTABLECIDA,Enlace activo con ESP32
+2026-11-09 19:33:19.920,SISTEMA,INFO,LOG,Iniciando pipeline de visión...
+2026-11-09 19:33:20.064,SISTEMA,INFO,LOG,Modelos de MediaPipe cargados correctamente.
+2026-11-09 19:33:22.722,CAMARA,INFO,ESTADO_CAMARA,Cámara activa
+2026-11-09 19:33:22.722,SISTEMA,INFO,LOG,Cámara activa. Procesando frames...
+2026-11-09 19:33:24.386,SISTEMA,INFO,LOG,"[BLE] [TX] 91,66"
+2026-11-09 19:33:25.026,SISTEMA,INFO,LOG,"[BLE] [TX] 91,67"
+2026-11-09 19:33:25.693,SISTEMA,INFO,LOG,"[BLE] [TX] 90,82"
+2026-11-09 19:33:25.851,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:33:25.854,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:33:25.855,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:33:26.365,SISTEMA,INFO,LOG,"[BLE] [TX] 101,87"
+2026-11-09 19:33:26.369,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:33:31.465,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:33:31.465,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:33:31.496,SISTEMA,INFO,LOG,"[BLE] [TX] 100,84"
+2026-11-09 19:33:31.613,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:33:31.614,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:33:31.614,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:33:32.151,SISTEMA,INFO,LOG,"[BLE] [TX] 101,84"
+2026-11-09 19:33:32.159,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:33:37.224,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:33:37.224,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:33:37.241,SISTEMA,INFO,LOG,"[BLE] [TX] 88,67"
+2026-11-09 19:33:37.887,SISTEMA,INFO,LOG,Postura confirmada: TIJERA -> Disparando BAILE
+2026-11-09 19:33:37.889,SISTEMA,INFO,LOG,[BLE] Rutina enviada: BAILE
+2026-11-09 19:33:37.889,SISTEMA,INFO,LOG,BAILE transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:33:37.909,SISTEMA,INFO,LOG,"[BLE] [TX] 88,68"
+2026-11-09 19:33:37.909,SISTEMA,INFO,LOG,[BLE] [TX] BAILE
+2026-11-09 19:33:43.074,SISTEMA,INFO,LOG,Accion bloqueada: rutina en ejecucion.
+2026-11-09 19:33:44.780,SISTEMA,INFO,LOG,Respaldo: rutina BAILE concluida por tiempo.
+2026-11-09 19:33:44.781,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:33:44.784,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:33:50.267,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:33:50.267,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:33:50.267,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:33:50.298,SISTEMA,INFO,LOG,[BLE] Se perdió la conexión BLE.
+2026-11-09 19:33:50.298,BLE,WARNING,DESCONEXION_DETECTADA,Pérdida de enlace BLE
+2026-11-09 19:33:50.298,SISTEMA,INFO,LOG,"[BLE] Sesión BLE cerrada. Estadísticas: {'comandos_enviados': 11, 'errores_envio': 0, 'fallos_conexion': 0}"
+2026-11-09 19:34:11.731,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:34:14.348,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:34:14.349,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:34:15.026,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:34:15.026,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:34:23.150,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:34:23.151,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:34:23.152,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:34:23.161,SISTEMA,INFO,LOG,[BLE] Fallo de conexión BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:34:23.161,SISTEMA,INFO,LOG,"[BLE] Sesión BLE cerrada. Estadísticas: {'comandos_enviados': 0, 'errores_envio': 0, 'fallos_conexion': 1}"
+2026-11-09 19:34:27.051,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:34:28.869,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:34:28.870,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:34:29.697,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:34:29.704,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:34:32.465,SISTEMA,INFO,LOG,[BLE] Conectado correctamente a SOFIA.
+2026-11-09 19:34:32.465,BLE,INFO,CONEXION_ESTABLECIDA,Enlace activo con ESP32
+2026-11-09 19:34:33.590,SISTEMA,INFO,LOG,Iniciando pipeline de visión...
+2026-11-09 19:34:33.730,SISTEMA,INFO,LOG,Modelos de MediaPipe cargados correctamente.
+2026-11-09 19:34:36.218,CAMARA,INFO,ESTADO_CAMARA,Cámara activa
+2026-11-09 19:34:36.218,SISTEMA,INFO,LOG,Cámara activa. Procesando frames...
+2026-11-09 19:34:36.544,SISTEMA,INFO,LOG,"[BLE] [TX] 83,60"
+2026-11-09 19:34:37.194,SISTEMA,INFO,LOG,"[BLE] [TX] 83,60"
+2026-11-09 19:34:37.855,SISTEMA,INFO,LOG,"[BLE] [TX] 83,60"
+2026-11-09 19:34:38.506,SISTEMA,INFO,LOG,"[BLE] [TX] 83,60"
+2026-11-09 19:34:39.160,SISTEMA,INFO,LOG,"[BLE] [TX] 83,60"
+2026-11-09 19:34:39.816,SISTEMA,INFO,LOG,"[BLE] [TX] 90,86"
+2026-11-09 19:34:40.473,SISTEMA,INFO,LOG,"[BLE] [TX] 81,89"
+2026-11-09 19:34:41.091,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:34:41.096,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:34:41.097,SISTEMA,INFO,LOG,REPOSO transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:34:41.129,SISTEMA,INFO,LOG,"[BLE] [TX] 93,78"
+2026-11-09 19:34:41.129,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:34:43.705,SISTEMA,INFO,LOG,Respaldo: rutina REPOSO concluida por tiempo.
+2026-11-09 19:34:43.707,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:34:43.757,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:34:43.758,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:34:43.759,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:34:43.760,SISTEMA,INFO,LOG,"[BLE] [TX] 81,72"
+2026-11-09 19:34:43.760,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:34:49.356,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:34:49.356,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:34:49.397,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:34:49.397,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:34:49.398,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:34:49.401,SISTEMA,INFO,LOG,"[BLE] [TX] 98,73"
+2026-11-09 19:34:49.401,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:34:55.024,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:34:55.024,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:34:59.594,SISTEMA,INFO,LOG,"[BLE] [TX] 87,71"
+2026-11-09 19:35:00.074,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:35:00.081,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:35:00.082,SISTEMA,INFO,LOG,NEGAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:35:00.245,SISTEMA,INFO,LOG,"[BLE] [TX] 88,72"
+2026-11-09 19:35:00.251,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:35:03.743,SISTEMA,INFO,LOG,Accion bloqueada: rutina en ejecucion.
+2026-11-09 19:35:05.692,SISTEMA,INFO,LOG,Respaldo: rutina NEGAR concluida por tiempo.
+2026-11-09 19:35:05.693,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:35:36.451,SISTEMA,INFO,LOG,"[BLE] [TX] 91,69"
+2026-11-09 19:35:37.105,SISTEMA,INFO,LOG,"[BLE] [TX] 91,70"
+2026-11-09 19:35:37.758,SISTEMA,INFO,LOG,"[BLE] [TX] 90,72"
+2026-11-09 19:35:38.415,SISTEMA,INFO,LOG,"[BLE] [TX] 101,69"
+2026-11-09 19:35:39.068,SISTEMA,INFO,LOG,"[BLE] [TX] 76,65"
+2026-11-09 19:35:39.211,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:35:39.211,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:35:39.218,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:35:39.725,SISTEMA,INFO,LOG,"[BLE] [TX] 78,63"
+2026-11-09 19:35:39.728,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:35:41.850,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:35:41.850,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:35:41.993,SISTEMA,INFO,LOG,"[BLE] [TX] 81,63"
+2026-11-09 19:35:42.625,SISTEMA,INFO,LOG,"[BLE] [TX] 81,63"
+2026-11-09 19:35:43.286,SISTEMA,INFO,LOG,"[BLE] [TX] 82,61"
+2026-11-09 19:35:43.952,SISTEMA,INFO,LOG,"[BLE] [TX] 87,60"
+2026-11-09 19:35:43.954,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:35:43.956,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:35:43.957,SISTEMA,INFO,LOG,CENTRAR transmitido a ESP32. Esperando confirmación de fin...
+2026-11-09 19:35:44.606,SISTEMA,INFO,LOG,"[BLE] [TX] 88,60"
+2026-11-09 19:35:44.624,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:35:46.560,SISTEMA,INFO,LOG,Respaldo: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:35:46.562,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:35:50.091,SISTEMA,INFO,LOG,[BLE] Desconexión BLE solicitada.
+2026-11-09 19:35:50.091,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:35:50.091,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:35:50.107,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:35:50.107,SISTEMA,INFO,LOG,[BLE] Se perdió la conexión BLE.
+2026-11-09 19:35:50.107,BLE,WARNING,DESCONEXION_DETECTADA,Pérdida de enlace BLE
+2026-11-09 19:35:50.107,SISTEMA,INFO,LOG,"[BLE] Sesión BLE cerrada. Estadísticas: {'comandos_enviados': 29, 'errores_envio': 0, 'fallos_conexion': 0}"
+2026-11-09 19:44:48.058,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:44:51.727,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:44:51.728,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:44:53.602,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:44:53.607,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:44:56.072,SISTEMA,INFO,LOG,[BLE] Conectado correctamente a SOFIA.
+2026-11-09 19:44:56.072,BLE,INFO,CONEXION_ESTABLECIDA,Enlace activo con ESP32
+2026-11-09 19:44:59.527,SISTEMA,INFO,LOG,Iniciando pipeline de visión...
+2026-11-09 19:44:59.669,SISTEMA,INFO,LOG,Modelos de MediaPipe cargados correctamente.
+2026-11-09 19:45:02.537,CAMARA,INFO,ESTADO_CAMARA,Cámara activa
+2026-11-09 19:45:02.538,SISTEMA,INFO,LOG,Cámara activa. Procesando frames...
+2026-11-09 19:45:04.097,SISTEMA,INFO,LOG,"[BLE] [TX] 95,62"
+2026-11-09 19:45:04.758,SISTEMA,INFO,LOG,"[BLE] [TX] 95,62"
+2026-11-09 19:45:05.428,SISTEMA,INFO,LOG,"[BLE] [TX] 93,83"
+2026-11-09 19:45:05.433,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:45:05.433,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina NEGAR.
+2026-11-09 19:45:05.434,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:45:05.435,SISTEMA,INFO,LOG,NEGAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:06.088,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:45:09.691,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina NEGAR concluida por tiempo.
+2026-11-09 19:45:11.051,SISTEMA,INFO,LOG,Tiempo estimado de NEGAR cumplido. Liberando seguimiento.
+2026-11-09 19:45:11.052,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:11.086,SISTEMA,INFO,LOG,Postura confirmada: SALUDO -> Disparando SALUDO
+2026-11-09 19:45:11.087,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina SALUDO.
+2026-11-09 19:45:11.088,SISTEMA,INFO,LOG,[BLE] Rutina enviada: SALUDO
+2026-11-09 19:45:11.088,SISTEMA,INFO,LOG,SALUDO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:11.099,SISTEMA,INFO,LOG,[BLE] [TX] SALUDO
+2026-11-09 19:45:14.749,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina SALUDO concluida por tiempo.
+2026-11-09 19:45:16.710,SISTEMA,INFO,LOG,Tiempo estimado de SALUDO cumplido. Liberando seguimiento.
+2026-11-09 19:45:16.711,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:16.737,SISTEMA,INFO,LOG,"[BLE] [TX] 89,87"
+2026-11-09 19:45:17.401,SISTEMA,INFO,LOG,"[BLE] [TX] 89,87"
+2026-11-09 19:45:18.066,SISTEMA,INFO,LOG,"[BLE] [TX] 101,89"
+2026-11-09 19:45:18.721,SISTEMA,INFO,LOG,"[BLE] [TX] 103,78"
+2026-11-09 19:45:19.069,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:45:19.070,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina NEGAR.
+2026-11-09 19:45:19.070,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:45:19.070,SISTEMA,INFO,LOG,NEGAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:19.387,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:45:23.035,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina NEGAR concluida por tiempo.
+2026-11-09 19:45:24.670,SISTEMA,INFO,LOG,Tiempo estimado de NEGAR cumplido. Liberando seguimiento.
+2026-11-09 19:45:24.670,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:24.710,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:45:24.714,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina NEGAR.
+2026-11-09 19:45:24.714,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:45:24.714,SISTEMA,INFO,LOG,NEGAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:24.717,SISTEMA,INFO,LOG,"[BLE] [TX] 95,65"
+2026-11-09 19:45:24.727,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:45:28.327,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina NEGAR concluida por tiempo.
+2026-11-09 19:45:30.328,SISTEMA,INFO,LOG,Tiempo estimado de NEGAR cumplido. Liberando seguimiento.
+2026-11-09 19:45:30.329,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:30.361,SISTEMA,INFO,LOG,"[BLE] [TX] 81,79"
+2026-11-09 19:45:31.022,SISTEMA,INFO,LOG,"[BLE] [TX] 81,79"
+2026-11-09 19:45:31.107,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:45:31.108,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:45:31.108,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:45:31.109,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:31.687,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:45:32.339,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:45:33.722,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:45:33.723,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:33.771,SISTEMA,INFO,LOG,"[BLE] [TX] 91,69"
+2026-11-09 19:45:34.429,SISTEMA,INFO,LOG,"[BLE] [TX] 91,69"
+2026-11-09 19:45:34.683,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:45:34.683,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina NEGAR.
+2026-11-09 19:45:34.684,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:45:34.684,SISTEMA,INFO,LOG,NEGAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:35.096,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:45:38.705,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina NEGAR concluida por tiempo.
+2026-11-09 19:45:40.294,SISTEMA,INFO,LOG,Tiempo estimado de NEGAR cumplido. Liberando seguimiento.
+2026-11-09 19:45:40.295,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:40.338,SISTEMA,INFO,LOG,"[BLE] [TX] 90,76"
+2026-11-09 19:45:40.990,SISTEMA,INFO,LOG,"[BLE] [TX] 90,76"
+2026-11-09 19:45:41.058,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:45:41.060,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:45:41.061,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:45:41.062,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:41.651,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:45:42.273,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:45:43.671,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:45:43.674,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:44.914,SISTEMA,INFO,LOG,"[BLE] [TX] 89,60"
+2026-11-09 19:45:45.566,SISTEMA,INFO,LOG,"[BLE] [TX] 89,60"
+2026-11-09 19:45:46.172,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:45:46.173,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:45:46.174,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:45:46.174,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:46.223,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:45:46.876,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:45:48.784,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:45:48.785,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:48.806,SISTEMA,INFO,LOG,"[BLE] [TX] 96,77"
+2026-11-09 19:45:49.453,SISTEMA,INFO,LOG,"[BLE] [TX] 96,77"
+2026-11-09 19:45:49.894,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:45:49.895,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:45:49.895,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:45:49.896,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:50.109,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:45:50.727,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:45:52.502,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:45:52.503,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:52.516,SISTEMA,INFO,LOG,"[BLE] [TX] 95,74"
+2026-11-09 19:45:53.138,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:45:53.140,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:45:53.141,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:45:53.141,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:45:53.162,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:45:53.778,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:45:55.757,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:45:55.759,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:45:55.785,SISTEMA,INFO,LOG,"[BLE] [TX] 93,73"
+2026-11-09 19:45:56.441,SISTEMA,INFO,LOG,"[BLE] [TX] 93,73"
+2026-11-09 19:45:57.109,SISTEMA,INFO,LOG,"[BLE] [TX] 94,66"
+2026-11-09 19:45:57.766,SISTEMA,INFO,LOG,"[BLE] [TX] 93,71"
+2026-11-09 19:45:58.431,SISTEMA,INFO,LOG,"[BLE] [TX] 92,68"
+2026-11-09 19:45:59.088,SISTEMA,INFO,LOG,"[BLE] [TX] 92,68"
+2026-11-09 19:45:59.739,SISTEMA,INFO,LOG,"[BLE] [TX] 95,76"
+2026-11-09 19:46:00.183,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:46:00.184,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:46:00.185,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:46:00.185,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:46:00.395,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:46:01.013,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:46:02.794,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:46:02.796,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:46:03.265,SISTEMA,INFO,LOG,"[BLE] [TX] 97,67"
+2026-11-09 19:46:03.911,SISTEMA,INFO,LOG,"[BLE] [TX] 97,68"
+2026-11-09 19:46:04.020,SISTEMA,INFO,LOG,Postura confirmada: TIJERA -> Disparando BAILE
+2026-11-09 19:46:04.021,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina BAILE.
+2026-11-09 19:46:04.022,SISTEMA,INFO,LOG,[BLE] Rutina enviada: BAILE
+2026-11-09 19:46:04.022,SISTEMA,INFO,LOG,BAILE enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:46:04.588,SISTEMA,INFO,LOG,[BLE] [TX] BAILE
+2026-11-09 19:46:09.449,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina BAILE concluida por tiempo.
+2026-11-09 19:46:10.833,SISTEMA,INFO,LOG,Tiempo estimado de BAILE cumplido. Liberando seguimiento.
+2026-11-09 19:46:10.834,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:46:12.214,SISTEMA,INFO,LOG,"[BLE] [TX] 93,66"
+2026-11-09 19:46:12.857,SISTEMA,INFO,LOG,"[BLE] [TX] 94,67"
+2026-11-09 19:46:13.522,SISTEMA,INFO,LOG,"[BLE] [TX] 96,71"
+2026-11-09 19:46:14.176,SISTEMA,INFO,LOG,"[BLE] [TX] 96,72"
+2026-11-09 19:46:14.846,SISTEMA,INFO,LOG,"[BLE] [TX] 90,78"
+2026-11-09 19:46:15.514,SISTEMA,INFO,LOG,"[BLE] [TX] 91,78"
+2026-11-09 19:46:16.176,SISTEMA,INFO,LOG,"[BLE] [TX] 90,88"
+2026-11-09 19:46:16.840,SISTEMA,INFO,LOG,"[BLE] [TX] 100,77"
+2026-11-09 19:46:17.509,SISTEMA,INFO,LOG,"[BLE] [TX] 87,66"
+2026-11-09 19:46:18.181,SISTEMA,INFO,LOG,"[BLE] [TX] 82,67"
+2026-11-09 19:46:18.845,SISTEMA,INFO,LOG,"[BLE] [TX] 96,76"
+2026-11-09 19:46:19.503,SISTEMA,INFO,LOG,"[BLE] [TX] 86,90"
+2026-11-09 19:46:20.173,SISTEMA,INFO,LOG,"[BLE] [TX] 81,80"
+2026-11-09 19:46:20.832,SISTEMA,INFO,LOG,"[BLE] [TX] 86,78"
+2026-11-09 19:46:21.501,SISTEMA,INFO,LOG,"[BLE] [TX] 100,71"
+2026-11-09 19:46:22.164,SISTEMA,INFO,LOG,"[BLE] [TX] 95,82"
+2026-11-09 19:46:22.844,SISTEMA,INFO,LOG,"[BLE] [TX] 84,76"
+2026-11-09 19:46:23.503,SISTEMA,INFO,LOG,"[BLE] [TX] 90,72"
+2026-11-09 19:46:24.174,SISTEMA,INFO,LOG,"[BLE] [TX] 110,63"
+2026-11-09 19:46:24.840,SISTEMA,INFO,LOG,"[BLE] [TX] 98,68"
+2026-11-09 19:46:25.510,SISTEMA,INFO,LOG,"[BLE] [TX] 80,67"
+2026-11-09 19:46:26.171,SISTEMA,INFO,LOG,"[BLE] [TX] 81,76"
+2026-11-09 19:46:26.840,SISTEMA,INFO,LOG,"[BLE] [TX] 89,91"
+2026-11-09 19:46:27.499,SISTEMA,INFO,LOG,"[BLE] [TX] 107,93"
+2026-11-09 19:46:28.147,SISTEMA,INFO,LOG,"[BLE] [TX] 113,90"
+2026-11-09 19:46:28.818,SISTEMA,INFO,LOG,"[BLE] [TX] 117,94"
+2026-11-09 19:46:29.485,SISTEMA,INFO,LOG,"[BLE] [TX] 111,102"
+2026-11-09 19:46:30.152,SISTEMA,INFO,LOG,"[BLE] [TX] 98,89"
+2026-11-09 19:46:30.820,SISTEMA,INFO,LOG,"[BLE] [TX] 96,81"
+2026-11-09 19:46:32.272,SISTEMA,INFO,LOG,"[BLE] [TX] 77,64"
+2026-11-09 19:46:32.937,SISTEMA,INFO,LOG,"[BLE] [TX] 77,64"
+2026-11-09 19:46:33.604,SISTEMA,INFO,LOG,"[BLE] [TX] 94,74"
+2026-11-09 19:46:34.273,SISTEMA,INFO,LOG,"[BLE] [TX] 102,73"
+2026-11-09 19:46:34.929,SISTEMA,INFO,LOG,"[BLE] [TX] 98,63"
+2026-11-09 19:46:35.600,SISTEMA,INFO,LOG,"[BLE] [TX] 93,61"
+2026-11-09 19:46:35.875,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:46:35.876,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:46:35.877,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:46:35.877,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:46:36.267,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:46:36.886,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:46:38.483,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:46:38.484,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:46:38.518,SISTEMA,INFO,LOG,"[BLE] [TX] 93,60"
+2026-11-09 19:46:39.172,SISTEMA,INFO,LOG,"[BLE] [TX] 93,60"
+2026-11-09 19:46:39.847,SISTEMA,INFO,LOG,"[BLE] [TX] 93,60"
+2026-11-09 19:46:40.509,SISTEMA,INFO,LOG,"[BLE] [TX] 93,60"
+2026-11-09 19:46:41.166,SISTEMA,INFO,LOG,"[BLE] [TX] 93,60"
+2026-11-09 19:46:41.831,SISTEMA,INFO,LOG,"[BLE] [TX] 92,60"
+2026-11-09 19:46:42.505,SISTEMA,INFO,LOG,"[BLE] [TX] 95,60"
+2026-11-09 19:46:43.173,SISTEMA,INFO,LOG,"[BLE] [TX] 116,62"
+2026-11-09 19:46:43.842,SISTEMA,INFO,LOG,"[BLE] [TX] 116,61"
+2026-11-09 19:46:46.610,SISTEMA,INFO,LOG,"[BLE] [TX] 77,62"
+2026-11-09 19:46:47.244,SISTEMA,INFO,LOG,"[BLE] [TX] 78,62"
+2026-11-09 19:46:47.414,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:46:47.415,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:46:47.416,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:46:47.417,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:46:47.914,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:46:48.518,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:46:50.018,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:46:50.019,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:46:50.078,SISTEMA,INFO,LOG,"[BLE] [TX] 90,81"
+2026-11-09 19:46:50.741,SISTEMA,INFO,LOG,"[BLE] [TX] 89,82"
+2026-11-09 19:46:51.397,SISTEMA,INFO,LOG,"[BLE] [TX] 83,93"
+2026-11-09 19:46:52.065,SISTEMA,INFO,LOG,"[BLE] [TX] 103,96"
+2026-11-09 19:46:52.731,SISTEMA,INFO,LOG,"[BLE] [TX] 109,63"
+2026-11-09 19:46:53.401,SISTEMA,INFO,LOG,"[BLE] [TX] 109,62"
+2026-11-09 19:46:54.053,SISTEMA,INFO,LOG,"[BLE] [TX] 101,66"
+2026-11-09 19:46:54.708,SISTEMA,INFO,LOG,"[BLE] [TX] 101,67"
+2026-11-09 19:46:55.375,SISTEMA,INFO,LOG,"[BLE] [TX] 86,81"
+2026-11-09 19:46:56.042,SISTEMA,INFO,LOG,"[BLE] [TX] 91,92"
+2026-11-09 19:46:56.700,SISTEMA,INFO,LOG,"[BLE] [TX] 107,87"
+2026-11-09 19:46:57.366,SISTEMA,INFO,LOG,"[BLE] [TX] 110,66"
+2026-11-09 19:46:58.035,SISTEMA,INFO,LOG,"[BLE] [TX] 90,82"
+2026-11-09 19:46:58.706,SISTEMA,INFO,LOG,"[BLE] [TX] 95,90"
+2026-11-09 19:46:59.371,SISTEMA,INFO,LOG,"[BLE] [TX] 114,77"
+2026-11-09 19:46:59.400,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:46:59.401,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:46:59.402,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:46:59.402,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:00.031,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:47:00.645,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:47:02.011,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:47:02.012,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:47:02.028,SISTEMA,INFO,LOG,"[BLE] [TX] 108,79"
+2026-11-09 19:47:02.683,SISTEMA,INFO,LOG,"[BLE] [TX] 108,79"
+2026-11-09 19:47:02.779,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:47:02.781,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:47:02.781,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:47:02.781,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:03.348,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:47:03.966,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:47:05.391,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:47:05.392,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:47:05.416,SISTEMA,INFO,LOG,"[BLE] [TX] 98,71"
+2026-11-09 19:47:06.068,SISTEMA,INFO,LOG,"[BLE] [TX] 98,73"
+2026-11-09 19:47:06.732,SISTEMA,INFO,LOG,"[BLE] [TX] 93,89"
+2026-11-09 19:47:07.403,SISTEMA,INFO,LOG,"[BLE] [TX] 104,83"
+2026-11-09 19:47:08.063,SISTEMA,INFO,LOG,"[BLE] [TX] 88,77"
+2026-11-09 19:47:08.717,SISTEMA,INFO,LOG,"[BLE] [TX] 97,92"
+2026-11-09 19:47:09.384,SISTEMA,INFO,LOG,"[BLE] [TX] 115,69"
+2026-11-09 19:47:10.051,SISTEMA,INFO,LOG,"[BLE] [TX] 93,72"
+2026-11-09 19:47:10.706,SISTEMA,INFO,LOG,"[BLE] [TX] 92,79"
+2026-11-09 19:47:11.381,SISTEMA,INFO,LOG,"[BLE] [TX] 91,75"
+2026-11-09 19:47:12.033,SISTEMA,INFO,LOG,"[BLE] [TX] 94,85"
+2026-11-09 19:47:12.331,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:47:12.332,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:47:12.333,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:47:12.333,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:12.695,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:47:13.320,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:47:14.937,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:47:14.938,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:47:15.006,SISTEMA,INFO,LOG,"[BLE] [TX] 117,71"
+2026-11-09 19:47:15.625,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:47:15.626,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:47:15.627,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:47:15.627,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:15.653,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:47:16.269,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:47:18.232,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:47:18.233,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:47:18.270,SISTEMA,INFO,LOG,"[BLE] [TX] 115,71"
+2026-11-09 19:47:18.859,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:47:18.868,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:47:18.869,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:47:18.869,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:18.924,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:47:19.550,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:47:21.466,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:47:21.467,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:47:21.504,SISTEMA,INFO,LOG,"[BLE] [TX] 73,61"
+2026-11-09 19:47:22.161,SISTEMA,INFO,LOG,"[BLE] [TX] 73,61"
+2026-11-09 19:47:22.816,SISTEMA,INFO,LOG,"[BLE] [TX] 66,74"
+2026-11-09 19:47:23.483,SISTEMA,INFO,LOG,"[BLE] [TX] 64,79"
+2026-11-09 19:47:24.150,SISTEMA,INFO,LOG,"[BLE] [TX] 63,79"
+2026-11-09 19:47:24.823,SISTEMA,INFO,LOG,"[BLE] [TX] 61,78"
+2026-11-09 19:47:33.932,SISTEMA,INFO,LOG,"[BLE] [TX] 96,81"
+2026-11-09 19:47:34.587,SISTEMA,INFO,LOG,"[BLE] [TX] 96,82"
+2026-11-09 19:47:34.796,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:47:34.797,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:47:34.797,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:47:34.798,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:35.256,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:47:35.880,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:47:37.405,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:47:37.406,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:47:37.439,SISTEMA,INFO,LOG,"[BLE] [TX] 70,85"
+2026-11-09 19:47:38.091,SISTEMA,INFO,LOG,"[BLE] [TX] 70,85"
+2026-11-09 19:47:38.751,SISTEMA,INFO,LOG,"[BLE] [TX] 71,85"
+2026-11-09 19:47:39.416,SISTEMA,INFO,LOG,"[BLE] [TX] 71,81"
+2026-11-09 19:47:41.860,SISTEMA,INFO,LOG,"[BLE] [TX] 78,65"
+2026-11-09 19:47:42.511,SISTEMA,INFO,LOG,"[BLE] [TX] 78,65"
+2026-11-09 19:47:42.628,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:47:42.629,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:47:42.630,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:47:42.630,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:43.157,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:47:43.778,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:47:45.232,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:47:45.233,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:47:46.907,SISTEMA,INFO,LOG,"[BLE] [TX] 70,81"
+2026-11-09 19:47:47.544,SISTEMA,INFO,LOG,"[BLE] [TX] 71,82"
+2026-11-09 19:47:48.206,SISTEMA,INFO,LOG,"[BLE] [TX] 70,84"
+2026-11-09 19:47:48.875,SISTEMA,INFO,LOG,"[BLE] [TX] 69,82"
+2026-11-09 19:47:51.704,SISTEMA,INFO,LOG,"[BLE] [TX] 74,88"
+2026-11-09 19:47:52.348,SISTEMA,INFO,LOG,"[BLE] [TX] 74,89"
+2026-11-09 19:47:53.014,SISTEMA,INFO,LOG,"[BLE] [TX] 74,90"
+2026-11-09 19:47:53.681,SISTEMA,INFO,LOG,"[BLE] [TX] 79,70"
+2026-11-09 19:47:54.343,SISTEMA,INFO,LOG,"[BLE] [TX] 98,77"
+2026-11-09 19:47:55.005,SISTEMA,INFO,LOG,"[BLE] [TX] 100,78"
+2026-11-09 19:47:55.677,SISTEMA,INFO,LOG,"[BLE] [TX] 100,67"
+2026-11-09 19:47:56.350,SISTEMA,INFO,LOG,"[BLE] [TX] 84,66"
+2026-11-09 19:47:57.002,SISTEMA,INFO,LOG,"[BLE] [TX] 83,60"
+2026-11-09 19:47:57.671,SISTEMA,INFO,LOG,"[BLE] [TX] 83,60"
+2026-11-09 19:47:57.719,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:47:57.721,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:47:57.721,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:47:57.722,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:47:58.338,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:47:58.941,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:48:00.324,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:48:00.325,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:03.650,SISTEMA,INFO,LOG,"[BLE] [TX] 95,65"
+2026-11-09 19:48:04.298,SISTEMA,INFO,LOG,"[BLE] [TX] 95,66"
+2026-11-09 19:48:04.311,SISTEMA,INFO,LOG,Postura confirmada: SALUDO -> Disparando SALUDO
+2026-11-09 19:48:04.314,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina SALUDO.
+2026-11-09 19:48:04.315,SISTEMA,INFO,LOG,[BLE] Rutina enviada: SALUDO
+2026-11-09 19:48:04.315,SISTEMA,INFO,LOG,SALUDO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:04.966,SISTEMA,INFO,LOG,[BLE] [TX] SALUDO
+2026-11-09 19:48:08.619,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina SALUDO concluida por tiempo.
+2026-11-09 19:48:09.922,SISTEMA,INFO,LOG,Tiempo estimado de SALUDO cumplido. Liberando seguimiento.
+2026-11-09 19:48:09.922,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:10.614,SISTEMA,INFO,LOG,"[BLE] [TX] 105,62"
+2026-11-09 19:48:11.269,SISTEMA,INFO,LOG,"[BLE] [TX] 105,62"
+2026-11-09 19:48:11.937,SISTEMA,INFO,LOG,"[BLE] [TX] 109,71"
+2026-11-09 19:48:12.208,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:48:12.209,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:48:12.210,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:48:12.210,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:12.594,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:48:13.212,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:48:14.817,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:48:14.818,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:14.836,SISTEMA,INFO,LOG,"[BLE] [TX] 104,78"
+2026-11-09 19:48:15.441,SISTEMA,INFO,LOG,Postura confirmada: CORAZON -> Disparando CORAZON
+2026-11-09 19:48:15.442,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CORAZON.
+2026-11-09 19:48:15.442,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CORAZON
+2026-11-09 19:48:15.443,SISTEMA,INFO,LOG,CORAZON enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:15.488,SISTEMA,INFO,LOG,[BLE] [TX] CORAZON
+2026-11-09 19:48:17.935,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CORAZON concluida por tiempo.
+2026-11-09 19:48:19.852,SISTEMA,INFO,LOG,Tiempo estimado de CORAZON cumplido. Liberando seguimiento.
+2026-11-09 19:48:19.854,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:19.882,SISTEMA,INFO,LOG,"[BLE] [TX] 95,65"
+2026-11-09 19:48:20.527,SISTEMA,INFO,LOG,"[BLE] [TX] 96,66"
+2026-11-09 19:48:20.549,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:48:20.550,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:48:20.551,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:48:20.551,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:21.195,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:48:21.799,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:48:23.159,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:48:23.160,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:24.410,SISTEMA,INFO,LOG,"[BLE] [TX] 95,67"
+2026-11-09 19:48:25.063,SISTEMA,INFO,LOG,"[BLE] [TX] 95,67"
+2026-11-09 19:48:25.122,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:48:25.123,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:48:25.124,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:48:25.124,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:25.732,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:48:26.357,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:48:27.731,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:48:27.732,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:28.112,SISTEMA,INFO,LOG,"[BLE] [TX] 117,71"
+2026-11-09 19:48:28.765,SISTEMA,INFO,LOG,"[BLE] [TX] 118,71"
+2026-11-09 19:48:29.315,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:48:29.316,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:48:29.317,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:48:29.317,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:29.420,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:48:30.039,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:48:31.929,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:48:31.930,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:34.001,SISTEMA,INFO,LOG,"[BLE] [TX] 114,62"
+2026-11-09 19:48:34.642,SISTEMA,INFO,LOG,"[BLE] [TX] 115,62"
+2026-11-09 19:48:35.302,SISTEMA,INFO,LOG,"[BLE] [TX] 115,67"
+2026-11-09 19:48:35.482,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:48:35.484,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:48:35.486,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:48:35.487,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:35.987,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:48:36.597,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:48:38.091,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:48:38.092,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:38.097,SISTEMA,INFO,LOG,Postura confirmada: SALUDO -> Disparando SALUDO
+2026-11-09 19:48:38.097,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina SALUDO.
+2026-11-09 19:48:38.098,SISTEMA,INFO,LOG,[BLE] Rutina enviada: SALUDO
+2026-11-09 19:48:38.098,SISTEMA,INFO,LOG,SALUDO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:38.111,SISTEMA,INFO,LOG,[BLE] [TX] SALUDO
+2026-11-09 19:48:41.747,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina SALUDO concluida por tiempo.
+2026-11-09 19:48:43.704,SISTEMA,INFO,LOG,Tiempo estimado de SALUDO cumplido. Liberando seguimiento.
+2026-11-09 19:48:43.704,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:44.536,SISTEMA,INFO,LOG,"[BLE] [TX] 94,63"
+2026-11-09 19:48:45.195,SISTEMA,INFO,LOG,"[BLE] [TX] 95,63"
+2026-11-09 19:48:45.558,SISTEMA,INFO,LOG,Postura confirmada: CORAZON -> Disparando CORAZON
+2026-11-09 19:48:45.559,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CORAZON.
+2026-11-09 19:48:45.559,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CORAZON
+2026-11-09 19:48:45.560,SISTEMA,INFO,LOG,CORAZON enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:45.848,SISTEMA,INFO,LOG,[BLE] [TX] CORAZON
+2026-11-09 19:48:48.309,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CORAZON concluida por tiempo.
+2026-11-09 19:48:49.967,SISTEMA,INFO,LOG,Tiempo estimado de CORAZON cumplido. Liberando seguimiento.
+2026-11-09 19:48:49.968,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:51.056,SISTEMA,INFO,LOG,"[BLE] [TX] 96,66"
+2026-11-09 19:48:51.699,SISTEMA,INFO,LOG,"[BLE] [TX] 96,67"
+2026-11-09 19:48:52.365,SISTEMA,INFO,LOG,"[BLE] [TX] 94,69"
+2026-11-09 19:48:52.553,SISTEMA,INFO,LOG,Postura confirmada: TIJERA -> Disparando BAILE
+2026-11-09 19:48:52.554,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina BAILE.
+2026-11-09 19:48:52.555,SISTEMA,INFO,LOG,[BLE] Rutina enviada: BAILE
+2026-11-09 19:48:52.555,SISTEMA,INFO,LOG,BAILE enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:48:53.021,SISTEMA,INFO,LOG,[BLE] [TX] BAILE
+2026-11-09 19:48:57.857,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina BAILE concluida por tiempo.
+2026-11-09 19:48:59.367,SISTEMA,INFO,LOG,Tiempo estimado de BAILE cumplido. Liberando seguimiento.
+2026-11-09 19:48:59.368,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:48:59.385,SISTEMA,INFO,LOG,"[BLE] [TX] 95,78"
+2026-11-09 19:48:59.997,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:48:59.998,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:48:59.998,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:48:59.999,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:49:00.041,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:49:00.662,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:49:02.618,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:49:02.619,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:49:02.647,SISTEMA,INFO,LOG,"[BLE] [TX] 95,78"
+2026-11-09 19:49:03.298,SISTEMA,INFO,LOG,"[BLE] [TX] 95,78"
+2026-11-09 19:49:03.961,SISTEMA,INFO,LOG,"[BLE] [TX] 96,78"
+2026-11-09 19:49:04.618,SISTEMA,INFO,LOG,"[BLE] [TX] 92,68"
+2026-11-09 19:49:05.290,SISTEMA,INFO,LOG,"[BLE] [TX] 89,71"
+2026-11-09 19:49:05.953,SISTEMA,INFO,LOG,"[BLE] [TX] 90,69"
+2026-11-09 19:49:06.063,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:49:06.063,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:49:06.064,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:49:06.064,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:49:06.621,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:49:07.290,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:49:08.672,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:49:08.674,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:49:14.182,SISTEMA,INFO,LOG,"[BLE] [TX] 95,66"
+2026-11-09 19:49:14.836,SISTEMA,INFO,LOG,"[BLE] [TX] 95,67"
+2026-11-09 19:49:15.111,SISTEMA,INFO,LOG,Postura confirmada: PAPEL -> Disparando REPOSO
+2026-11-09 19:49:15.112,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina REPOSO.
+2026-11-09 19:49:15.112,SISTEMA,INFO,LOG,[BLE] Rutina enviada: REPOSO
+2026-11-09 19:49:15.113,SISTEMA,INFO,LOG,REPOSO enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:49:15.496,SISTEMA,INFO,LOG,[BLE] [TX] REPOSO
+2026-11-09 19:49:16.117,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina REPOSO concluida por tiempo.
+2026-11-09 19:49:17.723,SISTEMA,INFO,LOG,Tiempo estimado de REPOSO cumplido. Liberando seguimiento.
+2026-11-09 19:49:17.724,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:49:17.766,SISTEMA,INFO,LOG,"[BLE] [TX] 93,69"
+2026-11-09 19:49:19.420,SISTEMA,INFO,LOG,"[BLE] [TX] 95,68"
+2026-11-09 19:49:20.063,SISTEMA,INFO,LOG,"[BLE] [TX] 95,68"
+2026-11-09 19:49:20.728,SISTEMA,INFO,LOG,"[BLE] [TX] 91,68"
+2026-11-09 19:49:21.386,SISTEMA,INFO,LOG,"[BLE] [TX] 92,71"
+2026-11-09 19:49:22.058,SISTEMA,INFO,LOG,"[BLE] [TX] 92,77"
+2026-11-09 19:49:22.725,SISTEMA,INFO,LOG,"[BLE] [TX] 93,61"
+2026-11-09 19:49:24.560,SISTEMA,INFO,LOG,"[BLE] [TX] 90,65"
+2026-11-09 19:49:25.206,SISTEMA,INFO,LOG,"[BLE] [TX] 89,66"
+2026-11-09 19:49:25.572,SISTEMA,INFO,LOG,Postura confirmada: SWIPE -> Disparando NEGAR
+2026-11-09 19:49:25.573,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina NEGAR.
+2026-11-09 19:49:25.574,SISTEMA,INFO,LOG,[BLE] Rutina enviada: NEGAR
+2026-11-09 19:49:25.574,SISTEMA,INFO,LOG,NEGAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:49:25.875,SISTEMA,INFO,LOG,[BLE] [TX] NEGAR
+2026-11-09 19:49:29.540,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina NEGAR concluida por tiempo.
+2026-11-09 19:49:31.184,SISTEMA,INFO,LOG,Tiempo estimado de NEGAR cumplido. Liberando seguimiento.
+2026-11-09 19:49:31.185,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:49:31.225,SISTEMA,INFO,LOG,"[BLE] [TX] 108,60"
+2026-11-09 19:49:38.589,SISTEMA,INFO,LOG,"[BLE] [TX] 101,60"
+2026-11-09 19:49:39.246,SISTEMA,INFO,LOG,"[BLE] [TX] 102,60"
+2026-11-09 19:49:39.903,SISTEMA,INFO,LOG,"[BLE] [TX] 106,61"
+2026-11-09 19:49:40.582,SISTEMA,INFO,LOG,"[BLE] [TX] 107,61"
+2026-11-09 19:49:41.232,SISTEMA,INFO,LOG,"[BLE] [TX] 95,82"
+2026-11-09 19:49:41.889,SISTEMA,INFO,LOG,"[BLE] [TX] 93,89"
+2026-11-09 19:49:41.949,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:49:41.950,SISTEMA,INFO,LOG,[BLE] Tracking bloqueado. Preparando rutina CENTRAR.
+2026-11-09 19:49:41.950,SISTEMA,INFO,LOG,[BLE] Rutina enviada: CENTRAR
+2026-11-09 19:49:41.951,SISTEMA,INFO,LOG,CENTRAR enviado a ESP32. Seguimiento pausado.
+2026-11-09 19:49:42.556,SISTEMA,INFO,LOG,[BLE] [TX] CENTRAR
+2026-11-09 19:49:43.177,SISTEMA,INFO,LOG,[BLE] Bloqueo BLE liberado: rutina CENTRAR concluida por tiempo.
+2026-11-09 19:49:44.560,SISTEMA,INFO,LOG,Tiempo estimado de CENTRAR cumplido. Liberando seguimiento.
+2026-11-09 19:49:44.563,SISTEMA,INFO,LOG,Rutina finalizada. Seguimiento habilitado.
+2026-11-09 19:49:58.038,SISTEMA,INFO,LOG,"[BLE] [TX] 73,72"
+2026-11-09 19:49:58.695,SISTEMA,INFO,LOG,"[BLE] [TX] 74,73"
+2026-11-09 19:49:59.358,SISTEMA,INFO,LOG,"[BLE] [TX] 95,76"
+2026-11-09 19:50:00.027,SISTEMA,INFO,LOG,"[BLE] [TX] 97,83"
+2026-11-09 19:50:00.682,SISTEMA,INFO,LOG,"[BLE] [TX] 102,77"
+2026-11-09 19:50:01.338,SISTEMA,INFO,LOG,"[BLE] [TX] 102,70"
+2026-11-09 19:50:09.043,SISTEMA,INFO,LOG,"[BLE] [TX] 115,69"
+2026-11-09 19:50:09.709,SISTEMA,INFO,LOG,"[BLE] [TX] 115,69"
+2026-11-09 19:50:10.379,SISTEMA,INFO,LOG,"[BLE] [TX] 111,69"
+2026-11-09 19:50:29.375,SISTEMA,INFO,LOG,"[BLE] [TX] 114,66"
+2026-11-09 19:50:30.040,SISTEMA,INFO,LOG,"[BLE] [TX] 114,66"
+2026-11-09 19:50:30.693,SISTEMA,INFO,LOG,"[BLE] [TX] 114,64"
+2026-11-09 19:50:31.372,SISTEMA,INFO,LOG,"[BLE] [TX] 113,63"
+2026-11-09 19:50:37.141,SISTEMA,INFO,LOG,"[BLE] [TX] 99,73"
+2026-11-09 19:50:37.788,SISTEMA,INFO,LOG,"[BLE] [TX] 99,73"
+2026-11-09 19:50:38.448,SISTEMA,INFO,LOG,"[BLE] [TX] 107,74"
+2026-11-09 19:50:39.116,SISTEMA,INFO,LOG,"[BLE] [TX] 109,74"
+2026-11-09 19:50:39.778,SISTEMA,INFO,LOG,"[BLE] [TX] 104,65"
+2026-11-09 19:50:40.438,SISTEMA,INFO,LOG,"[BLE] [TX] 106,64"
+2026-11-09 19:50:41.104,SISTEMA,INFO,LOG,"[BLE] [TX] 105,71"
+2026-11-09 19:50:41.761,SISTEMA,INFO,LOG,"[BLE] [TX] 114,79"
+2026-11-09 19:50:43.664,SISTEMA,INFO,LOG,[BLE] Desconexion BLE solicitada.
+2026-11-09 19:50:43.666,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:50:43.668,SISTEMA,INFO,LOG,[BLE] Se perdio la conexion BLE.
+2026-11-09 19:50:43.668,BLE,WARNING,DESCONEXION_DETECTADA,Pérdida de enlace BLE
+2026-11-09 19:50:43.668,SISTEMA,INFO,LOG,"[BLE] Sesion BLE cerrada. Estadisticas: {'comandos_enviados': 235, 'errores_envio': 0, 'fallos_conexion': 0}"
+2026-11-09 19:50:44.718,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:44.807,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:44.860,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:44.919,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:44.973,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.048,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.181,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.224,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.302,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.394,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.558,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.564,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:50:45.990,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:50:45.990,SISTEMA,INFO,LOG,Dispatcher cerrado.
+2026-11-09 19:50:46.033,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:54:16.447,SISTEMA,INFO,LOG,Sistema inicializado. Selecciona canal de destino e inicia la camara.
+2026-11-09 19:54:20.679,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:54:20.682,SISTEMA,INFO,LOG,Canal activo: BLE
+2026-11-09 19:54:23.432,SISTEMA,INFO,LOG,Iniciando conexión BLE con 24:DC:C3:48:82:76...
+2026-11-09 19:54:23.435,SISTEMA,INFO,LOG,[BLE] Conectando con 24:DC:C3:48:82:76...
+2026-11-09 19:54:26.044,SISTEMA,INFO,LOG,Iniciando pipeline de visión...
+2026-11-09 19:54:26.344,SISTEMA,INFO,LOG,Modelos de MediaPipe cargados correctamente.
+2026-11-09 19:54:30.566,CAMARA,INFO,ESTADO_CAMARA,Cámara activa
+2026-11-09 19:54:30.566,SISTEMA,INFO,LOG,Cámara activa. Procesando frames...
+2026-11-09 19:54:31.000,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.062,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.133,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.225,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.303,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.365,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.431,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.521,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.581,SISTEMA,INFO,LOG,[BLE] Fallo de conexion BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:54:31.586,SISTEMA,INFO,LOG,[BLE] Reintentando conexion en 2.5s...
+2026-11-09 19:54:31.611,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.673,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.721,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.788,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.870,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:31.873,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:54:31.874,SISTEMA,INFO,LOG,"Gesto CENTRAR detectado, pero no hay conexión BLE."
+2026-11-09 19:54:31.952,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.006,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.068,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.142,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.240,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.320,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.370,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.433,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.494,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.564,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.657,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.721,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.777,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.826,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.878,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.921,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:32.976,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.063,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.140,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.208,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.275,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.337,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.404,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.487,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.563,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.643,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.713,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.762,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.813,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.876,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:33.986,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.063,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.134,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.200,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.260,SISTEMA,INFO,LOG,[BLE] Reconexion automatica: intento 2
+2026-11-09 19:54:34.261,BLE,WARNING,INTENTO_RECONEXION,Intento 2
+2026-11-09 19:54:34.272,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.323,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.381,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.468,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.564,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.633,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.713,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.768,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.832,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.923,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:34.925,SISTEMA,INFO,LOG,Postura confirmada: ROCA -> Disparando CENTRAR
+2026-11-09 19:54:34.926,SISTEMA,INFO,LOG,"Gesto CENTRAR detectado, pero no hay conexión BLE."
+2026-11-09 19:54:35.009,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:35.073,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:35.129,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:35.194,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:35.255,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:35.311,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:35.384,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:36.144,SISTEMA,INFO,LOG,ESP32 no conectado por BLE.
+2026-11-09 19:54:36.146,SISTEMA,INFO,LOG,Cámara y detectores detenidos limpiamente.
+2026-11-09 19:54:42.298,SISTEMA,INFO,LOG,[BLE] Fallo de conexion BLE: Device with address 24:DC:C3:48:82:76 was not found.
+2026-11-09 19:54:42.299,SISTEMA,INFO,LOG,[BLE] Reintentando conexion en 2.5s...
+2026-11-09 19:54:45.017,SISTEMA,INFO,LOG,[BLE] Reconexion automatica: intento 3
+2026-11-09 19:54:45.018,BLE,WARNING,INTENTO_RECONEXION,Intento 3
+2026-11-09 19:54:52.450,SISTEMA,INFO,LOG,[BLE] Desconexion BLE solicitada.
+2026-11-09 19:54:52.453,SISTEMA,INFO,LOG,Enlace BLE desconectado.
+2026-11-09 19:54:52.455,SISTEMA,INFO,LOG,Dispatcher cerrado.

@@ -1,29 +1,23 @@
 """
-==============================================================
-CLIENTE BLE ASÍNCRONO MULTIHILO - SOFIA ESP32-C3
+CLIENTE BLE ASINCRONO - SOFIA ESP32-C3
 
-Implementa el protocolo PC <-> ESP32 descrito en
-docs/ESTANDAR_COMUNICACION_PC_ESP32.md:
+Compatible con el firmware que recibe comandos directos:
+SALUDO, CORAZON, BAILE, NEGAR, PPT, CENTRAR,
+REPOSO, DESREPOSO, HOME, REST, STOP, SCAN,
+Q1, Q2 y posiciones conjuntas.
 
-    PC -> ESP32 (RX, Write sin respuesta):  $<SEQ>,<CMD>[,<P1>[,<P2>]]#
-    ESP32 -> PC (TX, Notify):               $<SEQ>,ACK,<DATOS>#
-                                            $<SEQ>,NACK,ERR_xx#
-                                            $<SEQ>,EVT,DONE,<RUTINA>#
+No utiliza tramas, ACK, NACK ni notificaciones TX.
 
-- Número de secuencia incremental (1..65535, con vuelta a 1).
-- Comandos de control (ROUTINE, HOME, REST, STOP, PING): esperan
-  ACK/NACK con timeout de 200 ms y hasta 2 reintentos (el ESP32
-  descarta SEQ duplicados, por lo que reintentar no repite acciones).
-- Seguimiento (ANG): limitado a 5 comandos/s, sólo se conserva la
-  posición más reciente y no se reintenta (una posición vieja no sirve);
-  sí se mide su RTT y se cuentan los timeouts.
-- Tramas fragmentadas en bloques del MTU tanto al enviar como al recibir.
-- Eventos hacia la GUI mediante event_callback(dict).
-==============================================================
+Control de sincronizacion:
+- Al solicitar una rutina, bloquea inmediatamente el tracking.
+- Descarta posiciones pendientes.
+- Da prioridad a comandos/rutinas sobre el tracking.
+- Antes de transmitir un angulo vuelve a comprobar que no haya
+  comenzado una rutina.
+- Libera el bloqueo al cumplirse la duracion estimada de la rutina.
 """
 
 import asyncio
-import collections
 import queue
 import re
 import sys
@@ -33,85 +27,56 @@ import time
 from bleak import BleakClient
 
 
-# En macOS, CoreBluetooth asigna UUID en lugar de MAC física
+# ==========================================================
+# CONFIGURACION BLE
+# ==========================================================
+
 if sys.platform == "darwin":
     ESP32_DEFAULT_MAC = "8D8CF7F2-2F26-4A93-E6ED-9D83EDEC3E6A"
 else:
-    ESP32_DEFAULT_MAC = "70:AF:09:15:23:42"
+    ESP32_DEFAULT_MAC = "24:DC:C3:48:82:76"
 
 UART_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
-UART_WRITE_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"   # RX del ESP32
-UART_NOTIFY_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"  # TX del ESP32
+UART_WRITE_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
 
 ANGULO_MIN = 60
 ANGULO_MAX = 120
 
-# Rutinas almacenadas en el ESP32 y su duración nominal en ms.
-# La duración sólo se usa como respaldo si no llega el evento DONE.
-# Deben coincidir con RUTINAS[] en code/firmware-mecatronica/modulo_sofia.ino
+
+# ==========================================================
+# RUTINAS Y DURACIONES ESTIMADAS
+# ==========================================================
+
+# Cada paso de rutina tarda aproximadamente:
+# 500 ms de movimiento + 100 ms de pausa.
+# Las duraciones corresponden a los pasos y repeticiones
+# definidos actualmente en el firmware Arduino.
+
 RUTINAS = {
-    "SALUDO": 3000,
-    "CORAZON": 2000,
-    "BAILE": 3200,
-    "NEGAR": 2100,
-    "PPT": 1800,
-    "CENTRAR": 2000,
-    "REPOSO": 2000,
+    "SALUDO": 3600,
+    "CORAZON": 2400,
+    "BAILE": 4800,
+    "NEGAR": 3600,
+    "PPT": 3600,
+    "CENTRAR": 600,
+    "REPOSO": 600,
+    "DESREPOSO": 600,
 }
 
-# Comandos sin parámetros
-COMANDOS_SIMPLES = {"PING", "HOME", "REST", "STOP"}
-
-# Códigos de error del estándar
-ERRORES = {
-    "ERR_01": "OUT_OF_RANGE: ángulo fuera de 60-120°",
-    "ERR_02": "UNKNOWN_CMD: comando o rutina no reconocido",
-    "ERR_03": "BAD_FORMAT: trama mal formada",
-    "ERR_04": "ROUTINE_BUSY: hay una rutina en ejecución",
-    "ERR_05": "I2C_FAIL: PCA9685 no responde",
+COMANDOS_SIMPLES = {
+    "PING",
+    "HOME",
+    "REST",
+    "STOP",
+    "SCAN",
 }
 
-# Parámetros de temporización del protocolo
-ACK_TIMEOUT_S = 0.200
-MAX_REINTENTOS = 2
-TRACKING_INTERVAL_S = 0.20    # 5 Hz para seguimiento
-TIMEOUTS_PARA_ALERTA = 3      # Timeouts seguidos que indican enlace degradado
-MTU_PAYLOAD_MIN = 20          # Payload seguro con MTU por defecto (23 - 3)
+TRACKING_INTERVAL_S = 0.65
 
 
-def construir_trama(seq, cmd, *params):
-    """Ensambla "$SEQ,CMD,P1,P2#"."""
-    campos = [str(seq), cmd] + [str(p) for p in params]
-    return "$" + ",".join(campos) + "#"
-
-
-def parsear_respuesta(contenido):
-    """
-    Interpreta el contenido de una trama de respuesta (sin '$' ni '#').
-    Retorna dict con seq, status y data, o None si es inválida.
-    """
-    campos = [c.strip() for c in contenido.split(",")]
-    if len(campos) < 2 or not campos[0].isdigit():
-        return None
-
-    status = campos[1].upper()
-    if status not in ("ACK", "NACK", "EVT"):
-        return None
-
-    return {"seq": int(campos[0]), "status": status, "data": campos[2:]}
-
-
-class _Pendiente:
-    """Comando enviado que espera ACK/NACK."""
-
-    __slots__ = ("cmd", "params", "enviado_en", "future")
-
-    def __init__(self, cmd, params, future):
-        self.cmd = cmd
-        self.params = params
-        self.enviado_en = 0.0
-        self.future = future
-
+# ==========================================================
+# CLIENTE BLE
+# ==========================================================
 
 class SofiaBleClient:
 
@@ -124,37 +89,50 @@ class SofiaBleClient:
         auto_reconnect=True,
     ):
         self.mac_address = mac_address
+
         self.status_callback = status_callback or (lambda msg: None)
         self.connection_callback = connection_callback or (lambda state: None)
         self.event_callback = event_callback or (lambda event: None)
+
         self.auto_reconnect = auto_reconnect
 
-        # Carril de control (rutinas y comandos simples) en orden FIFO
+        # Cola FIFO para comandos de control y rutinas.
         self._control_queue = queue.Queue()
-        # Carril de seguimiento: sólo la posición más reciente
+
+        # Tracking: solamente conserva la posición más reciente.
         self._ultimo_ang = None
+
+        self._lock = threading.RLock()
+
+        # Serializa la decision de transmitir un angulo con la solicitud
+        # de una rutina. Si un angulo ya esta escribiendose, la solicitud
+        # de rutina espera a que termine; despues no se envia otro angulo.
+        self._tx_lock = threading.Lock()
+
         self._wake = threading.Event()
 
         self.is_connected = False
         self._running = False
+
         self._thread = None
-        self._lock = threading.Lock()
-
-        self._seq = 0
-        self._pendientes = {}          # seq -> _Pendiente (dentro del loop)
-        self._rx_buffer = ""
         self._last_ang_time = 0.0
-        self._payload_max = MTU_PAYLOAD_MIN
 
-        # Estadísticas del enlace (útiles como evidencia de pruebas)
-        self.stats = collections.Counter()
-        self.ultimo_rtt_ms = None
-        self._timeouts_seguidos = 0
-        self._ultimo_log_nack_ang = 0.0
+        # Estado interno de sincronizacion de rutinas.
+        self._routine_active = False
+        self._routine_pending = False
+        self._routine_name = None
+        self._routine_deadline = 0.0
 
-    # ---------------------------------------------------------
-    # Utilidades
-    # ---------------------------------------------------------
+        self.stats = {
+            "comandos_enviados": 0,
+            "errores_envio": 0,
+            "fallos_conexion": 0,
+        }
+
+    # ======================================================
+    # UTILIDADES
+    # ======================================================
+
     def _log(self, message):
         try:
             self.status_callback(f"[BLE] {message}")
@@ -174,23 +152,79 @@ class SofiaBleClient:
         except Exception:
             pass
 
-    def _siguiente_seq(self):
-        self._seq = self._seq + 1 if self._seq < 65535 else 1
-        return self._seq
+    def _puede_enviar(self):
+        if not self._running or not self.is_connected:
+            self._log("No se puede enviar: ESP32 no conectado.")
+            return False
+        return True
 
-    # ---------------------------------------------------------
-    # Ciclo de vida
-    # ---------------------------------------------------------
+    def _actualizar_estado_rutina_locked(self):
+        """
+        Debe llamarse teniendo adquirido self._lock.
+        Libera el bloqueo cuando vence la duracion estimada.
+        """
+        if (
+            self._routine_active
+            and not self._routine_pending
+            and self._routine_deadline > 0
+            and time.monotonic() >= self._routine_deadline
+        ):
+            nombre = self._routine_name
+
+            self._routine_active = False
+            self._routine_pending = False
+            self._routine_name = None
+            self._routine_deadline = 0.0
+
+            self._log(
+                f"Bloqueo BLE liberado: rutina {nombre} concluida por tiempo."
+            )
+            self._emit(
+                type="ROUTINE_TIMEOUT",
+                cmd=nombre,
+            )
+
+    def _rutina_activa_locked(self):
+        self._actualizar_estado_rutina_locked()
+        return self._routine_active
+
+    def is_routine_active(self):
+        """Indica si el sender tiene una rutina pendiente o en ejecucion."""
+        with self._lock:
+            return self._rutina_activa_locked()
+
+    def release_routine(self):
+        """
+        Liberacion manual opcional.
+        Puede llamarse desde la GUI cuando esta finalice su temporizador.
+        """
+        with self._lock:
+            nombre = self._routine_name
+            self._routine_active = False
+            self._routine_pending = False
+            self._routine_name = None
+            self._routine_deadline = 0.0
+
+        self._wake.set()
+
+        if nombre:
+            self._log(f"Bloqueo de rutina {nombre} liberado manualmente.")
+
+    # ======================================================
+    # CICLO DE VIDA
+    # ======================================================
+
     def start(self):
         with self._lock:
             if self._running:
                 return
+
             self._running = True
 
         self._thread = threading.Thread(
             target=self._run_event_loop,
             daemon=True,
-            name="SofiaBLEWorker"
+            name="SofiaBLEWorker",
         )
         self._thread.start()
 
@@ -206,11 +240,12 @@ class SofiaBleClient:
 
     def stop(self):
         with self._lock:
-            if not self._running:
-                self._notify_connection(False)
-                return
             self._running = False
             self._vaciar_colas()
+            self._routine_active = False
+            self._routine_pending = False
+            self._routine_name = None
+            self._routine_deadline = 0.0
             self._wake.set()
 
         self._notify_connection(False)
@@ -220,292 +255,232 @@ class SofiaBleClient:
             and self._thread.is_alive()
             and threading.current_thread() != self._thread
         ):
-            self._thread.join(timeout=2.0)
+            self._thread.join(timeout=3.0)
 
-        self._log("Desconexión BLE solicitada.")
+        self._log("Desconexion BLE solicitada.")
 
     def _vaciar_colas(self):
         self._ultimo_ang = None
+
         while True:
             try:
                 self._control_queue.get_nowait()
             except queue.Empty:
                 break
 
-    # ---------------------------------------------------------
-    # API pública (llamada desde el hilo de la GUI)
-    # ---------------------------------------------------------
-    def _puede_enviar(self):
-        if not self._running or not self.is_connected:
-            self._log("No se puede enviar: ESP32 no conectado.")
-            return False
-        return True
+    # ======================================================
+    # API PUBLICA
+    # ======================================================
 
     def send_angles(self, q1, q2):
-        """Encola una posición de seguimiento (reemplaza la pendiente)."""
+        """Encola una posicion conjunta si no hay una rutina activa."""
         try:
-            q1, q2 = int(q1), int(q2)
+            q1 = int(q1)
+            q2 = int(q2)
         except (TypeError, ValueError):
-            self._log(f"Ángulos inválidos: {q1!r}, {q2!r}")
+            self._log(f"Angulos invalidos: {q1}, {q2}")
             return False
 
-        if not (ANGULO_MIN <= q1 <= ANGULO_MAX and ANGULO_MIN <= q2 <= ANGULO_MAX):
-            self._log(f"Ángulos fuera de rango: {q1},{q2}")
+        if not (
+            ANGULO_MIN <= q1 <= ANGULO_MAX
+            and ANGULO_MIN <= q2 <= ANGULO_MAX
+        ):
+            self._log(f"Angulos fuera de rango: {q1},{q2}")
             return False
 
         with self._lock:
             if not self._puede_enviar():
                 return False
+
+            if self._rutina_activa_locked():
+                return False
+
             self._ultimo_ang = (q1, q2)
+
         self._wake.set()
         return True
 
     def send_routine(self, nombre):
-        """Encola ROUTINE,<nombre>. Descarta el seguimiento pendiente."""
+        """Bloquea el tracking y encola una rutina."""
         nombre = str(nombre).strip().upper()
+
         if nombre not in RUTINAS:
-            self._log(f"Rutina desconocida: {nombre!r}")
+            self._log(f"Rutina desconocida: {nombre}")
             return False
 
-        with self._lock:
-            if not self._puede_enviar():
-                return False
-            self._ultimo_ang = None
-            self._control_queue.put(("ROUTINE", (nombre,)))
+        # El mismo candado se usa durante la escritura de tracking.
+        # Asi la rutina no puede quedar registrada a mitad de un envio.
+        with self._tx_lock:
+            with self._lock:
+                if not self._puede_enviar():
+                    return False
+
+                if self._rutina_activa_locked():
+                    self._log(
+                        f"Rutina {nombre} ignorada: "
+                        f"{self._routine_name} sigue activa."
+                    )
+                    return False
+
+                # Bloqueo inmediato ANTES de colocar la rutina en la cola.
+                self._routine_active = True
+                self._routine_pending = True
+                self._routine_name = nombre
+                self._routine_deadline = 0.0
+
+                # Descarta cualquier posicion de tracking pendiente.
+                self._ultimo_ang = None
+
+                self._control_queue.put(nombre)
+
+        self._log(f"Tracking bloqueado. Preparando rutina {nombre}.")
         self._wake.set()
         return True
 
     def send_simple(self, cmd):
-        """Encola PING, HOME, REST o STOP."""
+        """Envia PING, HOME, REST, STOP o SCAN."""
         cmd = str(cmd).strip().upper()
+
         if cmd not in COMANDOS_SIMPLES:
-            self._log(f"Comando inválido: {cmd!r}")
+            self._log(f"Comando invalido: {cmd}")
             return False
 
         with self._lock:
             if not self._puede_enviar():
                 return False
+
             if cmd == "STOP":
-                self._ultimo_ang = None
-            self._control_queue.put((cmd, ()))
+                # STOP tiene prioridad: elimina comandos pendientes
+                # y libera el bloqueo local de la rutina.
+                self._vaciar_colas()
+                self._routine_active = False
+                self._routine_pending = False
+                self._routine_name = None
+                self._routine_deadline = 0.0
+                self._control_queue.put("STOP")
+
+            elif cmd in {"HOME", "REST", "SCAN"}:
+                if self._rutina_activa_locked():
+                    self._log(
+                        f"{cmd} ignorado: hay una rutina en ejecucion."
+                    )
+                    return False
+                self._control_queue.put(cmd)
+
+            else:  # PING
+                self._control_queue.put(cmd)
+
         self._wake.set()
         return True
 
     def send_command(self, cmd_str):
         """
-        Compatibilidad con la API anterior: acepta "q1,q2", "Q1,a",
-        "Q2,a", un nombre de rutina o un comando simple.
+        Compatibilidad con main_gui.py y dispatcher.py.
+
+        Acepta:
+        SALUDO, DESREPOSO, HOME, REST, STOP, SCAN,
+        Q1,75, Q2,105, 90,90 y ANG,90,90.
         """
         if not isinstance(cmd_str, str):
             return False
+
         command = cmd_str.strip().upper()
 
         if command in RUTINAS:
             return self.send_routine(command)
+
         if command in COMANDOS_SIMPLES:
             return self.send_simple(command)
 
-        match = re.fullmatch(r"(-?\d+)\s*,\s*(-?\d+)", command)
+        # Posicion conjunta: 90,90
+        match = re.fullmatch(r"(\d+)\s*,\s*(\d+)", command)
         if match:
             return self.send_angles(match.group(1), match.group(2))
 
-        match = re.fullmatch(r"(Q1|Q2)\s*,\s*(-?\d+)", command)
+        # Control individual: Q1,75 o Q2,105
+        match = re.fullmatch(r"(Q1|Q2)\s*,\s*(\d+)", command)
         if match:
-            angle = int(match.group(2))
-            if not ANGULO_MIN <= angle <= ANGULO_MAX:
-                self._log(f"Ángulo fuera de rango: {command}")
+            eje = match.group(1)
+            angulo = int(match.group(2))
+
+            if not ANGULO_MIN <= angulo <= ANGULO_MAX:
+                self._log(f"Angulo fuera de rango: {command}")
                 return False
+
             with self._lock:
                 if not self._puede_enviar():
                     return False
-                self._control_queue.put((match.group(1), (angle,)))
+
+                if self._rutina_activa_locked():
+                    return False
+
+                self._ultimo_ang = None
+                self._control_queue.put(f"{eje},{angulo}")
+
             self._wake.set()
             return True
 
-        self._log(f"Comando inválido: {cmd_str!r}")
+        # Movimiento ANG: ANG,90,90
+        match = re.fullmatch(r"ANG\s*,\s*(\d+)\s*,\s*(\d+)", command)
+        if match:
+            return self.send_angles(match.group(1), match.group(2))
+
+        self._log(f"Comando invalido: {cmd_str}")
         return False
 
-    # ---------------------------------------------------------
-    # Recepción (se ejecuta en el loop asyncio del hilo BLE)
-    # ---------------------------------------------------------
-    def _on_notify(self, _sender, data):
+    # ======================================================
+    # ENVIO DIRECTO BLE
+    # ======================================================
+
+    async def _write_command(self, client, command):
+        """Envia texto plano al characteristic RX del ESP32."""
         try:
-            self._rx_buffer += bytes(data).decode("utf-8", errors="replace")
-        except Exception:
-            return
-
-        # Reensamblar tramas "$...#" que pueden llegar fragmentadas
-        while True:
-            inicio = self._rx_buffer.find("$")
-            if inicio < 0:
-                self._rx_buffer = ""
-                return
-            fin = self._rx_buffer.find("#", inicio)
-            if fin < 0:
-                # Trama incompleta; evitar crecimiento indefinido
-                self._rx_buffer = self._rx_buffer[inicio:][-256:]
-                return
-            contenido = self._rx_buffer[inicio + 1:fin]
-            self._rx_buffer = self._rx_buffer[fin + 1:]
-            self._procesar_respuesta(contenido)
-
-    def _procesar_respuesta(self, contenido):
-        resp = parsear_respuesta(contenido)
-        if resp is None:
-            self.stats["tramas_invalidas"] += 1
-            self._log(f"Trama de respuesta inválida: ${contenido}#")
-            return
-
-        seq, status, data = resp["seq"], resp["status"], resp["data"]
-
-        # Evento asíncrono de fin de rutina
-        if status == "EVT":
-            if data and data[0].upper() == "DONE":
-                rutina = data[1] if len(data) > 1 else "?"
-                self.stats["rutinas_terminadas"] += 1
-                self._log(f"ESP32: rutina {rutina} terminada (SEQ {seq}).")
-                self._emit(type="DONE", seq=seq, routine=rutina)
-            return
-
-        pendiente = self._pendientes.pop(seq, None)
-        if pendiente is None:
-            # ACK tardío (ya expiró) o NACK de trama sin SEQ válido
-            self.stats["respuestas_huerfanas"] += 1
-            if status == "NACK":
-                codigo = data[0] if data else "?"
-                self._log(f"NACK sin comando asociado (SEQ {seq}): {codigo}")
-            return
-
-        rtt_ms = (time.monotonic() - pendiente.enviado_en) * 1000.0
-        self.ultimo_rtt_ms = rtt_ms
-        self._timeouts_seguidos = 0
-
-        if pendiente.future is not None and not pendiente.future.done():
-            pendiente.future.set_result((status, data, rtt_ms))
-
-        if pendiente.cmd == "ANG":
-            # El seguimiento no reporta cada ACK a la GUI (30+ por segundo
-            # saturarían la terminal); sólo estadísticas y NACK limitados.
-            if status == "ACK":
-                self.stats["ang_ack"] += 1
-            else:
-                self.stats["ang_nack"] += 1
-                ahora = time.monotonic()
-                if ahora - self._ultimo_log_nack_ang > 1.0:
-                    self._ultimo_log_nack_ang = ahora
-                    codigo = data[0] if data else "?"
-                    self._log(f"Seguimiento rechazado: {codigo} {ERRORES.get(codigo, '')}")
-            self._emit(type="RTT", seq=seq, cmd="ANG", rtt_ms=rtt_ms)
-
-    def _expirar_pendientes(self):
-        """Elimina comandos ANG cuyo ACK no llegó a tiempo."""
-        ahora = time.monotonic()
-        for seq, p in list(self._pendientes.items()):
-            if p.future is None and ahora - p.enviado_en > ACK_TIMEOUT_S:
-                del self._pendientes[seq]
-                self.stats["ang_timeout"] += 1
-                self._registrar_timeout()
-
-    def _registrar_timeout(self):
-        self._timeouts_seguidos += 1
-        if self._timeouts_seguidos == TIMEOUTS_PARA_ALERTA:
-            self._log(
-                f"Advertencia: {TIMEOUTS_PARA_ALERTA} respuestas seguidas "
-                f"sin ACK. Posible pérdida de comunicación."
-            )
-            self._emit(type="LINK_DEGRADED", timeouts=self._timeouts_seguidos)
-
-    # ---------------------------------------------------------
-    # Envío (loop asyncio)
-    # ---------------------------------------------------------
-    async def _write_frame(self, client, trama):
-        """Escribe una trama fragmentándola al tamaño de payload del MTU."""
-        datos = trama.encode("utf-8")
-        for i in range(0, len(datos), self._payload_max):
             await client.write_gatt_char(
                 UART_WRITE_UUID,
-                datos[i:i + self._payload_max],
-                response=False
+                command.encode("utf-8"),
+                response=False,
             )
 
-    async def _enviar_control(self, client, cmd, params):
-        """Envía un comando de control y espera ACK/NACK con reintentos."""
-        seq = self._siguiente_seq()
-        trama = construir_trama(seq, cmd, *params)
-        descripcion = f"{cmd} {' '.join(map(str, params))}".strip()
+            self.stats["comandos_enviados"] += 1
+            self._log(f"[TX] {command}")
+            return True
 
-        for intento in range(MAX_REINTENTOS + 1):
-            future = asyncio.get_running_loop().create_future()
-            pendiente = _Pendiente(cmd, params, future)
-            self._pendientes[seq] = pendiente
-            pendiente.enviado_en = time.monotonic()
-
-            try:
-                await self._write_frame(client, trama)
-                self.stats["tramas_enviadas"] += 1
-            except Exception as error:
-                self._pendientes.pop(seq, None)
-                self.stats["errores_escritura"] += 1
-                self._log(f"Error de transmisión ({descripcion}): {error}")
-                self._emit(type="ERROR", seq=seq, cmd=cmd, params=params,
-                           error=str(error))
-                return
-
-            try:
-                status, data, rtt_ms = await asyncio.wait_for(
-                    future, timeout=ACK_TIMEOUT_S
-                )
-            except asyncio.TimeoutError:
-                self._pendientes.pop(seq, None)
-                self.stats["control_timeout"] += 1
-                self._registrar_timeout()
-                if intento < MAX_REINTENTOS:
-                    self.stats["reintentos"] += 1
-                    self._log(
-                        f"Sin ACK para {trama} en {int(ACK_TIMEOUT_S * 1000)} ms; "
-                        f"reintento {intento + 1}/{MAX_REINTENTOS}."
-                    )
-                    continue
-                self._log(f"Sin respuesta del ESP32 para {descripcion} (SEQ {seq}).")
-                self._emit(type="TIMEOUT", seq=seq, cmd=cmd, params=params)
-                return
-
-            if status == "ACK":
-                self.stats["control_ack"] += 1
-                self._log(f"ACK {descripcion} (SEQ {seq}, {rtt_ms:.0f} ms): {','.join(data)}")
-                self._emit(type="ACK", seq=seq, cmd=cmd, params=params,
-                           data=data, rtt_ms=rtt_ms)
-            else:
-                codigo = data[0] if data else "?"
-                self.stats["control_nack"] += 1
-                self._log(
-                    f"NACK {descripcion} (SEQ {seq}): {codigo} "
-                    f"{ERRORES.get(codigo, '')}"
-                )
-                self._emit(type="NACK", seq=seq, cmd=cmd, params=params,
-                           code=codigo, rtt_ms=rtt_ms)
-            return
-
-    async def _enviar_ang(self, client, q1, q2):
-        """Envía una posición de seguimiento sin esperar el ACK."""
-        espera = TRACKING_INTERVAL_S - (time.monotonic() - self._last_ang_time)
-        if espera > 0:
-            await asyncio.sleep(espera)
-
-        seq = self._siguiente_seq()
-        pendiente = _Pendiente("ANG", (q1, q2), None)
-        self._pendientes[seq] = pendiente
-        pendiente.enviado_en = time.monotonic()
-
-        try:
-            await self._write_frame(client, construir_trama(seq, "ANG", q1, q2))
-            self.stats["tramas_enviadas"] += 1
         except Exception as error:
-            self._pendientes.pop(seq, None)
-            self.stats["errores_escritura"] += 1
-            self._log(f"Error de transmisión (ANG {q1},{q2}): {error}")
+            self.stats["errores_envio"] += 1
+            self._log(f"Error enviando {command}: {error}")
+            self._emit(
+                type="ERROR",
+                cmd=command,
+                error=str(error),
+            )
+            return False
 
-        self._last_ang_time = time.monotonic()
+    def _marcar_rutina_enviada(self, nombre):
+        """Inicia el temporizador interno al completar el write BLE."""
+        with self._lock:
+            if self._routine_active and self._routine_name == nombre:
+                self._routine_pending = False
+                self._routine_deadline = (
+                    time.monotonic() + RUTINAS[nombre] / 1000.0
+                )
+
+        self._emit(
+            type="ROUTINE_SENT",
+            cmd=nombre,
+            duration_ms=RUTINAS[nombre],
+        )
+
+    def _cancelar_rutina_por_error(self, nombre):
+        with self._lock:
+            if self._routine_name == nombre:
+                self._routine_active = False
+                self._routine_pending = False
+                self._routine_name = None
+                self._routine_deadline = 0.0
+
+    # ======================================================
+    # PROCESAMIENTO DE COLAS
+    # ======================================================
 
     async def _worker(self):
         reconnect_delay = 2.5
@@ -513,115 +488,145 @@ class SofiaBleClient:
 
         while self._running:
             attempt += 1
+
             if attempt == 1:
                 self._log(f"Conectando con {self.mac_address}...")
             else:
-                self._log(f"Reconexión automática (intento {attempt}) con {self.mac_address}...")
+                self._log(f"Reconexion automatica: intento {attempt}")
                 self._emit(type="RECONNECTING", attempt=attempt)
 
             try:
-                def _on_ble_disconnect(_client):
-                    self._log("Bleak notificó desconexión del ESP32.")
+                def on_disconnect(_client):
+                    self._log("Se perdio la conexion BLE.")
                     self._notify_connection(False)
                     self._emit(type="DISCONNECTED")
 
                 async with BleakClient(
                     self.mac_address,
                     timeout=8.0,
-                    disconnected_callback=_on_ble_disconnect
+                    disconnected_callback=on_disconnect,
                 ) as client:
 
                     if not client.is_connected:
                         raise ConnectionError("No se pudo conectar al ESP32.")
 
-                    # Éxito de conexión: resetear contador de intentos
                     attempt = 0
-
-                    try:
-                        mtu = int(getattr(client, "mtu_size", 23) or 23)
-                        self._payload_max = max(MTU_PAYLOAD_MIN, mtu - 3)
-                    except Exception:
-                        self._payload_max = MTU_PAYLOAD_MIN
-
-                    try:
-                        await client.start_notify(UART_NOTIFY_UUID, self._on_notify)
-                    except Exception as error:
-                        self._log(
-                            f"No se pudo suscribir a respuestas del ESP32 ({error}). "
-                            f"¿Firmware sin característica TX?"
-                        )
-                        raise
-
                     self._notify_connection(True)
-                    self._log(
-                        f"Conectado exitosamente a SOFIA "
-                        f"(payload {self._payload_max} B)."
-                    )
+                    self._log("Conectado correctamente a SOFIA.")
                     self._emit(type="CONNECTED")
 
-                    # Prueba de vida inicial y tiempo de latido
-                    self._control_queue.put(("PING", ()))
-                    self._wake.set()
-                    last_heartbeat = time.monotonic()
-
                     while self._running and client.is_connected:
-                        self._expirar_pendientes()
 
-                        # 1) Prioridad: comandos de control
+                        # Actualizar el temporizador de la rutina.
+                        with self._lock:
+                            self._actualizar_estado_rutina_locked()
+
+                        # ----------------------------------
+                        # 1. PRIORIDAD: COMANDOS Y RUTINAS
+                        # ----------------------------------
                         try:
-                            cmd, params = self._control_queue.get_nowait()
+                            command = self._control_queue.get_nowait()
                         except queue.Empty:
-                            cmd = None
+                            command = None
 
-                        if cmd is not None:
-                            await self._enviar_control(client, cmd, params)
-                            last_heartbeat = time.monotonic()
+                        if command is not None:
+                            enviado = await self._write_command(client, command)
+
+                            if command in RUTINAS:
+                                if enviado:
+                                    self._marcar_rutina_enviada(command)
+                                else:
+                                    self._cancelar_rutina_por_error(command)
+
+                            if not enviado:
+                                break
+
                             continue
 
-                        # 2) Seguimiento: última posición disponible
+                        # ----------------------------------
+                        # 2. SEGUIMIENTO AUTOMATICO
+                        # ----------------------------------
+                        ang = None
+
                         with self._lock:
-                            ang = self._ultimo_ang
-                            self._ultimo_ang = None
+                            self._actualizar_estado_rutina_locked()
+
+                            # Solo extraer angulos si no hay rutina activa.
+                            if not self._routine_active:
+                                ang = self._ultimo_ang
+                                self._ultimo_ang = None
 
                         if ang is not None:
-                            await self._enviar_ang(client, *ang)
-                            last_heartbeat = time.monotonic()
+                            espera = (
+                                TRACKING_INTERVAL_S
+                                - (time.monotonic() - self._last_ang_time)
+                            )
+
+                            if espera > 0:
+                                await asyncio.sleep(espera)
+
+                            # Serializar la comprobacion final y la escritura
+                            # frente a send_routine(). Si la rutina se solicita
+                            # primero, este angulo se descarta. Si la escritura
+                            # ya comenzo, termina antes de aceptar la rutina.
+                            await asyncio.to_thread(self._tx_lock.acquire)
+                            try:
+                                with self._lock:
+                                    self._actualizar_estado_rutina_locked()
+
+                                    hay_comando = not self._control_queue.empty()
+                                    bloquear = (
+                                        self._routine_active or hay_comando
+                                    )
+
+                                if bloquear:
+                                    # No reinsertar el angulo: es una posicion
+                                    # antigua respecto a la rutina pendiente.
+                                    continue
+
+                                command = f"{ang[0]},{ang[1]}"
+                                enviado = await self._write_command(
+                                    client,
+                                    command,
+                                )
+                                self._last_ang_time = time.monotonic()
+
+                            finally:
+                                self._tx_lock.release()
+
+                            if not enviado:
+                                break
+
                             continue
 
-                        # 3) Latido preventivo (heartbeat): cada 4.0s de inactividad
-                        now = time.monotonic()
-                        if now - last_heartbeat > 4.0:
-                            last_heartbeat = now
-                            self._control_queue.put(("PING", ()))
-                            continue
-
-                        # 4) Nada pendiente: esperar sin bloquear el loop
+                        # ----------------------------------
+                        # 3. ESPERAR NUEVOS COMANDOS
+                        # ----------------------------------
                         self._wake.clear()
-                        await asyncio.to_thread(self._wake.wait, 0.05)
+
+                        await asyncio.to_thread(
+                            self._wake.wait,
+                            0.05,
+                        )
 
                     if self._running and not client.is_connected:
-                        self._log("El enlace con el ESP32 se perdió.")
+                        self._log("El enlace BLE se perdio.")
 
             except Exception as error:
-                self._log(f"Fallo de conexión BLE: {error}")
                 self.stats["fallos_conexion"] += 1
+                self._log(f"Fallo de conexion BLE: {error}")
 
             finally:
-                # Resolver futuros pendientes para no dejar corrutinas colgadas
-                for p in list(self._pendientes.values()):
-                    if p.future is not None and not p.future.done():
-                        p.future.cancel()
-                self._pendientes.clear()
                 self._notify_connection(False)
 
             if not self._running or not self.auto_reconnect:
                 break
 
-            self._log(f"Esperando {reconnect_delay}s antes del siguiente reintento...")
-            # Espera no bloqueante cancelable por stop()
+            self._log(f"Reintentando conexion en {reconnect_delay}s...")
+
             for _ in range(int(reconnect_delay * 10)):
                 if not self._running:
                     break
                 await asyncio.sleep(0.1)
 
-        self._log(f"Sesión BLE cerrada. Estadísticas: {dict(self.stats)}")
+        self._log(f"Sesion BLE cerrada. Estadisticas: {self.stats}")

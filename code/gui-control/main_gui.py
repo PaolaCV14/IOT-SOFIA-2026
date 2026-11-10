@@ -252,6 +252,7 @@ class SofiaDashboard(QMainWindow):
             "Control Manual",
             "Calibracion (Home)",
             "Reposo",
+            "Desreposo"
         ])
         self.combo_mode.currentIndexChanged.connect(self._handle_mode_changed)
         row_combo.addWidget(self.combo_mode)
@@ -530,7 +531,7 @@ class SofiaDashboard(QMainWindow):
             logger.log("BLE", "INFO", "ACK_RECIBIDO", f"SEQ {event.get('seq')}: {event.get('cmd')}")
 
         elif tipo == "DONE":
-            # El ESP32 notificó que terminó la coreografía
+            # Evento reservado para una futura confirmación BLE real de finalización
             rutina = event.get("routine", "")
             self.log_event(f"ESP32 confirmó fin de {rutina}.")
             logger.log("ROBOT", "INFO", "RUTINA_COMPLETADA", rutina)
@@ -552,7 +553,7 @@ class SofiaDashboard(QMainWindow):
     # -------------------------------------------------------------------------
 
     def _enviar_comando_rutina(self, comando):
-        """Envía una rutina al destino seleccionado y pausa el seguimiento."""
+        """Envía una rutina y pausa el seguimiento antes de encolarla."""
         comando = str(comando).strip().upper()
 
         if self.rutina_esp32_activa:
@@ -565,55 +566,62 @@ class SofiaDashboard(QMainWindow):
             self.log_event(f"Rutina desconocida: {comando}")
             return
 
-        # En BLE se requiere una conexión activa con el ESP32.
         if self.radio_ble.isChecked() and not self.comm.is_ble_connected():
             self.log_event(
                 f"Gesto {comando} detectado, pero no hay conexión BLE."
             )
             return
 
-        # Duración estimada según catálogo oficial
-        duracion_nominal = RUTINAS.get(comando, 2000)
+        duracion_nominal = RUTINAS[comando]
+
+        # UDP no ejecuta una rutina en el ESP32; se conserva su flujo aparte.
+        if self.radio_udp.isChecked():
+            try:
+                enviado = self.comm.send_command(comando)
+                if enviado:
+                    self.log_event(f"{comando} enviado a simulación (UDP).")
+                else:
+                    self.log_event(f"No se pudo enviar {comando} a UDP.")
+            except Exception as error:
+                self.log_event(f"Error al enviar {comando} por UDP: {error}")
+            return
+
+        # IMPORTANTE: bloquear la GUI ANTES de encolar la rutina.
+        # Así VisionWorker no sigue despachando ángulos durante el envío.
+        self.rutina_esp32_activa = True
+        self.rutina_actual = comando
+        self._token_rutina += 1
+        token_actual = self._token_rutina
 
         try:
-            # El dispatcher enruta a UDP (destino configurado) o BLE
             enviado = self.comm.send_command(comando)
 
             if not enviado:
-                self.log_event(f"No se pudo enviar {comando}.")
+                self.rutina_esp32_activa = False
+                self.rutina_actual = None
+                self.log_event(f"No se pudo encolar la rutina {comando}.")
                 return
 
-            if self.radio_udp.isChecked():
-                # La simulacion no ejecuta la rutina en hardware ni confirma
-                # su fin, por lo que no se bloquea el seguimiento.
-                self.log_event(f"{comando} enviado a simulación (UDP).")
-                return
+            self.log_event(
+                f"{comando} enviado a ESP32. Seguimiento pausado."
+            )
 
-            # En el ESP32 la rutina se ejecuta localmente: se pausa el
-            # seguimiento hasta que llegue EVT,DONE (con temporizador de respaldo)
-            self.rutina_esp32_activa = True
-            self.rutina_actual = comando
-            self._token_rutina += 1
-            token_actual = self._token_rutina
-
-            self.log_event(f"{comando} transmitido a ESP32. Esperando confirmación de fin...")
-
-            # Respaldo: si por pérdida de paquete no llega EVT,DONE, se libera tras margen de seguridad
-            timeout_respaldo = duracion_nominal + MARGEN_RESPALDO_MS
+            # El firmware actual no envía DONE por BLE.
+            # Se usa la duración estimada más un margen de seguridad.
             QTimer.singleShot(
-                timeout_respaldo,
+                duracion_nominal + MARGEN_RESPALDO_MS,
                 lambda t=token_actual: self._timeout_respaldo_rutina(t)
             )
 
         except Exception as error:
-            self.log_event(f"Error al enviar {comando}: {error}")
             self.rutina_esp32_activa = False
             self.rutina_actual = None
+            self.log_event(f"Error al enviar {comando}: {error}")
 
     def _timeout_respaldo_rutina(self, token):
         """Libera el seguimiento si no llegó la notificación de fin del ESP32."""
         if self.rutina_esp32_activa and self._token_rutina == token:
-            self.log_event(f"Respaldo: rutina {self.rutina_actual} concluida por tiempo.")
+            self.log_event(f"Tiempo estimado de {self.rutina_actual} cumplido. Liberando seguimiento.")
             self._finalizar_rutina_esp32()
 
     def _finalizar_rutina_esp32(self):
@@ -647,6 +655,9 @@ class SofiaDashboard(QMainWindow):
             self._update_joint_display(90, 60)
             self.comm.send_control("REST")
             self.log_event("Reposo: comando REST enviado (90, 60).")
+        elif mode == "Desreposo":
+            self._update_joint_display(90, 120)
+            self._enviar_comando_rutina("DESREPOSO")
 
     def _update_joint_display(self, q1, q2):
         """Actualiza etiquetas y posiciones de los sliders sin disparar senales recursivas."""

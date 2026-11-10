@@ -56,9 +56,9 @@ Adafruit_PWMServoDriver pwm(0x40);
 #define ANGLE_MAX 120
 
 // ===== PROTOCOLO =====
-#define FRAME_MAX_LEN 64      // Longitud maxima de una trama
-#define NOTIFY_CHUNK 20       // Payload seguro con MTU por defecto (23 - 3)
-#define COLA_TRAMAS 8         // Tramas pendientes entre la tarea BLE y loop()
+#define FRAME_MAX_LEN 64 // Longitud maxima de una trama
+#define NOTIFY_CHUNK 20  // Payload seguro con MTU por defecto (23 - 3)
+#define COLA_TRAMAS 8    // Tramas pendientes entre la tarea BLE y loop()
 
 int q1Actual = -1;
 int q2Actual = -1;
@@ -104,7 +104,7 @@ const int pasosCorazon[][2] = {{90, 120}, {120, 90}, {90, 60}, {60, 90}};
 // BAILE: zigzag diagonal (postura TIJERA)
 const int pasosBaile[][2] = {{70, 70}, {110, 110}, {70, 110}, {110, 70}};
 // NEGAR: vaiven horizontal "no" (postura SWIPE)
-const int pasosNegar[][2] = {{65, 90}, {115, 90}};
+const int pasosNegar[][2] = {{60, 90}, {120, 90}};
 // PPT: tres golpes cortos de conteo (postura PPT)
 const int pasosPpt[][2] = {{90, 100}, {90, 75}};
 // CENTRAR: posicion neutra sostenida (postura ROCA)
