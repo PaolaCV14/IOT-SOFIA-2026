@@ -45,7 +45,7 @@ Por qué: Las referencias cruzadas deben producir texto correcto, y el estilo de
 
 Sugerencia: Dejen una sola etiqueta (\texttt{tab:compliance}) y escriban “Table \texttt{\textbackslash ref\{tab:compliance\}} summarizes...”. Usen \texttt{\textbackslash toprule}, \texttt{\textbackslash midrule} y \texttt{\textbackslash bottomrule} en todas las tablas.}
 {Se eliminaron las tres etiquetas redundantes (\texttt{tab:esp32c3}, \texttt{tab:MG90s} y \texttt{tab:PCA9685}) de Table~\ref{tab:compliance}, conservando únicamente \texttt{\textbackslash label\{tab:compliance\}}. En \rln{r1-1-cite} y \rln{wd-sat} se actualizaron las llamadas en el texto para citar directamente Table~\ref{tab:compliance}:
-\LabDSTquote{Furthermore, Table~\ref{tab:compliance} summarizes the critical parameters of each key electromechanical and electronic component against the module functional and operational requirements.}
+\LabDSTquote{Furthermore, Table~\ref{tab:compliance} evaluates the critical parameters of each key component against the requirements defined in Table~\ref{tab:system_requirements}, distinguishing verified compliance (\textit{Compliant}) from array-level items under assembly (\textit{Pending}).}
 Adicionalmente, se reemplazaron todas las líneas \texttt{\textbackslash hline} en Table~\ref{tab:sofia_message_contract} y Table~\ref{tab:sofia_log_validation} por \texttt{\textbackslash toprule}, \texttt{\textbackslash midrule} y \texttt{\textbackslash bottomrule} del paquete \texttt{booktabs}.}
 
 \LabDSTcomment{R1.2}{A}{Table~\ref{tab:functional_matrix}, Table~\ref{tab:bom_sofia}, Table~\ref{tab:power_balance}, Table~\ref{tab:sofia_message_contract}, Fig.~\ref{fig:sofia_mechanical_design}, Fig.~\ref{fig:sofia_simulation}, Fig.~\ref{fig:sofia_pcb_design}, and Algorithm~\ref{alg:sofia_ik}}
@@ -96,7 +96,7 @@ Sugerencia: Agreguen el regulador de 3.3 V (o la alimentación por USB) y su rie
 Por qué: Todo el artículo va en inglés [REQ].
 
 Sugerencia: Usen High, Medium y Low, y expliquen en el pie que P / I significa Probability / Impact.}
-{En Table~\ref{tab:risk_matrix} se tradujeron todos los valores de la columna \texttt{P / I} al inglés (\texttt{High / High}, \texttt{Medium / Medium}, \texttt{Low / High} y \texttt{Low / Medium}), y se añadió tanto en el título como en la nota al pie (\rln{r1-5-pi}) la definición explícita de \texttt{P / I} como \textit{Probability / Impact}.}
+{En Table~\ref{tab:risk_matrix} se tradujeron todos los valores de la columna \texttt{P / I} al inglés (\texttt{High / High}, \texttt{Medium / Medium}, \texttt{Low / High} y \texttt{Low / Medium}), y se añadió en el texto introductorio (\rln{r1-5-pi}), en el título y en la nota al pie de Table~\ref{tab:risk_matrix} la definición explícita de \texttt{P / I} como \textit{Probability / Impact}.}
 
 %-----------------------------------------------------------------
 \LabDSTreviewer{2}{Redacción científica e idioma}
@@ -114,10 +114,10 @@ Por qué: La objetividad exige afirmar solo lo que los datos sostienen; es la mi
 Sugerencia: Escriban “the current measurements are consistent with...” o “suggest...”, y reserven “refute” para cuando tengan la medición que discrimina (R3.4).}
 {Se moderaron todas las afirmaciones señaladas para que reflejen con precisión el alcance de los datos a $20\text{ Hz}$ y de la caracterización térmica:
 \begin{enumerate}
-    \item En \rln{r2-1-curr} y en el pie de Fig.~\ref{fig:current_characterization}, se retiró \textit{conclusively refute} y se redactó:
-    \LabDSTquote{While 20~Hz sampling cannot resolve high-frequency PWM switching transients and internal armature voltage was not directly probed, the quiescent dead-band and step-dependent transit duration are consistent with a dead-band proportional PWM controller that saturates under persistent stall.}
+    \item En \rln{r2-1-curr}, \rln{r3-4-disc}, \rln{disc-bb} y en el pie de Fig.~\ref{fig:current_characterization}, se retiró \textit{conclusively refute} y se redactó (en \rln{disc-bb}):
+    \LabDSTquote{Across small-step ($5^\circ$), manual ramp ($90^\circ$), and mechanical stall regimes, the 20~Hz current measurements are consistent with a dead-band controller that remains quiescent in rest ($I_{\text{quiesc}} = 3.12\text{ mA}$) and saturates under persistent error, although high-bandwidth ($\ge 5\text{ kHz}$) probing of the internal H-bridge terminals is required for definitive circuit-level discrimination between dead-band bang-bang switching and proportional PWM control.}
     \item En \rln{tm-claim}, se reemplazó \textit{the thermal dynamics are robustly characterized by} por:
-    \LabDSTquote{Consequently, within the observed transient regime, the heating rate is estimated by the empirical linear slope:}
+    \LabDSTquote{Summarizing the identified heating rates across trials via \eqref{eq:thermal_parameters}:}
     \item En \rln{r2-1-opt}, se eliminó la afirmación de que la telemetría óptica de $60\text{ FPS}$ ya corrobora los hallazgos eléctricos, distinguiendo el montaje óptico propuesto de las mediciones de corriente de Section~\ref{sec:thermal_experiment}. Asimismo, en \rln{disc-bb} y \rln{concl} se sustituyeron \textit{confirm} y \textit{conclusively demonstrate} por \textit{are consistent with} e \textit{indicate}.
 \end{enumerate}}
 
@@ -128,7 +128,7 @@ Por qué: Este corte corresponde a las etapas Apply y Build \& Validate de D-Lab
 
 Sugerencia: “In the current Apply stage, the electronic architecture is validated using COTS breakout boards...”}
 {Se corrigió la etapa D-Lab en \rln{hwstage} para reflejar las etapas actuales del proyecto:
-\LabDSTquote{In the current Apply and Build \& Validate stages, the electronic architecture is validated using COTS breakout boards on breadboards to connect the ESP32-C3, dual PCA9685 PWM drivers, and external 5.0~V power rails.}}
+\LabDSTquote{In the current Apply and Build \& Validate stages, system integration proceeded across five sequential increments documented in the project engineering logbook and repository commit history (Table~\ref{tab:integration_increments}), progressing from minimal single-axis PWM actuation to full fault-tolerant vision-to-BLE closed-loop operation on breadboard while the custom 4-layer PCB (Fig.~\ref{fig:sofia_pcb_design}) undergoes fabrication...}}
 
 \LabDSTcomment{R2.3}{A}{\Rlns{vis-es1}{vis-es2} (Section~\ref{sec:vision_pipeline})}
 {Los paréntesis repiten el nombre en lugar de traducirlo: “For waving (Dynamic Wave Gesture)” y “Two-handed rock–paper–scissors interaction (Two-Handed Rock–Paper–Scissors Intent)”.
@@ -157,8 +157,8 @@ Sugerencia: Conviertan cada ensayo en un párrafo o subsección (“Trial 1 (fai
 {Se atendieron los tres puntos indicados:
 \begin{enumerate}
     \item \textbf{Árbol de problemas (\rln{demo-tree} y Fig.~\ref{fig:problem_tree}):} Se reemplazó la lista de viñetas por un párrafo en prosa y el diagrama jerárquico en TikZ de Fig.~\ref{fig:problem_tree}, vinculando causas raíz, problema focal ($e(t) \neq 0$) y efectos directos.
-    \item \textbf{Protocolo de ensayos (\rlns{trials}{r2-1-curr}):} Se convirtieron las tres viñetas de Section~\ref{sec:thermal_experiment} en párrafos independientes en prosa encabezados en itálicas: \textit{Trial 1 (failure and degradation assessment).}, \textit{Trial 2 (extended thermal accumulation and cooling).} y \textit{Current telemetry and control characterization.}
-    \item \textbf{Mecanismos de watchdog (\rlns{wd}{wd-torque}):} Se sustituyó la lista numerada de Section~\ref{sec:risk_mitigation} por párrafos en prosa encabezados por \textit{Command saturation limiting.} y \textit{Stall timeout and pulse suspension.}
+    \item \textbf{Protocolo de ensayos (\rlns{trials}{r2-1-curr}):} Se convirtieron las tres viñetas de Section~\ref{sec:thermal_experiment} en párrafos independientes en prosa encabezados en itálicas: \textit{Trial 1 (failure and degradation assessment).}, \textit{Trial 2 (extended stall heating, NLLS identification, and cooling).} y \textit{Current telemetry and thermal capacitance identification.}
+    \item \textbf{Mecanismos de watchdog (\rlns{wd}{wd-torque}):} Se sustituyó la lista numerada de Section~\ref{sec:risk_mitigation} por párrafos en prosa encabezados por \textit{Command-driven channel saturation and timeout limiting.} y \textit{Bank-level overcurrent monitoring.}
 \end{enumerate}}
 
 %-----------------------------------------------------------------
