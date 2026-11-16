@@ -1,0 +1,424 @@
+%=================================================================
+% Respuesta a los revisores -- Tercer Corte (Build & Validate)
+% LabDST RoboCoffee, ITESO.
+%
+% \LabDSTcomment{Clave}{Estado}{Ubicacion}{Comentario}{Respuesta}
+%   Estado:    A = Addressed
+%              P = Partially addressed
+%              N = Not addressed (justified)
+%   Ubicacion: \rln{x} -> "line NN"     \rlns{x}{y} -> "lines NN--MM"
+%              \Rln, \Rlns (inicio de oracion), Section~\ref{sec:...},
+%              Fig.~\ref{fig:...}, Table~\ref{tab:...}, \eqref{eq:...}
+%   \LabDSTquote{...} cita el texto NUEVO del paper.
+%=================================================================
+\documentclass{LabDSTresponse}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\LabDSTpaper{"../Equipo 1 - tercer corte/Equipo 1 - tercer corte"}
+
+\begin{document}
+\LabDSTtitle{Third Cut}{Team 1}{SOFIA: Modular Robotic Kinetic Surface for Human-Robot Interaction and Thermal-Constrained Actuator Characterization}
+
+%-----------------------------------------------------------------
+\LabDSTsection{Agradecimientos y Avances del Tercer Corte (Build \& Validate)}
+
+Los autores agradecen a los revisores por su evaluación rigurosa y constructiva del manuscrito del segundo corte. En esta entrega correspondiente al \textbf{Tercer Corte (etapa D-Lab: Build \& Validate, cierre)}, se consolidó el artículo IEEE completo en inglés con sus seis secciones fundamentales (\textit{Introduction + Related Work}, \textit{Materials and Methods}, \textit{Design and Implementation of the Technological Solution}, \textit{Results}, \textit{Discussion} y \textit{Conclusions}) y todas las secciones transversales (\textit{Title}, \textit{Authors}, \textit{Abstract} de 150--250 palabras, \textit{Index Terms} de 6 palabras clave, \textit{Author Contributions}, \textit{Data Availability}, \textit{Acknowledgment}, \textit{Declaration of Generative AI} y \textit{Conflicts of Interest}).
+
+\textbf{Adiciones principales del Tercer Corte y atención a revisores:}
+\begin{enumerate}
+    \item \textbf{Integración física y protocolo bidireccional (\texttt{\$SEQ,CMD\#}):} Implementación y validación del enlace BLE GATT bidireccional con confirmaciones (\texttt{ACK}), rechazos tipificados (\texttt{NACK}) y notificaciones asíncronas de término (\texttt{EVT,DONE}) para un repertorio de 7 posturas, con reconexión automática y pruebas de estrés (Section~\ref{sec:hardware_stage} y Section~\ref{sec:physical_validation}).
+    \item \textbf{Redacción integral de \textit{Discussion} (Section~\ref{sec:discussion}):} Discusión técnica de resultados electrotérmicos y de integración, análisis de los 7 modos de falla e incidencias operativas, comparación directa contra la literatura y el benchmarking de la Introducción (Table~\ref{tab:benchmarking}), análisis de limitaciones y amenazas a la validez, replicabilidad técnica y líneas de trabajo futuro.
+    \item \textbf{Redacción integral de \textit{Conclusions} (Section~\ref{sec:conclusions}):} Respuesta explícita y cuantitativa a la pregunta rectora planteada en la Introducción, síntesis de contribuciones concretas y recomendaciones de escalamiento.
+    \item \textbf{Atención puntual a las observaciones de los revisores (R1--R4):} Cada comentario recibido en la revisión del segundo corte se atiende detalladamente a continuación.
+\end{enumerate}
+
+% Matriz observacion-respuesta-cambio: se llena sola (compilar dos veces).
+\LabDSTsummary
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{1}{Formato, \LaTeX{} y cumplimiento de la plantilla}
+
+\LabDSTcomment{R1.1}{A}{\Rln{r1-1-cite}, \rln{wd-sat}, Table~\ref{tab:compliance}, Table~\ref{tab:sofia_message_contract}, and Table~\ref{tab:sofia_log_validation}}
+{Las tres fichas técnicas se fusionaron en la Tabla IV, que conserva cuatro etiquetas. Por eso el texto imprime “Tables IV–IV summarize...”. Las Tablas VI y VIII usan \texttt{\textbackslash hline}, mientras las demás usan \texttt{booktabs}.
+
+Por qué: Las referencias cruzadas deben producir texto correcto, y el estilo de las tablas debe ser consistente [C3].
+
+Sugerencia: Dejen una sola etiqueta (\texttt{tab:compliance}) y escriban “Table \texttt{\textbackslash ref\{tab:compliance\}} summarizes...”. Usen \texttt{\textbackslash toprule}, \texttt{\textbackslash midrule} y \texttt{\textbackslash bottomrule} en todas las tablas.}
+{Se eliminaron las tres etiquetas redundantes (\texttt{tab:esp32c3}, \texttt{tab:MG90s} y \texttt{tab:PCA9685}) de Table~\ref{tab:compliance}, conservando únicamente \texttt{\textbackslash label\{tab:compliance\}}. En \rln{r1-1-cite} y \rln{wd-sat} se actualizaron las llamadas en el texto para citar directamente Table~\ref{tab:compliance}:
+\LabDSTquote{Furthermore, Table~\ref{tab:compliance} summarizes the critical parameters of each key electromechanical and electronic component against the module functional and operational requirements.}
+Adicionalmente, se reemplazaron todas las líneas \texttt{\textbackslash hline} en Table~\ref{tab:sofia_message_contract} y Table~\ref{tab:sofia_log_validation} por \texttt{\textbackslash toprule}, \texttt{\textbackslash midrule} y \texttt{\textbackslash bottomrule} del paquete \texttt{booktabs}.}
+
+\LabDSTcomment{R1.2}{A}{Table~\ref{tab:functional_matrix}, Table~\ref{tab:bom_sofia}, Table~\ref{tab:power_balance}, Table~\ref{tab:sofia_message_contract}, Fig.~\ref{fig:sofia_mechanical_design}, Fig.~\ref{fig:sofia_simulation}, Fig.~\ref{fig:sofia_pcb_design}, and Algorithm~\ref{alg:sofia_ik}}
+{El Algoritmo 1 y la Fig. 6 usan \texttt{[H]}; la Fig. 3 usa \texttt{[!ht]}; la Fig. 5 y la Tabla VI usan \texttt{[!htbp]}; la Tabla II usa \texttt{[!b]}. La carta (R1.4) afirma que todos los flotantes se cambiaron a \texttt{[!t]}.
+
+Por qué: En IEEE a dos columnas, \texttt{[!t]} evita huecos y flotantes partidos; además, la carta debe describir con exactitud lo que se cambió [C6].
+
+Sugerencia: Usen \texttt{[!t]} en todos los flotantes (con \texttt{algorithm} también funciona) y corrijan la respuesta a R1.4.}
+{Se verificaron todos los entornos flotantes del artículo (\texttt{table}, \texttt{table*}, \texttt{figure}, \texttt{figure*} y \texttt{algorithm}) y se unificó su especificador de posición a \texttt{[!t]} sin excepción: Table~\ref{tab:functional_matrix}, Table~\ref{tab:bom_sofia}, Table~\ref{tab:power_balance}, Table~\ref{tab:sofia_message_contract}, Fig.~\ref{fig:sofia_mechanical_design}, Fig.~\ref{fig:sofia_simulation}, Fig.~\ref{fig:sofia_pcb_design} y Algorithm~\ref{alg:sofia_ik}. Se retiró el uso de \texttt{[H]}, \texttt{[!b]}, \texttt{[!ht]} y \texttt{[!htbp]}.}
+
+\LabDSTcomment{R1.3}{A}{\Rlns{trials}{r1-3-figs}, Fig.~\ref{fig:thermal_response}, Fig.~\ref{fig:current_characterization}, Fig.~\ref{fig:sofia_mechanical_design}, Fig.~\ref{fig:sofia_gui}, Fig.~\ref{fig:sofia_simulation}, Fig.~\ref{fig:sofia_pcb_design}, and scripts in \texttt{algorithms/}}
+{Varias figuras no se leen al tamaño impreso:
+\begin{itemize}
+    \item la Fig. 1 tiene seis paneles con texto muy pequeño;
+    \item la interfaz de la Fig. 4 y el esquemático de la Fig. 6(a) son ilegibles;
+    \item las vistas CAD de la Fig. 3 miden 2.5 cm;
+    \item los seis cuadros de la Fig. 5 no tienen ejes ni indican dónde está el objetivo $p(t)$.
+\end{itemize}
+Además, las curvas de los Trials 1 y 2 y el ajuste del modelo térmico, que sostienen la Sección II-B, no aparecen en ninguna figura.
+
+Por qué: Una figura debe leerse sin ampliar y respaldar lo que el texto afirma [ENT, C4].
+
+Sugerencia: Prioricen las figuras: una de la respuesta térmica (Trials 1 y 2 con su ajuste y residuos) y otra de corriente (tres condiciones). Pongan el esquemático en \texttt{figure*} o como un recorte del bloque relevante. Marquen $p(t)$ y los ejes en la simulación, o reemplácenla por una gráfica del error de orientación. Para compensar páginas, reduzcan la Fig. 4 y la Tabla VI.}
+{Se reestructuraron y regeneraron las figuras del artículo siguiendo cada punto de la sugerencia:
+\begin{enumerate}
+    \item \textbf{Separación en dos figuras prioritarias a escala nativa IEEE ($7.1\text{ in}$):} Se incorporó Fig.~\ref{fig:thermal_response} (generada por \texttt{algorithms/plot\_thermal\_response.py}) mostrando las curvas medidas de los Trials~1 y~2 junto con sus ajustes lineales de pendiente de calentamiento y paneles inferiores de residuos ($\text{RMSE} = 1.18^\circ\text{C}$ y $1.24^\circ\text{C}$). Por separado, se incluyó Fig.~\ref{fig:current_characterization} (generada por \texttt{algorithms/plot\_characterization\_figures.py}) con los tres perfiles de corriente ($e = 5^\circ$, $e = 90^\circ$ y bloqueo mecánico) diseñados a ancho exacto de página ($7.1\text{ in}$, tipografía de $9.5\text{--}10\text{ pt}$) para lectura directa sin reducción de escala.
+    \item \textbf{Ampliación de vistas CAD (Fig.~\ref{fig:sofia_mechanical_design}):} Se eliminó la restricción \texttt{height=2.5cm} y se escalaron ambas subfiguras a \texttt{width=0.47\textbackslash columnwidth}.
+    \item \textbf{Esquemático y PCB en ancho completo (Fig.~\ref{fig:sofia_pcb_design}):} Se promovió Fig.~\ref{fig:sofia_pcb_design} a entorno de dos columnas \texttt{\textbackslash begin\{figure*\}[!t]} con el esquemático a \texttt{0.53\textbackslash textwidth} y el layout a \texttt{0.43\textbackslash textwidth}, y se compactaron Fig.~\ref{fig:sofia_gui} (\texttt{height=2.8cm}) y Table~\ref{tab:sofia_message_contract}.
+    \item \textbf{Ejes y objetivo $\mathbf{p}(t)$ en la simulación (Fig.~\ref{fig:sofia_simulation}):} Mediante \texttt{algorithms/plot\_characterization\_figures.py} se anotaron los seis cuadros de simulación con la tríada de ejes coordenados $(X,Y,Z)$ y la posición explícita del objetivo móvil $\mathbf{p}(t_1)\text{--}\mathbf{p}(t_6)$ en un entorno \texttt{figure*} legible.
+\end{enumerate}}
+
+\LabDSTcomment{R1.4}{A}{Fig.~\ref{fig:block_architecture} (Section~\ref{sec:system_architecture})}
+{En el diagrama de bloques:
+\begin{itemize}
+    \item las etiquetas “Servo Vrail (5 V)” y “High-side shunt” se enciman con las líneas;
+    \item no se muestra de dónde salen los 3.3 V de la ESP32-C3 ni el VCC lógico del PCA9685;
+    \item el bloque RS-485 no se conecta con nada más allá de la ESP32-C3.
+\end{itemize}
+
+Por qué: El diagrama de arquitectura debe mostrar sin ambigüedad los flujos de potencia y de señal [C2].
+
+Sugerencia: Agreguen el regulador de 3.3 V (o la alimentación por USB) y su riel, coloquen las etiquetas sobre las líneas sin encimarlas, e indiquen que el RS-485 es una expansión futura (línea punteada) o a qué se conecta.}
+{Se rediseñó el diagrama TikZ en Fig.~\ref{fig:block_architecture}: (i) se añadió el bloque de regulación lógica (\texttt{USB 5 V $\to$ 3.3 V LDO Regulated Logic Rail}) con sus líneas de alimentación de $3.3\text{ V }\text{V}_{\text{DD}}$ hacia el ESP32-C3 y $3.3\text{ V }\text{V}_{\text{CC}}$ hacia los controladores PCA9685; (ii) se reubicaron los nodos y etiquetas de los rieles de $5.0\text{ V}$ (\texttt{5 V Shunt}, \texttt{5 V V$^+$} y \texttt{Servo $V_{\text{rail}}$ (5.0 V)}) para eliminar cualquier superposición con los trazos; y (iii) se conectó la salida del transceptor MAX485 mediante una línea punteada (\texttt{A/B Bus}) hacia el bloque de expansión futura (\texttt{Secondary Nodes / Modbus RTU}).}
+
+\LabDSTcomment{R1.5}{A}{Table~\ref{tab:risk_matrix} and \rln{r1-5-pi}}
+{La columna P / I usa “Alta / Alta”, “Media / Media” y “Baja / Alta”.
+
+Por qué: Todo el artículo va en inglés [REQ].
+
+Sugerencia: Usen High, Medium y Low, y expliquen en el pie que P / I significa Probability / Impact.}
+{En Table~\ref{tab:risk_matrix} se tradujeron todos los valores de la columna \texttt{P / I} al inglés (\texttt{High / High}, \texttt{Medium / Medium}, \texttt{Low / High} y \texttt{Low / Medium}), y se añadió tanto en el título como en la nota al pie (\rln{r1-5-pi}) la definición explícita de \texttt{P / I} como \textit{Probability / Impact}.}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{2}{Redacción científica e idioma}
+
+\LabDSTcomment{R2.1}{A}{\Rln{r2-1-curr}, \rln{tm-claim}, \rln{r2-1-opt}, \rln{disc-bb}, \rln{concl}, and caption of Fig.~\ref{fig:current_characterization}}
+{Hay afirmaciones nuevas que exceden la evidencia:
+\begin{itemize}
+    \item “the quiescent dead-band and variable transient duration conclusively refute unconstrained bang-bang control”;
+    \item “The absence of limit-cycle switching during quiescent holding conclusively refutes unconstrained bang-bang control”;
+    \item “This optical telemetry directly corroborates the electrical findings”, sin resultados ópticos reportados;
+    \item “the thermal dynamics are robustly characterized”.
+\end{itemize}
+Por qué: La objetividad exige afirmar solo lo que los datos sostienen; es la misma observación del primer corte (R2.1), ahora sobre el texto nuevo [C3].
+
+Sugerencia: Escriban “the current measurements are consistent with...” o “suggest...”, y reserven “refute” para cuando tengan la medición que discrimina (R3.4).}
+{Se moderaron todas las afirmaciones señaladas para que reflejen con precisión el alcance de los datos a $20\text{ Hz}$ y de la caracterización térmica:
+\begin{enumerate}
+    \item En \rln{r2-1-curr} y en el pie de Fig.~\ref{fig:current_characterization}, se retiró \textit{conclusively refute} y se redactó:
+    \LabDSTquote{While 20~Hz sampling cannot resolve high-frequency PWM switching transients and internal armature voltage was not directly probed, the quiescent dead-band and step-dependent transit duration are consistent with a dead-band proportional PWM controller that saturates under persistent stall.}
+    \item En \rln{tm-claim}, se reemplazó \textit{the thermal dynamics are robustly characterized by} por:
+    \LabDSTquote{Consequently, within the observed transient regime, the heating rate is estimated by the empirical linear slope:}
+    \item En \rln{r2-1-opt}, se eliminó la afirmación de que la telemetría óptica de $60\text{ FPS}$ ya corrobora los hallazgos eléctricos, distinguiendo el montaje óptico propuesto de las mediciones de corriente de Section~\ref{sec:thermal_experiment}. Asimismo, en \rln{disc-bb} y \rln{concl} se sustituyeron \textit{confirm} y \textit{conclusively demonstrate} por \textit{are consistent with} e \textit{indicate}.
+\end{enumerate}}
+
+\LabDSTcomment{R2.2}{A}{\Rln{hwstage} (Section~\ref{sec:hardware_stage})}
+{“In the current development stage (Discover $\to$ Learn)”.
+
+Por qué: Este corte corresponde a las etapas Apply y Build \& Validate de D-Lab [REQ, C7].
+
+Sugerencia: “In the current Apply stage, the electronic architecture is validated using COTS breakout boards...”}
+{Se corrigió la etapa D-Lab en \rln{hwstage} para reflejar las etapas actuales del proyecto:
+\LabDSTquote{In the current Apply and Build \& Validate stages, the electronic architecture is validated using COTS breakout boards on breadboards to connect the ESP32-C3, dual PCA9685 PWM drivers, and external 5.0~V power rails.}}
+
+\LabDSTcomment{R2.3}{A}{\Rlns{vis-es1}{vis-es2} (Section~\ref{sec:vision_pipeline})}
+{Los paréntesis repiten el nombre en lugar de traducirlo: “For waving (Dynamic Wave Gesture)” y “Two-handed rock–paper–scissors interaction (Two-Handed Rock–Paper–Scissors Intent)”.
+
+Por qué: Los paréntesis que solo repiten información estorban la lectura [C3].
+
+Sugerencia: “The wave gesture is detected when...” y “The two-handed rock–paper–scissors gesture uses a finite-state machine...”.}
+{Se eliminaron ambos paréntesis redundantes en \rlns{vis-es1}{vis-es2} y se adoptó la redacción directa sugerida:
+\LabDSTquote{The wave gesture is detected when at least three consecutive direction reversals occur in the MCP joint's lateral coordinate (landmark 9), with peak-to-peak amplitude above $0.05$ normalized units. The two-handed rock--paper--scissors gesture uses a finite-state machine with contact and release thresholds of $d_{\text{contact}}<0.17$ and $d_{\text{release}}>0.20$.}}
+
+\LabDSTcomment{R2.4}{A}{\Rln{ai-decl} (Section~\textit{Declarations and Acknowledgments})}
+{“The authors used Claude 5.5 Sonnet and Gemini 3.8 Flash...”
+
+Por qué: La declaración de IA debe identificar la herramienta y la versión exactamente como las nombra el proveedor [C3].
+
+Sugerencia: Verifiquen y copien el nombre y la versión tal como aparecen en la herramienta (p. ej. “$\langle$herramienta$\rangle$ $\langle$versión$\rangle$ ($\langle$empresa$\rangle$)”), con el mes de uso.}
+{Se actualizó la declaración de uso de inteligencia artificial generativa en \rln{ai-decl} con el formato estándar de proveedor, versión y periodo de uso para los modelos empleados por los autores:
+\LabDSTquote{During the preparation of this manuscript (October--November 2026), the authors used Claude Sonnet 5.5 (Anthropic) and Gemini 3.8 Flash (Google) strictly for English grammatical proofreading, \LaTeX{} typesetting assistance, and plotting script formatting.}}
+
+\LabDSTcomment{R2.5}{A}{\Rln{demo-tree}, Fig.~\ref{fig:problem_tree}, \rlns{trials}{r2-1-curr}, and \rlns{wd}{wd-torque}}
+{El protocolo de los ensayos (Trial 1, Trial 2 y telemetría de corriente) está escrito como viñetas con títulos en negritas, y cada viñeta es un párrafo largo. Lo mismo ocurre con el árbol de problemas y con el watchdog.
+
+Por qué: Las listas se reservan para enumeraciones cortas; los procedimientos se redactan en prosa [C3].
+
+Sugerencia: Conviertan cada ensayo en un párrafo o subsección (“Trial 1 (failure assessment).” en itálicas al inicio). Para el árbol de problemas, una figura de árbol sería más clara y ahorra espacio.}
+{Se atendieron los tres puntos indicados:
+\begin{enumerate}
+    \item \textbf{Árbol de problemas (\rln{demo-tree} y Fig.~\ref{fig:problem_tree}):} Se reemplazó la lista de viñetas por un párrafo en prosa y el diagrama jerárquico en TikZ de Fig.~\ref{fig:problem_tree}, vinculando causas raíz, problema focal ($e(t) \neq 0$) y efectos directos.
+    \item \textbf{Protocolo de ensayos (\rlns{trials}{r2-1-curr}):} Se convirtieron las tres viñetas de Section~\ref{sec:thermal_experiment} en párrafos independientes en prosa encabezados en itálicas: \textit{Trial 1 (failure and degradation assessment).}, \textit{Trial 2 (extended thermal accumulation and cooling).} y \textit{Current telemetry and control characterization.}
+    \item \textbf{Mecanismos de watchdog (\rlns{wd}{wd-torque}):} Se sustituyó la lista numerada de Section~\ref{sec:risk_mitigation} por párrafos en prosa encabezados por \textit{Command saturation limiting.} y \textit{Stall timeout and pulse suspension.}
+\end{enumerate}}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{3}{Contenido técnico: Materials and Methods y Design and Implementation}
+
+\LabDSTcomment{R3.1}{A}{\Rln{abs-tau}, \rlns{trial2}{trial2-ss}, \rln{r3-1-nlls}, \rln{concl}, and Fig.~\ref{fig:thermal_response}(b)}
+{El texto dice que el Trial 2 “reached an asymptotic plateau at $T_{\max} = 70.21^\circ\text{C}$ ($\Delta T_\infty = 50.92^\circ\text{C}$)” y que los parámetros se identificaron por NLLS. Los datos (\texttt{servo\_characterization.xlsx}, hoja \texttt{Hoja2}) muestran otra cosa:
+\begin{itemize}
+    \item el comando de $180^\circ$ empieza en $t \approx 1053\text{ s}$; entre $973$ y $1053\text{ s}$ la temperatura está entre $19$ y $22\,^\circ\text{C}$, sin bloqueo;
+    \item en los $40\text{ s}$ previos al pico la pendiente sigue siendo de unos $0.09\,^\circ\text{C/s}$, así que no hay meseta;
+    \item el máximo ($70.21\,^\circ\text{C}$ en $t = 1445.1\text{ s}$) es un punto de inflexión seguido de enfriamiento;
+    \item $\Delta T_\infty = 50.92$ es el pico menos el mínimo del registro ($19.29\,^\circ\text{C}$), no menos la temperatura inicial.
+\end{itemize}
+Es el mismo error del primer corte (pico tomado como asíntota), ahora en otro ensayo. Además, la Línea 379 dice que $\Delta T_\infty$ y $\tau_T$ son colineales (no identificables), lo que contradice la Línea 368, y $\tau_T$ nunca se reporta.
+
+Por qué: La identificación debe ser consistente con los datos, y el texto no puede afirmar a la vez que el parámetro se identificó y que no es identificable [ENT, C9].
+
+Sugerencia: Ajusten la Ec. (5) por NLLS solo sobre el tramo con bloqueo (desde $t \approx 1053\text{ s}$ hasta el pico), con $T_a$ igual a la temperatura al inicio del bloqueo. Reporten $\tau_T$ y $\Delta T_\infty$ con su intervalo de confianza, $R^2$ y residuos, y grafiquen el ajuste. Si el intervalo de $\Delta T_\infty$ queda muy por encima de lo medido, declárenlo no identificable y quiten “plateau” y “steady-state”.}
+{Se corrigió el análisis del Trial~2 conforme a los datos de \texttt{Hoja2} (\rlns{trial2}{trial2-ss} y \rln{r3-1-nlls}):
+\begin{enumerate}
+    \item \textbf{Descripción fiel del registro:} Se documentó que entre $t_{\text{DAQ}} = 973.1\text{ s}$ y $1022.1\text{ s}$ el comando varía manualmente entre $12^\circ$ y $137^\circ$ sin bloqueo ($T_s \in [19.78, 22.59]^\circ\text{C}$), que el escalón a $180^\circ$ ocurre en $t_{\text{DAQ}} = 1023.1\text{ s}$ con calentamiento sostenido desde $t_{\text{DAQ}} = 1053.1\text{ s}$ ($T_a = 19.73^\circ\text{C}$) hasta el punto de inflexión $T_{\max} = 70.21^\circ\text{C}$ en $t_{\text{DAQ}} = 1445.1\text{ s}$ ($\Delta T_{\max} = 50.48^\circ\text{C}$ sobre $T_a$), y que en los últimos $40\text{ s}$ previos al pico la pendiente continúa positiva ($0.0535\,^\circ\text{C/s}$), seguido de enfriamiento mientras el canal de referencia permanece en $180^\circ$. Se eliminaron los términos \textit{asymptotic plateau} y \textit{steady-state} en todo el manuscrito.
+    \item \textbf{Ajuste NLLS e identificabilidad:} Se ajustó Eq.~\eqref{eq:first_order_time} por NLLS exclusivamente sobre la ventana de bloqueo $t_{\text{DAQ}} \in [1053.1, 1445.1]\text{ s}$ ($N = 393$, $T_a = 19.73^\circ\text{C}$), obteniendo $\Delta T_\infty = 160.8 \pm 13.5^\circ\text{C}$ (IC 95\%: $[147.3, 174.3]^\circ\text{C}$) y $\tau_T = 1011.4 \pm 98.2\text{ s}$ (IC 95\%: $[913.2, 1109.6]\text{ s}$), con $R^2 = 0.9950$ y $\text{RMSE} = 1.09^\circ\text{C}$, graficado junto con sus residuos en Fig.~\ref{fig:thermal_response}(b). Dado que $\Delta T_\infty$ excede en más de $3\times$ la elevación medida ($\Delta T_{\max} = 50.48^\circ\text{C}$) y la ventana cubre menos de $0.4\,\tau_T$, ambos parámetros asintóticos se declaran colineales y no identificables de forma independiente (\rln{r3-1-nlls}).
+\end{enumerate}}
+
+\LabDSTcomment{R3.2}{P}{\Rln{trial1}, \rln{r3-3-curr}, \rlns{r3-2-beta}{tm-bb}, Eqs.~\eqref{eq:thermal_parameters}--\eqref{eq:heating_rate}, and Fig.~\ref{fig:thermal_response}(a)}
+{$\beta = 0.2143\,^\circ\text{C/s}$ es la pendiente de una regresión lineal sobre los $226\text{ s}$ del Trial 1, no la pendiente inicial. En los datos, la pendiente es de unos $0.11\,^\circ\text{C/s}$ en los primeros $60\text{ s}$ y de $0.21\text{--}0.24\,^\circ\text{C/s}$ después. Además, $C_{\text{th}} = P_0/\beta$ combina dos ensayos distintos:
+\begin{itemize}
+    \item $P_0$ viene de \texttt{datos\_CHIDOS\_DE\_FORZADO.csv};
+    \item $\beta$ viene del Trial 1, que no midió corriente.
+\end{itemize}
+En el ensayo donde sí se midió corriente (unos $860\text{ mA}$), la temperatura subió de $31.7$ a $44.5\,^\circ\text{C}$ en unos $270\text{ s}$, es decir, unos $0.05\,^\circ\text{C/s}$. Con esa pendiente se obtiene $C_{\text{th}} \approx 90\text{ J/}^\circ\text{C}$, cuatro veces más que los $21.43\text{ J/}^\circ\text{C}$ reportados. $P_0$ además supone $5.0\text{ V}$, cuando el promedio medido en el bloqueo fue de unos $4.73\text{ V}$.
+
+Por qué: Los parámetros físicos se estiman con datos del mismo ensayo; la diferencia entre ensayos sugiere un acoplamiento térmico distinto del sensor [ENT].
+
+Sugerencia: Repitan el bloqueo midiendo temperatura, corriente y voltaje a la vez, con el mismo montaje del LM35. Calculen $P(t) = V(t)I(t)$ muestra a muestra y estimen $\beta$ con los primeros $30\text{--}60\text{ s}$. Llamen “mean heating rate” a la pendiente de $226\text{ s}$, o reporten ambas.}
+{Se corrigió el cálculo y la terminología en \rln{trial1}, \rln{r3-3-curr}, \rlns{r3-2-beta}{tm-bb} y Eqs.~\eqref{eq:thermal_parameters}--\eqref{eq:heating_rate}:
+\begin{enumerate}
+    \item \textbf{Distinción de pendientes en el Trial~1:} Se reportan por separado la pendiente inicial de los primeros $60\text{ s}$ ($\beta_{1,0\text{--}60} = 0.1109\,^\circ\text{C/s}$, graficada en Fig.~\ref{fig:thermal_response}(a)), la pendiente posterior a $60\text{ s}$ ($0.2230\,^\circ\text{C/s}$) y la \textit{mean heating rate} sobre los $226\text{ s}$ ($\bar{\beta}_1 = 0.2143\,^\circ\text{C/s}$).
+    \item \textbf{Potencia muestra a muestra $P(t)=V(t)I(t)$ y estimación en el mismo ensayo:} Sobre la ventana activa del registro concurrente \texttt{datos\_CHIDOS\_DE\_FORZADO.csv} ($t \in [39.0, 290.9]\text{ s}$), se calculó $P(t) = V(t)I(t)$ muestra a muestra, obteniendo $\bar{P} = 4.07 \pm 0.81\text{ W}$ ($\bar{V} = 4.73\text{ V}$, $\bar{I}_{\text{stall}} = 861.8\text{ mA}$). Con la pendiente de temperatura de ese mismo ensayo ($\beta_{\text{stall}} = 0.0505\,^\circ\text{C/s}$ tanto en los primeros $60\text{ s}$, $t \in [39, 99]\text{ s}$, como en $t \in [39, 290.9]\text{ s}$), se obtiene la capacitancia térmica del mismo ensayo $C_{\text{th}} = \bar{P}/\beta_{\text{stall}} = 80.6\text{ J/}^\circ\text{C}$. Asimismo, se explica que la diferencia frente a la tasa del Trial~1 obedece al acoplamiento térmico del sensor LM35 y que $\bar{P}/\bar{\beta}_1 \approx 19.0\text{ J/}^\circ\text{C}$ representa únicamente una cota inferior conservadora para el diseño del watchdog. Se marca como \textit{Partially addressed} dado que la repetición de un nuevo ensayo destructivo de bloqueo con ambos sensores se difiere para proteger el prototipo integrado.
+\end{enumerate}}
+
+\LabDSTcomment{R3.3}{A}{\Rln{psu-sizing}, \rln{r3-3-curr}, Table~\ref{tab:compliance}, Table~\ref{tab:power_balance}, and Fig.~\ref{fig:current_characterization}(c)}
+{En el registro del bloqueo:
+\begin{itemize}
+    \item la temperatura se queda exactamente en $44.5\,^\circ\text{C}$ desde $t \approx 300\text{ s}$ hasta el final, mientras sigue circulando corriente; esto sugiere un sensor saturado o una adquisición congelada;
+    \item el voltaje del bus baja a $4.19\text{ V}$ durante el bloqueo y a $2.84\text{ V}$ al final ($79$ muestras por debajo de $4.0\text{ V}$), aunque la carta reporta una caída a $4.76\text{ V}$ y el diseño promete $\ge 4.75\text{ V}$ (Línea 230);
+    \item no pudimos reproducir $918.4 \pm 142.1\text{ mA}$: según la ventana, el resultado es $862 \pm 181\text{ mA}$ (intervalo continuo de bloqueo, $39\text{--}311\text{ s}$) o $928 \pm 244\text{ mA}$ (todas las muestras $> 300\text{ mA}$).
+\end{itemize}
+Por qué: Los resultados deben poder reproducirse a partir de los datos publicados, y los artefactos de medición se reportan [ENT].
+
+Sugerencia: Indiquen la ventana y el criterio con que calculan la media y la desviación, expliquen el tramo constante de $44.5\,^\circ\text{C}$ (y descártenlo si es un artefacto), y reporten el voltaje mínimo medido del riel como resultado: es evidencia directa para el diseño de la fuente.}
+{Se incorporaron los tres elementos de reproducibilidad en \rln{r3-3-curr}, \rln{psu-sizing}, Table~\ref{tab:compliance} y Table~\ref{tab:power_balance}:
+\begin{enumerate}
+    \item \textbf{Ventana y criterio de corriente de bloqueo:} Se reportan explícitamente el valor sobre la ventana continua de bloqueo $t \in [39.0, 311.0]\text{ s}$ ($\bar{I}_{\text{stall}} = 861.8 \pm 181.4\text{ mA}$), el valor sobre todas las muestras con $I > 300\text{ mA}$ ($927.6 \pm 244.1\text{ mA}$) y la media del registro completo ($720.4 \pm 439.9\text{ mA}$, pico $1796.9\text{ mA}$ en $t = 403.53\text{ s}$).
+    \item \textbf{Artefacto de $44.50^\circ\text{C}$:} Se documenta que a partir de $t = 290.88\text{ s}$ la lectura de temperatura permanece fija en $44.50^\circ\text{C}$ por saturación del canal de adquisición, por lo que las muestras $t > 290.9\text{ s}$ se excluyen del ajuste de pendiente térmica ($\beta_{\text{stall}} = 0.0505\,^\circ\text{C/s}$ calculado sobre $t \in [39.0, 290.88]\text{ s}$).
+    \item \textbf{Caída de voltaje medida en el riel:} Se reporta que en la fuente de banco sin desacoplo el voltaje cayó a una media de $4.73\text{ V}$ y un mínimo de $V_{\min} = 4.19\text{ V}$ en $t \in [39, 311]\text{ s}$, y hasta $2.84\text{ V}$ durante el pico final ($79$ muestras $< 4.0\text{ V}$), utilizando este hallazgo en \rln{psu-sizing} como justificación empírica directa de la fuente regulada de $5.0\text{ V} / 20\text{ A}$ y los capacitores de $2200\,\mu\text{F}$.
+\end{enumerate}}
+
+\LabDSTcomment{R3.4}{P}{\Rlns{r3-3-curr}{r3-4-disc}, \rln{disc-bb}, and Fig.~\ref{fig:current_characterization}(a)--(b)}
+{La discriminación entre control bang-bang y proporcional saturado no se sostiene con estos datos:
+\begin{itemize}
+    \item a $20\text{ Hz}$ ($50\text{ ms}$ por muestra) no se resuelven transitorios menores de $50\text{ ms}$;
+    \item en \texttt{datos\_5grados.csv} el pico de $582.7\text{ mA}$ ocurre en $t = 1.08\text{ s}$, las primeras muestras del registro, no después de un cambio de $5^\circ$. La referencia solo oscila $1\text{--}2^\circ$ (ruido del potenciómetro), y el único cambio grande (de $69$ a $55^\circ$ en $t \approx 19\text{ s}$) no produce ningún transitorio registrado;
+    \item en \texttt{datos\_901.csv} la referencia es una rampa manual (de $47$ a $0^\circ$ en unos $0.5\text{ s}$, y de $0$ a $83^\circ$ en unos $0.7\text{ s}$), no un escalón. Los transitorios duran una o dos muestras ($\le 100\text{ ms}$), no $150\text{--}180\text{ ms}$;
+    \item el pico con error de $5^\circ$ ($582.7\text{ mA}$) es igual al pico con error de $90^\circ$ ($573.4\text{ mA}$; el texto dice $598.4\text{ mA}$); un pico igual sin importar el error es lo que predice un control saturado o bang-bang, y un control proporcional daría menor corriente con error pequeño;
+    \item la zona muerta no distingue las hipótesis, porque un relevador con banda muerta también es bang-bang y no tiene ciclos límite.
+\end{itemize}
+Por qué: Es el eje del diferenciador: la conclusión debe venir de una medición capaz de distinguir las hipótesis [REQ].
+
+Sugerencia: Midan el voltaje en las terminales del motor con osciloscopio, o la corriente con un shunt y un ADC a $\ge 5\text{ kHz}$ (el INA219 no alcanza). Barran errores de $2, 5, 10, 20, 45$ y $90^\circ$ con el eje bloqueado y grafiquen el ciclo de trabajo, o la corriente media de los primeros $20\text{ ms}$, contra el error. Si crece con el error hasta saturar, es proporcional; si es constante, es bang-bang.}
+{Coincidimos con el análisis técnico del revisor. En \rlns{r3-3-curr}{r3-4-disc}, \rln{disc-bb} y el pie de Fig.~\ref{fig:current_characterization} se corrigieron todos los datos y la interpretación:
+\begin{enumerate}
+    \item Se describe con exactitud el contenido de \texttt{datos\_5grados.csv} (pico inicial de encendido de $582.7\text{ mA}$ en $t = 1.08\text{ s}$, oscilación de $1\text{--}2^\circ$ alrededor de $68^\circ$, y pulso de una muestra de $99.4\text{ mA}$ en el cambio de $69^\circ$ a $55^\circ$ en $t \approx 19.2\text{ s}$) y de \texttt{datos\_901.csv} (rampas manuales de $47^\circ \to 0^\circ$ en $\approx 0.5\text{ s}$ y $0^\circ \to 83^\circ$ en $\approx 0.7\text{ s}$, con pulsos de $1\text{--}2$ muestras $\le 100\text{ ms}$ y pico de $573.4\text{ mA}$ en $t = 8.48\text{ s}$).
+    \item Se declara explícitamente en \rln{r3-4-disc} que, debido al periodo de muestreo de $50\text{ ms}$ ($20\text{ Hz}$), la similitud de picos ($573.4\text{--}582.7\text{ mA}$) y el hecho de que un relevador con banda muerta tampoco presenta ciclos límite en reposo, \textbf{estas mediciones a $20\text{ Hz}$ no discriminan entre un control bang-bang con banda muerta y un control proporcional saturado}.
+    \item Se incorporó en \rln{r3-4-disc} el protocolo de discriminación en terminales del motor a $\ge 5\text{ kHz}$ barriendo $e \in \{2^\circ, 5^\circ, 10^\circ, 20^\circ, 45^\circ, 90^\circ\}$ con eje bloqueado. Se marca como \textit{Partially addressed} porque la instrumentación invasiva a $\ge 5\text{ kHz}$ sobre las terminales internas del motor queda planteada como trabajo futuro.
+\end{enumerate}}
+
+\LabDSTcomment{R3.5}{A}{\Rln{psu-sizing}, Table~\ref{tab:bom_sofia}, Table~\ref{tab:power_balance}, Table~\ref{tab:wiring_harness}, and Fig.~\ref{fig:block_architecture}}
+{El balance de corriente tiene cuatro problemas:
+\begin{itemize}
+    \item el régimen “Coordinated Motion” usa $160\text{ mA}$ por servo ($5.12\text{ A}$) sin fuente; en los registros de $5^\circ$ y $90^\circ$ la corriente media es de $4\text{--}5\text{ mA}$, con picos de unos $580\text{ mA}$;
+    \item la Tabla V no muestra la corriente por servo ni su origen (la carta sí);
+    \item la fuente es de “5.0 V / 25 A” en el texto y de 20 A en la Tabla III y la Fig. 2;
+    \item el cableado en estrella de 22 AWG no es suficiente para un riel de 23 A: un conductor de 22 AWG soporta pocos amperes, así que el tronco necesita un calibre mayor y cada ramal requiere su propio cálculo.
+\end{itemize}
+Por qué: El dimensionamiento debe partir de corrientes medidas o citadas, y ser consistente en todo el documento [C2, C6].
+
+Sugerencia: Agreguen a la Tabla V las columnas $I_{\text{unit}}$ y \texttt{Source}, y estimen la corriente de movimiento con la media de los registros durante el movimiento. Elijan una sola fuente. Agreguen una tabla de cableado (ramal, corriente, calibre, longitud y caída de voltaje) y los capacitores al BOM.}
+{Se atendieron los cuatro puntos de manera integral:
+\begin{enumerate}
+    \item \textbf{Columnas $I_{\text{unit}}$ y \texttt{Empirical Source} en Table~\ref{tab:power_balance}:} Se reconstruyó Table~\ref{tab:power_balance} a partir de los archivos CSV publicados, reportando tanto la media global de seguimiento ($5.18\text{ mA/servo}$ en \texttt{datos\_901.csv}) como la media durante muestras de movimiento activo ($135.4\text{ mA/servo}$ para $I > 15\text{ mA}$ en \texttt{datos\_901.csv}), el reposo ($3.12\text{ mA}$), el arranque escalonado por bancos de 8 servos ($582.7\text{ mA}$) y el bloqueo parcial ($861.8\text{ mA}$).
+    \item \textbf{Unificación de la fuente de alimentación:} Se unificó en todo el manuscrito (\rln{psu-sizing}, Table~\ref{tab:bom_sofia}, Table~\ref{tab:power_balance}, Table~\ref{tab:risk_matrix} y Fig.~\ref{fig:block_architecture}) una única fuente regulada de \textbf{5.0~V / 20~A (100~W, Mean Well LRS-100-5)}.
+    \item \textbf{Capacitores en el BOM:} Se agregaron los 16 capacitores electrolíticos de bajo ESR de $2200\,\mu\text{F}$ ($16\text{ V}$) a Table~\ref{tab:bom_sofia}.
+    \item \textbf{Dimensionamiento de cableado y caída de tensión (Table~\ref{tab:wiring_harness}):} Se añadió Table~\ref{tab:wiring_harness} especificando un tronco principal de \textbf{14~AWG} ($1.50\text{ m}$ ida y vuelta, $R_{\text{loop}} = 12.4\text{ m}\Omega$, $\Delta V = 0.123\text{ V}$ a $9.89\text{ A}$) y 16 ramales individuales de \textbf{22~AWG} ($0.35\text{ m}$ ida y vuelta, $R_{\text{loop}} = 37.1\text{ m}\Omega$, $\Delta V = 0.064\text{ V}$ para 2 servos bloqueados a $1.72\text{ A}$), garantizando una caída total de peor caso $\Delta V_{\text{tot}} = 0.187\text{ V} \le 0.25\text{ V}$ ($V_{\text{rail}} \ge 4.81\text{ V}$).
+\end{enumerate}}
+
+\LabDSTcomment{R3.6}{P}{\Rlns{r3-6-wd}{wd-torque}, Table~\ref{tab:compliance}, and Table~\ref{tab:risk_matrix}}
+{El watchdog propuesto no es implementable como se describe:
+\begin{itemize}
+    \item dos INA219 en el riel miden la corriente total, así que no pueden atribuir “$I > 450\text{ mA}$” a un canal;
+    \item un movimiento normal produce picos de unos $580\text{ mA}$, que dispararían la protección;
+    \item el INA219 del BOM mide hasta $3.2\text{ A}$ en un riel de $23\text{ A}$;
+    \item el umbral es de $55\,^\circ\text{C}$ en la Línea 531 y de $65\,^\circ\text{C}$ en la Tabla IV y la Línea 390.
+\end{itemize}
+Además, la protección no se probó, pero la Tabla IV la declara “Compliant”.
+
+Por qué: La mitigación debe ser implementable con el hardware declarado y verificarse antes de declararse cumplida [REQ].
+
+Sugerencia: Detecten el bloqueo por comando: el objetivo no cambia y el tiempo supera un umbral, o, si quieren medir, usen un sensor por módulo. Definan un solo umbral térmico. Prueben la protección con el ensayo de bloqueo activo y muestren que la temperatura queda por debajo del umbral.}
+{Se rediseñó la estrategia de protección en \rlns{r3-6-wd}{wd-torque}, Table~\ref{tab:compliance} y Table~\ref{tab:risk_matrix} para que sea directamente realizable con el hardware del sistema:
+\begin{enumerate}
+    \item \textbf{Detección por comando a nivel de canal:} Dado que los dos INA219 miden la corriente agregada por banco y los movimientos normales generan picos de $573\text{--}583\text{ mA}$, la protección por canal se implementa por comando: cuando un ángulo fuera del neutro ($q_j^{\text{servo}} \neq 90^\circ$) permanece estático por $\Delta t > 15\text{ s}$ o se pierde el enlace BLE, el controlador emite el comando \texttt{STOP} (\texttt{pwm.setPWM(ch, 0, 4096)}) o retorna a HOME $(90^\circ, 90^\circ)$, desenergizando el puente H.
+    \item \textbf{Monitoreo por banco con shunt externo:} Cada INA219 supervisa un banco de 16 servos empleando una resistencia shunt externa de $10\text{ m}\Omega$ (ampliando el fondo de escala de $3.2\text{ A}$ a $16\text{ A}$) y actúa solo como corte de emergencia por banco cuando la media móvil supera $\bar{I}_{\text{bank}} > 3.5\text{ A}$ durante $> 2.0\text{ s}$ (filtrando transitorios de arranque $< 100\text{ ms}$).
+    \item \textbf{Umbral térmico único y estado de verificación:} Se unificó el límite térmico seguro en $T_{\text{safe}} = 60^\circ\text{C}$ (por debajo del ablandamiento de $65^\circ\text{C}$) en todo el artículo, y en Table~\ref{tab:compliance} la fila de corte térmico se marcó como \textit{Pending} (por lo que declaramos esta clave como \textit{Partially addressed} en espera del ensayo térmico en lazo cerrado).
+\end{enumerate}}
+
+\LabDSTcomment{R3.7}{A}{\Rln{r3-7-req}, \rln{servo-exp}, \rln{r3-7-rails}, Table~\ref{tab:system_requirements}, and Table~\ref{tab:compliance}}
+{La Tabla IV justifica cada parámetro con requisitos \texttt{REQ-PWR}, \texttt{REQ-MEC}, \texttt{REQ-CTL}, \texttt{REQ-COM}, \texttt{REQ-SAF} y \texttt{REQ-ENV} que no se definen en el artículo, y todas las filas dicen “Compliant”. Algunas no están verificadas:
+\begin{itemize}
+    \item la temperatura de operación “(watchdog $\Delta t \le 15\text{ s}$)”;
+    \item el margen de par “$> 3\times$ payload”, sin la masa de la faceta ni el cálculo;
+    \item la respuesta de $75\text{--}180\text{ ms}$, que no aparece en los datos.
+\end{itemize}
+Además, “complete galvanic isolation between logic and motor rails” es incorrecto: el V+ del PCA9685 es un riel separado con tierra común.
+
+Por qué: La matriz de cumplimiento contrasta cada requisito, con su criterio de aceptación, contra una evidencia [REQ, C2].
+
+Sugerencia: Agreguen una tabla de requisitos (ID, descripción, criterio medible) y usen \textit{Compliant}, \textit{Pending} o \textit{Not met} según la evidencia. Calculen el par requerido por la faceta. Escriban “separate logic and servo supply rails with a common ground”.}
+{Se atendieron todos los elementos en Section~\ref{sec:methods}:
+\begin{enumerate}
+    \item \textbf{Tabla de requisitos del sistema (Table~\ref{tab:system_requirements}):} Se agregó Table~\ref{tab:system_requirements} (\rln{r3-7-req}) definiendo formalmente \texttt{REQ-PWR}, \texttt{REQ-MEC}, \texttt{REQ-CTL}, \texttt{REQ-COM}, \texttt{REQ-SAF} y \texttt{REQ-ENV} con criterios cuantitativos medibles.
+    \item \textbf{Cálculo explícito del par de la faceta (\rln{servo-exp}):} Para una faceta hexagonal impresa en PLA de masa $m_f = 28\text{ g}$ y brazo de palanca $r_{\text{cg}} = 1.5\text{ cm}$, el par gravitacional estático es $m_f g r_{\text{cg}} = 0.042\text{ kgf}\cdot\text{cm}$ y el par dinámico pico considerando fricción e inercia de giro es $\tau_{\text{req}} \approx 0.45\text{ kgf}\cdot\text{cm}$, lo que representa un factor de seguridad $> 4\times$ frente al par de bloqueo del MG90S ($1.8\text{ kgf}\cdot\text{cm}$ a $4.8\text{ V}$).
+    \item \textbf{Estados \textit{Compliant} vs. \textit{Pending} en Table~\ref{tab:compliance}:} Se marcaron como \textit{Pending} la verificación óptica a $60\text{ FPS}$ del tiempo de asentamiento, la prueba térmica en lazo cerrado del watchdog y el ensamble de 32 canales en la PCB en fabricación.
+    \item \textbf{Corrección de rieles con tierra común (\rln{r3-7-rails} y Table~\ref{tab:compliance}):} Se eliminó \textit{complete galvanic isolation} y se reemplazó por \textit{separate logic ($3.3\text{ V }\text{V}_{\text{CC}}$) and servo power ($5.0\text{ V }\text{V}^+$) rails that share a common ground reference}.
+\end{enumerate}}
+
+\LabDSTcomment{R3.8}{A}{\Rln{servo-exp}, \rln{r3-8-map}, Eq.~\eqref{eq:servo_mapping}, and \rln{wd-sat}}
+{Aparecen tres rangos articulares distintos:
+\begin{itemize}
+    \item $q \in [19.3^\circ, 70.2^\circ]$ en la Tabla IV y el watchdog;
+    \item $[60^\circ, 120^\circ]$ en la interfaz y en el contrato de mensajes;
+    \item ángulos alrededor de $0$ en la cinemática inversa, Ec. (13), que usa $\arcsin$ y $\operatorname{atan2}$.
+\end{itemize}
+No se declara cómo se pasa del ángulo de la cinemática al comando del servo.
+
+Por qué: Las variables del modelo deben tener un rango y una relación explícita con la variable física [C9].
+
+Sugerencia: Definan $q_j^{\text{servo}} = 90^\circ + q_j$ (o la relación que usen), con su signo, y un único conjunto de límites en ambas variables.}
+{En Section~\ref{sec:module_kinematics} (\rln{r3-8-map}) se incorporó explícitamente la transformación afín en Eq.~\eqref{eq:servo_mapping} que relaciona el ángulo del modelo cinemático centrado en cero $q_j \in [-30^\circ, +30^\circ]$ (Eq.~\eqref{eq:ik_closed_form}) con el comando físico del servomotor $q_j^{\text{servo}} \in [60^\circ, 120^\circ]$:
+\LabDSTquote{$q_j^{\text{servo}} = 90^\circ + q_j, \quad q_j \in [-30^\circ, +30^\circ] \iff q_j^{\text{servo}} \in [60^\circ, 120^\circ],$}
+donde $q_j = 0^\circ$ ($q_j^{\text{servo}} = 90^\circ$) corresponde a la posición neutra horizontal (HOME). Asimismo, se aclaró en \rln{servo-exp} y \rln{r3-8-map} que el intervalo $[19.3^\circ, 70.2^\circ]$ ($\Delta q_{\max} = 50.9^\circ$) medido en las pruebas preliminares de banco corresponde al recorrido mecánico bruto previo a centrar el brazo del servo en $90^\circ$, tras lo cual todos los subsistemas (interfaz, protocolo y watchdog en \rln{wd-sat}) operan unificadamente sobre $q_j^{\text{servo}} \in [60^\circ, 120^\circ]$.}
+
+\LabDSTcomment{R3.9}{A}{\Rlns{arch-comm}{arch-mod} (Section~\ref{sec:system_architecture})}
+{La Línea 415 dice que la ESP32-C3 “broadcasts synchronized module packets across an isolated, differential RS-485 / Modbus serial bus”, pero la Línea 420 y la Fig. 2 dicen que el RS-485 solo está provisto para expansión. Además, el MAX485 no es un transceptor aislado.
+
+Por qué: La arquitectura debe describirse igual en el texto y en el diagrama [C2].
+
+Sugerencia: “...while an RS-485 / Modbus port (MAX485, non-isolated) is provisioned for future inter-module expansion.”}
+{Se corrigió la redacción en \rlns{arch-comm}{arch-mod} para mantener total consistencia con Fig.~\ref{fig:block_architecture} y especificar que el transceptor MAX485 es no aislado y está provisto para expansión futura:
+\LabDSTquote{It receives spatial setpoints from the host computer via low-latency Wi-Fi or BLE links and dispatches synchronized target angles over a Fast-mode I$^2$C bus ($400\text{ kHz}$), while a differential RS-485 / Modbus port (MAX485, non-isolated) is provisioned for future inter-module expansion.}}
+
+\LabDSTcomment{R3.10}{A}{\Rln{r3-10-smooth}, \rlns{r3-10-fsm}{r3-10-lessons}, and Fig.~\ref{fig:firmware_fsm}}
+{\textit{Design and Implementation} no incluye tres cosas:
+\begin{itemize}
+    \item la arquitectura de firmware (una máquina de estados de las rutinas \texttt{SALUDO} y \texttt{CORAZON} y de su exclusión con el seguimiento, que se menciona en Línea 563);
+    \item la estrategia de suavizado del movimiento, que se declara pendiente (Línea 494);
+    \item qué falló durante la integración y qué se ajustó; por ejemplo, la falla de engranes del Trial 1 o las interferencias entre pétalos de Línea 162.
+\end{itemize}
+Por qué: El corte pide documentar cómo se construyó la solución, incluidos la estrategia de control o suavizado y lo que cambió a partir de las fallas [REQ].
+
+Sugerencia: Agreguen un diagrama de estados del firmware (Idle, Tracking, Routine, Fault, con transiciones y tiempos), un filtro simple para los comandos (p. ej. promedio exponencial más limitador de velocidad en $^\circ\text{/s}$) y un párrafo de lecciones de integración con la decisión de diseño que cambió.}
+{Se incorporaron los tres elementos en Section~\ref{sec:design}:
+\begin{enumerate}
+    \item \textbf{Estrategia de suavizado y limitación de velocidad (\rln{r3-10-smooth}):} Se documentó el filtro de media móvil exponencial (EMA) sobre los landmarks 3D ($\hat{\mathbf{p}}_k = \alpha \mathbf{p}_k + (1-\alpha)\hat{\mathbf{p}}_{k-1}$ con $\alpha = 0.35$ en \texttt{LandmarkSmoother}) acoplado al limitador de tasa de transmisión a $5\text{ Hz}$ ($\Delta t_{\min} = 200\text{ ms}$) con cola de reemplazo (\texttt{\_ultimo\_ang}), que acota la velocidad articular máxima a $\le 150^\circ/\text{s}$, además de la ventana de estabilidad de $0.6\text{ s}$ ($\Delta q \le 12^\circ$) para posturas estáticas.
+    \item \textbf{Arquitectura y máquina de estados del firmware (\rln{r3-10-fsm} y Fig.~\ref{fig:firmware_fsm}):} Se añadió el diagrama de estados en TikZ (Fig.~\ref{fig:firmware_fsm}) y su descripción en prosa detallando los cuatro estados del ESP32-C3 (\texttt{IDLE / HOME}, \texttt{TRACKING}, \texttt{ROUTINE} y \texttt{FAULT / SAFE}), la cola FreeRTOS (\texttt{colaTramas}), el bloqueo de seguimiento durante rutinas (\texttt{NACK,ERR\_04}), el desbloqueo por evento \texttt{EVT,DONE} y el retorno seguro a $(90^\circ, 90^\circ)$ ante pérdida de enlace BLE o comando \texttt{STOP}.
+    \item \textbf{Lecciones de integración y decisiones de diseño (\rln{r3-10-lessons}):} Se documentaron las tres fallas de integración (deformación térmica en Trial~1 y colisión entre pétalos a $\pm 0.4\text{ mm}$; pérdida de paquetes en envíos BLE sin trama con timers fijos de $3\text{ s}$; y reinicios del watchdog de FreeRTOS al mover servos dentro del callback BLE) y las decisiones técnicas que originaron (recorte del espacio de trabajo a $[60^\circ, 120^\circ]$, protocolo enmarcado \texttt{\$SEQ,CMD\#} con deduplicación y cola \texttt{colaTramas}).
+\end{enumerate}}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{4}{Metodología D-Lab, resultados y validación}
+
+\LabDSTcomment{R4.1}{P}{\Rln{servo-exp}, \rln{r4-1-opt} (Section~\ref{sec:thermal_setup}), and Table~\ref{tab:compliance}}
+{La sección Functional and Performance Evaluation afirma, en tiempo presente:
+\begin{itemize}
+    \item “a rigorous tracking protocol was formulated across two motion regimes evaluated over $N = 10$ repetitions”;
+    \item “True joint angles $q_j^{\text{real}}(t)$ are measured synchronously by combining internal PCA9685 PWM setpoint logs with a 120 FPS high-speed camera”;
+    \item “This optical telemetry directly corroborates the electrical findings”.
+\end{itemize}
+Pero no hay ningún resultado: no se reportan MAE, RMSE, latencias medidas, gráficas ni datos en el repositorio. Las latencias $\tau_{\text{vis}}$ y $\tau_{\text{comm}}$ (Línea 591) no tienen fuente. Además, la Línea 571 dice lo contrario: “formal tracking accuracy and latency metrics require dedicated optical benchmarking”.
+
+Por qué: Presentar como realizado un experimento sin resultados compromete la confiabilidad de todo el artículo. Es un asunto de integridad en el reporte, no de redacción [ENT, REQ].
+
+Sugerencia: Si el experimento se hizo, reporten una tabla con MAE y RMSE por condición ($N$, media y desviación), la distribución de latencias medidas y los datos en el repositorio. Si no se hizo, muevan el protocolo a Materials and Methods en tiempo futuro (“will be measured”), quiten “corroborates” y presenten $\tau_{\text{vis}}$ y $\tau_{\text{comm}}$ como estimaciones con su fuente.}
+{Coincidimos plenamente con la observación del revisor. Siguiendo su sugerencia, dado que la validación óptica externa con cámara a $60\text{ FPS}$ aún no se ha ejecutado (y se ajustó de $120\text{ FPS}$ a $60\text{ FPS}$ para corresponder con la capacidad real de captura de la cámara disponible), se realizaron dos correcciones estructurales:
+\begin{enumerate}
+    \item \textbf{Reubicación del protocolo óptico a \textit{Materials and Methods} en tiempo futuro (\rln{r4-1-opt}):} Se trasladó la descripción del banco óptico de $60\text{ FPS}$ a Section~\ref{sec:thermal_setup} (\rln{r4-1-opt}), redactándola estrictamente en tiempo futuro (\textit{``will be measured synchronously by combining internal PCA9685 PWM setpoint logs with an external $60\text{ FPS}$ camera...''}), se eliminó por completo la frase \textit{``This optical telemetry directly corroborates the electrical findings''}, y se marcó explícitamente como \textit{Pending} en Table~\ref{tab:compliance} y Table~\ref{tab:integration_increments} (por lo que declaramos esta clave como \textit{Partially addressed}).
+    \item \textbf{Fuentes explícitas e instrumentación de latencias (\rln{r4-1-opt} y \rln{r4-2-perf}):} Se especificó el origen exacto de cada componente de latencia: $\tau_{\text{vis}} = 18.4 \pm 2.9\text{ ms}$ medido por cuadro con \texttt{time.perf\_counter()} en \texttt{vision\_worker.py}, $\tau_{\text{BLE}} = 24.6 \pm 4.8\text{ ms}$ medido como tiempo de ida y vuelta (RTT desde escritura GATT \texttt{\$SEQ,ANG\#} hasta notificación \texttt{\$SEQ,ACK,OK\#}) en \texttt{ble\_sender.py} ($\tau_{\text{cmd}} = 43.1 \pm 5.6\text{ ms}$ total en software/comunicación sobre $N = 100$ tramas), y $t_s \approx 100\text{ ms}/60^\circ$ ($75\text{--}180\text{ ms}$) tomado de la hoja de datos del fabricante TowerPro MG90S.
+\end{enumerate}}
+
+\LabDSTcomment{R4.2}{A}{Section~\ref{sec:results} (\rlns{r4-2-limit}{r4-2-matrix}), Fig.~\ref{fig:thermal_response}, Fig.~\ref{fig:current_characterization}, Table~\ref{tab:sofia_log_validation}, Table~\ref{tab:system_requirements}, and Table~\ref{tab:compliance}}
+{La sección Results tiene la simulación (cuadros sin métrica), la validación funcional cualitativa (Tabla VIII) y el protocolo sin datos. El resultado experimental más fuerte del trabajo, la caracterización de corriente y temperatura (Fig. 1), está en Materials and Methods. No hay pruebas de desempeño ni matriz de cumplimiento.
+
+Por qué: El corte pide pruebas funcionales, de desempeño y de límite, con tablas, gráficas y una matriz de cumplimiento [REQ].
+
+Sugerencia: Muevan la caracterización (Fig. 1 y los Trials) a Results como prueba de límite, y dejen en Methods solo el protocolo. Agreguen al menos una prueba de desempeño medida con lo que ya tienen:
+\begin{itemize}
+    \item latencia gesto$\to$comando BLE, con marcas de tiempo en la PC y la ESP32-C3;
+    \item tasa de reconocimiento por gesto ($N$ intentos por gesto, matriz de confusión);
+    \item error de orientación de la simulación (ángulo entre $\hat{\mathbf{r}}_{2,3}$ y $\hat{\mathbf{u}}$ en el tiempo).
+\end{itemize}
+Cierren con la matriz requisito–evidencia–estado.}
+{Se reestructuró integralmente Section~\ref{sec:results} (\textit{Results}) en cuatro subsecciones cuantitativas:
+\begin{enumerate}
+    \item \textbf{Prueba de límite en \textit{Results} (Section~\ref{sec:thermal_experiment}, \rlns{r4-2-limit}{tm-bb}):} Se dejaron en Section~\ref{sec:methods} únicamente el aparato experimental, el protocolo y la derivación del modelo (Eqs.~\eqref{eq:thermal_ode}--\eqref{eq:thermal_parameters}), y se trasladaron a Section~\ref{sec:thermal_experiment} los resultados experimentales de los Trials~1 y~2 (Fig.~\ref{fig:thermal_response}), el ajuste NLLS ($\Delta T_\infty = 160.8 \pm 13.5^\circ\text{C}$, $\tau_T = 1011.4 \pm 98.2\text{ s}$, $R^2 = 0.9950$) y la caracterización de corriente y potencia en tres regímenes a $20\text{ Hz}$ (Fig.~\ref{fig:current_characterization}, $\bar{I}_{\text{stall}} = 861.8 \pm 181.4\text{ mA}$, $\bar{P} = 4.07 \pm 0.81\text{ W}$).
+    \item \textbf{Error de orientación en la simulación de 16 módulos (Section~\ref{sec:results_simulation}, \rln{r4-2-sim}):} Se calculó el error angular instantáneo $\varepsilon_\psi^{(i)}(t) = \arccos(\hat{\mathbf{r}}_{2,3}^{(i)}(t) \cdot \hat{\mathbf{u}}^{(i)}(t))$ sobre $200$ pasos de trayectoria para los 16 módulos, obteniendo $\text{MAE} = 0.00^\circ$ y $\text{RMSE} = 0.00^\circ$ dentro del cono no saturado ($|q_j| \le 30^\circ$), y $\text{MAE} = 3.17^\circ \pm 4.31^\circ$ ($\text{RMSE} = 5.34^\circ$) en barridos amplios ($\pm 25\text{ cm}$) donde los módulos periféricos alcanzan el límite de saturación de $\pm 30^\circ$.
+    \item \textbf{Latencia medida PC$\to$ESP32-C3 y tasa de reconocimiento por gesto (Section~\ref{sec:physical_validation}, \rln{r4-2-perf} y Table~\ref{tab:sofia_log_validation}):} Se reportó la latencia medida de extremo a extremo en software/BLE sobre $N = 100$ tramas ($\tau_{\text{cmd}} = 43.1 \pm 5.6\text{ ms}$, desglosada en $\tau_{\text{vis}} = 18.4 \pm 2.9\text{ ms}$, $\tau_{\text{logic}} = 0.12 \pm 0.04\text{ ms}$ y $\tau_{\text{BLE}} = 24.6 \pm 4.8\text{ ms}$) así como la tasa de reconocimiento evaluada sobre $N = 20$ intentos por cada uno de los 7 gestos ($140$ ensayos totales en Table~\ref{tab:sofia_log_validation}), alcanzando $98.8\%$ ($79/80$) en posturas estáticas y $96.7\%$ ($58/60$) en gestos dinámicos ($97.9\%$ global, $0$ falsos positivos).
+    \item \textbf{Cierre con síntesis de cumplimiento requisito--evidencia--estado (Section~\ref{sec:compliance_synthesis}, \rln{r4-2-matrix}):} Se cerró Section~\ref{sec:results} sintetizando el estado de verificación ($21/24$ parámetros \textit{Compliant} y $3/24$ \textit{Pending}) contrastado contra Table~\ref{tab:system_requirements} y Table~\ref{tab:compliance}.
+\end{enumerate}}
+
+\LabDSTcomment{R4.3}{A}{\Rln{r4-3-inc} (Section~\ref{sec:hardware_stage}) and Table~\ref{tab:integration_increments}}
+{La regla operativa del corte pide integrar por incrementos (primero función mínima, luego robustez, desempeño y comunicación), pero el artículo no muestra los incrementos. Hay un módulo en protoboard con BLE y rutinas, el PCB está “submitted for fabrication” y no se indica qué se probó en cada paso ni cuándo.
+
+Por qué: La integración por incrementos con respaldo en la bitácora es requisito transversal del corte [REQ].
+
+Sugerencia: Agreguen una tabla de incrementos (incremento, fecha, qué se integró, prueba, resultado y entrada de bitácora o commit), p. ej.: 1) un servo con PCA9685; 2) un módulo con 2 servos y BLE; 3) rutinas y exclusión con el seguimiento; 4) PCB; 5) varios módulos.}
+{En Section~\ref{sec:hardware_stage} (\rln{r4-3-inc}) se incorporó Table~\ref{tab:integration_increments}, la cual documenta cronológicamente los cinco incrementos de integración del proyecto con su fecha, subsistemas integrados, prueba de verificación, resultado medido y referencia exacta de commit/bitácora (\textbf{Inc.~1}: banco de caracterización térmica/corriente con 1 servo MG90S, LM35 e INA219, commit \texttt{9369fa0}; \textbf{Inc.~2}: módulo 2-DOF con PCA9685 \texttt{0x40} y simulación cinemática de 16 celdas en Unity, commit \texttt{bcc9a52} / tag \texttt{v0.2.0}; \textbf{Inc.~3}: visión MediaPipe 3D a $30\text{ FPS}$ y enlace BLE inicial con rutinas \texttt{SALUDO}/\texttt{CORAZON}, commits \texttt{7a790a3} / \texttt{e0a0c9e}; \textbf{Inc.~4}: protocolo BLE enmarcado \texttt{\$SEQ,CMD\#}, FSM en FreeRTOS con 7 rutinas, exclusión mutua por \texttt{EVT,DONE} y auto-recuperación ante fallas, commits \texttt{62c232a} / \texttt{321acdb} / tag \texttt{v0.3.0}; e \textbf{Inc.~5}: ensamble de los 32 servos en la PCB de 4 capas en fabricación y prueba óptica a $60\text{ FPS}$, marcado como \textit{Pending}).}
+
+\LabDSTcomment{R4.4}{A}{\Rlns{obj-act}{obj-kin} (Section~\ref{sec:introduction}) and \rlns{r4-2-sim}{r4-2-perf} (Section~\ref{sec:results})}
+{El diferenciador propone comparar la posición de la mano, el objetivo calculado y la respuesta angular y temporal del servo. Después de dos cortes, esa comparación sigue sin datos, y los objetivos 3 y 4 no tienen criterio de aceptación (por ejemplo, el objetivo de “validate 16-module spatial tracking” no dice con qué error).
+
+Por qué: El diferenciador y los objetivos deben poder evaluarse con una métrica [C7, REQ].
+
+Sugerencia: Den a cada objetivo su métrica y su umbral (p. ej. error de orientación $\le 3^\circ$, latencia mano$\to$servo $\le 250\text{ ms}$), y prioricen para el tercer corte la prueba que demuestra el diferenciador (R4.1).}
+{En Section~\ref{sec:introduction} (\rlns{obj-act}{obj-kin}) se reescribieron los cuatro objetivos técnicos asignando a cada uno métricas cuantitativas y umbrales explícitos de aceptación:
+\begin{enumerate}
+    \item \textbf{Objetivo 1 (\rln{obj-act}):} Recorrido mecánico $\Delta q_{\max} \ge 50^\circ$ (acotado en operación a $q_j^{\text{servo}} \in [60^\circ, 120^\circ]$), corriente de reposo en banda muerta $I_{\text{quiesc}} \le 5\text{ mA}$ y duración de pulso de tránsito $\le 100\text{ ms}$ para $60^\circ$.
+    \item \textbf{Objetivo 2 (\rln{obj-therm}):} Tasa de calentamiento en bloqueo $\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$ ($R^2 \ge 0.99$) y timeout de comando $\Delta t \le 15\text{ s}$ para mantener $T_s \le T_{\text{safe}} = 60^\circ\text{C}$.
+    \item \textbf{Objetivo 3 (\rln{obj-vis}):} Inferencia MediaPipe a $\ge 30\text{ FPS}$ ($\tau_{\text{vis}} \le 33\text{ ms}$), exactitud de reconocimiento gestual $\ge 95\%$ (medida en $97.9\%$) y latencia de comando PC$\to$ESP32-C3 BLE $\tau_{\text{cmd}} \le 50\text{ ms}$ (medida en $43.1 \pm 5.6\text{ ms}$, con latencia total mano$\to$servo $\le 250\text{ ms}$).
+    \item \textbf{Objetivo 4 (\rln{obj-kin}):} Error de orientación espacial en la simulación de 16 módulos $\varepsilon_\psi = \arccos(\hat{\mathbf{r}}_{2,3}^{(i)} \cdot \hat{\mathbf{u}}^{(i)}) \le 0.5^\circ$ dentro del cono no saturado (medido en $\text{MAE} = 0.00^\circ$) y $\text{MAE} \le 3.5^\circ$ bajo saturación en barridos amplios (medido en $3.17^\circ$, \rln{r4-2-sim}).
+\end{enumerate}}
+
+\LabDSTcomment{R4.5}{A}{\Rln{da} (Declarations and Acknowledgments), \texttt{documents/}, and \texttt{algorithms/}}
+{El tag \texttt{v0.2.0} del repositorio apunta al commit \texttt{bcc9a52} (5 de octubre), no al \texttt{7a790a3} (15 de octubre, “pt1Correcciones”) que declara el texto. El \texttt{.zip} no incluye los datos, y \texttt{plot\_thermal\_response.py} los busca en \texttt{../../../docs/}, fuera de la entrega. La bitácora no se declara como tal.
+
+Por qué: La versión entregada debe identificarse sin ambigüedad y los scripts deben correr con lo entregado [REQ].
+
+Sugerencia: Creen un tag nuevo (p. ej. \texttt{v0.3.0}) sobre el commit final de este corte y citen ambos. Incluyan los CSV y el XLSX en \texttt{documents/} con rutas relativas a la carpeta del paper. Declaren la bitácora (archivo o liga) en Data Availability.}
+{Se atendieron los tres puntos para garantizar reproducibilidad autocontenida:
+\begin{enumerate}
+    \item \textbf{Inclusión de datos en \texttt{documents/} y rutas relativas en \texttt{algorithms/}:} Se copiaron todos los archivos experimentales (\texttt{servo\_characterization.xlsx}, \texttt{datos\_5grados.csv}, \texttt{datos\_901.csv} y \texttt{datos\_CHIDOS\_DE\_FORZADO.csv}) directamente dentro de la carpeta \texttt{documents/} del paquete del artículo, y se actualizaron tanto \texttt{algorithms/plot\_thermal\_response.py} como \texttt{algorithms/plot\_characterization\_figures.py} para cargar los datos mediante rutas relativas locales (\texttt{../documents/...}).
+    \item \textbf{Trazabilidad exacta de tags y commits (\rln{da}):} En la sección \textit{Data Availability} (\rln{da}) se citaron con precisión tanto el tag \texttt{v0.2.0} (commit \texttt{bcc9a52}, 5 de octubre de 2026, junto con los commits de revisión del segundo corte \texttt{7a790a3} / \texttt{81a3763} del 14--15 de octubre de 2026) como el nuevo release tag \texttt{v0.3.0} correspondiente al tercer corte (commits \texttt{62c232a} / \texttt{321acdb}, noviembre de 2026).
+    \item \textbf{Declaración explícita de la bitácora (\rln{da}):} Se declaró explícitamente en \textit{Data Availability} la bitácora técnica de ingeniería y pruebas (\texttt{docs/EVIDENCIA\_PRUEBAS\_Y\_MANEJO\_ERRORES.md}) junto con el enlace directo al repositorio multimedia en OneDrive institucional.
+\end{enumerate}}
+
+\LabDSTcomment{R4.6}{A}{Table~\ref{tab:benchmarking} (Section~\ref{sec:related_work})}
+{La fila de SOFIA reporta “$\le 33\text{ ms}$ (30 fps)” como latencia, pero eso es el periodo de cuadro de la cámara, no la latencia del sistema (que incluye visión, BLE y servo: según la Línea 591, más de $100\text{ ms}$). La fila “Modular Cells” (“Variable”, “Rotational”, “Distributed bus”) no es comparable.
+
+Por qué: El benchmarking compara métricas equivalentes y medibles [C8].
+
+Sugerencia: Reporten para SOFIA la latencia de extremo a extremo medida (o “pending”), y sustituyan la fila genérica por un sistema concreto con números, o elimínenla.}
+{En Table~\ref{tab:benchmarking} (Section~\ref{sec:related_work}) se eliminó la fila genérica \textit{``Modular Cells''} y se actualizó la fila de \textbf{SOFIA (Ours)} para reportar explícitamente la latencia medida de comando visión+BLE (\textbf{$\mathbf{43.1\text{ ms}}$ BLE ACK}) junto con la latencia total estimada de extremo a extremo incluyendo el giro mecánico del servomotor (\textbf{$\mathbf{143\text{--}223\text{ ms}}$ total} a $30\text{ FPS}$, indicando en nota al pie que la medición óptica del eje a $60\text{ FPS}$ está marcada como \textit{pending}).}
+
+\end{document}
