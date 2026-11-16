@@ -1,5 +1,7 @@
 {
   "latex-workshop.latex.recipe.default": "first",
+  "latex-workshop.kpsewhich.path": "D:/Latex/miktex/bin/x64/kpsewhich.exe",
+  "latex-workshop.synctex.path": "D:/Latex/miktex/bin/x64/synctex.exe",
   "latex-workshop.latex.recipes": [
     {
       "name": "pdflatex",
@@ -20,7 +22,7 @@
   "latex-workshop.latex.tools": [
     {
       "name": "pdflatex",
-      "command": "pdflatex",
+      "command": "D:/Latex/miktex/bin/x64/pdflatex.exe",
       "args": [
         "-synctex=1",
         "-interaction=nonstopmode",
@@ -31,7 +33,7 @@
     },
     {
       "name": "bibtex",
-      "command": "bibtex",
+      "command": "D:/Latex/miktex/bin/x64/bibtex.exe",
       "args": [
         "%DOCFILE%"
       ],
