@@ -588,6 +588,13 @@
 	
 	\linelabel{ln:r3-10-smooth}The control strategy distinguishes between continuous joint tracking and discrete choreographic routines. To eliminate high-frequency landmark jitter and abrupt servo steps during continuous tracking, a two-stage smoothing and rate-limiting pipeline is implemented: first, 3D MediaPipe coordinates $\mathbf{p}_k$ are filtered in \texttt{LandmarkSmoother} using an exponential moving average (EMA), $\hat{\mathbf{p}}_k = \alpha \mathbf{p}_k + (1 - \alpha)\hat{\mathbf{p}}_{k-1}$ with $\alpha = 0.35$; second, the BLE dispatcher enforces a $5\text{ Hz}$ ($\Delta t_{\min} = 200\text{ ms}$) transmission rate limiter with single-slot queue replacement (\texttt{\_ultimo\_ang}), discarding stale intermediate setpoints and bounding maximum slewing velocity to $\le 150^\circ/\text{s}$. For static gestures (\texttt{CORAZON}, \texttt{TIJERA}, \texttt{ROCA}, \texttt{PAPEL}), \texttt{PostureTrigger} requires a $0.6\text{ s}$ continuous hold with wrist angular variance $\le 12^\circ$ and a $1.0\text{ s}$ post-trigger cooldown.
 	
+	\begin{figure}[!t]
+		\centering
+		\includegraphics[width=0.82\columnwidth]{figures/maquina_estado_sofia.png}
+		\caption{Finite-state machine governing posture recognition, validation, and motion command execution in SOFIA.}
+		\label{fig:maquina_estado_sofia}
+	\end{figure}
+	
 	\subsection{Firmware Architecture, Electronic Interconnection, and Integration Lessons}
 	\label{sec:hardware_stage}
 	
