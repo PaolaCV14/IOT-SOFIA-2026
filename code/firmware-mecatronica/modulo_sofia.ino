@@ -115,17 +115,17 @@ const int pasosReposo[][2] = {{90, 60}};
 #define N_PASOS(arr) (sizeof(arr) / sizeof(arr[0]))
 
 // Duraciones resultantes (pasos * repeticiones * intervalo):
-// SALUDO 3000, CORAZON 2000, BAILE 3200, NEGAR 2100, PPT 1800,
-// CENTRAR 2000, REPOSO 2000 ms. Deben coincidir con RUTINAS en
+// SALUDO 3000, CORAZON 2000, TIJERA 3200, SWIPE 2100, PPT 1800,
+// ROCA 2000, PAPEL 2000 ms. Deben coincidir con RUTINAS en
 // code/communication/ble_sender.py (se usan como respaldo).
 const Rutina RUTINAS[] = {
     {"SALUDO", pasosSaludo, N_PASOS(pasosSaludo), 3, 500},
     {"CORAZON", pasosCorazon, N_PASOS(pasosCorazon), 1, 500},
-    {"BAILE", pasosBaile, N_PASOS(pasosBaile), 2, 400},
-    {"NEGAR", pasosNegar, N_PASOS(pasosNegar), 3, 350},
+    {"TIJERA", pasosBaile, N_PASOS(pasosBaile), 2, 400},
+    {"SWIPE", pasosNegar, N_PASOS(pasosNegar), 3, 350},
     {"PPT", pasosPpt, N_PASOS(pasosPpt), 3, 300},
-    {"CENTRAR", pasosCentrar, N_PASOS(pasosCentrar), 1, 2000},
-    {"REPOSO", pasosReposo, N_PASOS(pasosReposo), 1, 2000},
+    {"ROCA", pasosCentrar, N_PASOS(pasosCentrar), 1, 2000},
+    {"PAPEL", pasosReposo, N_PASOS(pasosReposo), 1, 2000},
 };
 const int NUM_RUTINAS = sizeof(RUTINAS) / sizeof(RUTINAS[0]);
 
@@ -205,9 +205,18 @@ void responderNack(long seq, const char *codigo)
 // ==============================================================
 const Rutina *buscarRutina(const String &nombre)
 {
+    String clave = nombre;
+    clave.trim();
+    clave.toUpperCase();
+    // Compatibilidad con alias previos de acción
+    if (clave == "BAILE") clave = "TIJERA";
+    else if (clave == "NEGAR") clave = "SWIPE";
+    else if (clave == "CENTRAR") clave = "ROCA";
+    else if (clave == "REPOSO") clave = "PAPEL";
+
     for (int i = 0; i < NUM_RUTINAS; i++)
     {
-        if (nombre.equalsIgnoreCase(RUTINAS[i].nombre))
+        if (clave == RUTINAS[i].nombre)
         {
             return &RUTINAS[i];
         }
@@ -690,7 +699,7 @@ void setup()
 
     Serial.println("BLE anunciado como ESP32-Servos");
     Serial.println("Trama: $SEQ,CMD[,P1[,P2]]#  (ej. $1,ANG,90,90#)");
-    Serial.println("Rutinas: SALUDO CORAZON BAILE NEGAR PPT CENTRAR REPOSO");
+    Serial.println("Rutinas: SALUDO CORAZON TIJERA SWIPE PPT ROCA PAPEL");
     Serial.println("Rango permitido: 60 a 120 grados");
 }
 

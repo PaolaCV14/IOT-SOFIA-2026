@@ -113,22 +113,22 @@ $<SEQ>,<STATUS>,<DATA>#
 | `ANG` | `q1,q2` (Enteros: 60 a 120) | Asigna ángulos simultáneos a $q_1$ y $q_2$. | `$SEQ,ACK,OK,q1,q2#` |
 | `Q1` | `angulo` (Entero: 60 a 120) | Asigna ángulo individual al eje horizontal. | `$SEQ,ACK,OK,q1#` |
 | `Q2` | `angulo` (Entero: 60 a 120) | Asigna ángulo individual al eje vertical. | `$SEQ,ACK,OK,q2#` |
-| `ROUTINE` | `SALUDO` \| `CORAZON` \| `BAILE` \| `NEGAR` \| `PPT` \| `CENTRAR` \| `REPOSO` | Ejecuta rutina coreográfica almacenada en el ESP32. | `$SEQ,ACK,STARTED,<RUTINA>#` |
+| `ROUTINE` | `SALUDO` \| `CORAZON` \| `TIJERA` \| `SWIPE` \| `PPT` \| `ROCA` \| `PAPEL` | Ejecuta rutina coreográfica almacenada en el ESP32. | `$SEQ,ACK,STARTED,<RUTINA>#` |
 | `HOME` | Ninguno | Centra ambos servomotores a posición neutra ($90^\circ, 90^\circ$). | `$SEQ,ACK,OK,90,90#` |
 | `REST` | Ninguno | Coloca los actuadores en posición de reposo ($90^\circ, 60^\circ$). | `$SEQ,ACK,OK,90,60#` |
 | `STOP` | Ninguno | Desactiva señales PWM en PCA9685 para liberar torque. | `$SEQ,ACK,STOPPED#` |
 
-### 4.1 Equivalencia Oficial Postura (Visión) $\rightarrow$ Rutina (Firmware)
+### 4.1 Equivalencia Oficial 1 a 1: Postura (Visión) $\rightarrow$ Rutina (Firmware)
 
-| Postura detectada (Visión) | Rutina enviada (`ROUTINE`) | Duración nominal | Descripción motriz en ESP32 |
+| Postura detectada (Visión) | Rutina enviada (`ROUTINE`) | Duración nominal | Acción motriz en ESP32 |
 | :--- | :--- | :---: | :--- |
 | `SALUDO` | `SALUDO` | 3000 ms | Cabeceo vertical repetitivo ($q_2: 60^\circ \leftrightarrow 120^\circ$). |
 | `CORAZON` | `CORAZON` | 2000 ms | Trayectoria orbital circular en ambos ejes. |
 | `PPT` | `PPT` | 1800 ms | Tres pulsos rítmicos de conteo ($q_2: 100^\circ \leftrightarrow 75^\circ$). |
-| `TIJERA` | `BAILE` | 3200 ms | Zigzag diagonal en $q_1$ y $q_2$. |
-| `ROCA` | `CENTRAR` | 2000 ms | Posición neutra sostenida ($90^\circ, 90^\circ$). |
-| `SWIPE` | `NEGAR` | 2100 ms | Vaivén horizontal de negación ($q_1: 60^\circ \leftrightarrow 120^\circ$, indistinto al sentido del swipe). |
-| `PAPEL` | `REPOSO` | 2000 ms | Posición de descanso sostenida ($90^\circ, 60^\circ$). |
+| `TIJERA` | `TIJERA` | 3200 ms | Baile en zigzag diagonal ($q_1, q_2$). |
+| `ROCA` | `ROCA` | 2000 ms | Centrado neutro sostenido ($90^\circ, 90^\circ$). |
+| `SWIPE` | `SWIPE` | 2100 ms | Vaivén horizontal de negación ($q_1: 60^\circ \leftrightarrow 120^\circ$, indistinto al sentido del swipe). |
+| `PAPEL` | `PAPEL` | 2000 ms | Posición de reposo sostenida ($90^\circ, 60^\circ$). |
 
 ---
 

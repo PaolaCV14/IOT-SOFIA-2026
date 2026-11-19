@@ -55,11 +55,11 @@ ANGULO_MAX = 120
 RUTINAS = {
     "SALUDO": 3000,
     "CORAZON": 2000,
-    "BAILE": 3200,
-    "NEGAR": 2100,
+    "TIJERA": 3200,
+    "SWIPE": 2100,
     "PPT": 1800,
-    "CENTRAR": 2000,
-    "REPOSO": 2000,
+    "ROCA": 2000,
+    "PAPEL": 2000,
 }
 
 # Comandos sin parámetros
