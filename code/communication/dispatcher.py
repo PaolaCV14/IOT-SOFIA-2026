@@ -5,7 +5,7 @@ Enruta comandos hacia:
 - ESP32-C3 mediante BLE.
 - Simulación Unity mediante UDP.
 
-Compatible con el firmware BLE de comandos directos.
+Compatible con el protocolo BLE enmarcado ($SEQ,CMD,PARAMS#) y comandos directos.
 """
 
 import socket

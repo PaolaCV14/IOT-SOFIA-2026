@@ -531,7 +531,7 @@ class SofiaDashboard(QMainWindow):
             logger.log("BLE", "INFO", "ACK_RECIBIDO", f"SEQ {event.get('seq')}: {event.get('cmd')}")
 
         elif tipo == "DONE":
-            # Evento reservado para una futura confirmación BLE real de finalización
+            # Evento emitido por el firmware al finalizar una rutina (EVT,DONE)
             rutina = event.get("routine", "")
             self.log_event(f"ESP32 confirmó fin de {rutina}.")
             logger.log("ROBOT", "INFO", "RUTINA_COMPLETADA", rutina)
@@ -606,8 +606,8 @@ class SofiaDashboard(QMainWindow):
                 f"{comando} enviado a ESP32. Seguimiento pausado."
             )
 
-            # El firmware actual no envía DONE por BLE.
-            # Se usa la duración estimada más un margen de seguridad.
+            # Respaldo de seguridad si no llega la notificación EVT,DONE por BLE.
+            # Se usa la duración nominal más un margen de seguridad.
             QTimer.singleShot(
                 duracion_nominal + MARGEN_RESPALDO_MS,
                 lambda t=token_actual: self._timeout_respaldo_rutina(t)
