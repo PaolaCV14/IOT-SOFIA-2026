@@ -132,9 +132,9 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
             POSTURAS DINÁMICAS                               POSTURAS ESTÁTICAS
           (Análisis multi-cuadro)                         (Sostenimiento temporal)
          1. SALUDO  ──► Rutina SALUDO                     4. CORAZÓN ──► Rutina CORAZON
-         2. SWIPE   ──► Rutina NEGAR                      5. TIJERA  ──► Rutina BAILE
-         3. PPT     ──► Rutina PPT                        6. ROCA    ──► Rutina CENTRAR
-                                                          7. PAPEL   ──► Rutina REPOSO
+         2. SWIPE   ──► Rutina SWIPE                      5. TIJERA  ──► Rutina TIJERA
+         3. PPT     ──► Rutina PPT                        6. ROCA    ──► Rutina ROCA
+                                                          7. PAPEL   ──► Rutina PAPEL
 ```
 
 ### Tabla Resumen de Mapeo Postura $\longleftrightarrow$ Acción Motriz:
@@ -142,10 +142,10 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 |:---:|:---|:---:|:---|:---|:---|:---:|
 | 1 | **SALUDO** | Dinámica | Mano abierta oscilando lateralmente ($>3$ cambios de sentido). | `$SEQ,ROUTINE,SALUDO#` | Asentimiento vertical repetitivo ($q_2 \in [60^\circ, 120^\circ]$). | 3000 ms |
 | 2 | **CORAZÓN** | Estática | 2 manos juntas; puntas de índices y pulgares a $D < 0.12$. | `$SEQ,ROUTINE,CORAZON#` | Trayectoria orbital circular continua en ambos ejes. | 2000 ms |
-| 3 | **TIJERA** | Estática | Dedos índice y medio extendidos en "V", anular y meñique doblados. | `$SEQ,ROUTINE,BAILE#` | Zigzag dinámico en ejes diagonales cruzados. | 3200 ms |
-| 4 | **ROCA** | Estática | Puño completamente cerrado, todos los dedos flexionados. | `$SEQ,ROUTINE,CENTRAR#` | Centrado neutro de calibración ($q_1=90^\circ, q_2=90^\circ$). | 2000 ms |
-| 5 | **SWIPE** | Dinámica | Mano abierta recorriendo $>20\%$ de pantalla en $<0.45$ s. | `$SEQ,ROUTINE,NEGAR#` | Vaivén horizontal de negación ("no", $q_1 \in [65^\circ, 115^\circ]$). | 2100 ms |
-| 6 | **PAPEL** | Estática | Mano completamente extendida y abierta hacia la cámara. | `$SEQ,ROUTINE,REPOSO#` | Descenso a posición de reposo seguro ($q_1=90^\circ, q_2=60^\circ$). | 2000 ms |
+| 3 | **TIJERA** | Estática | Dedos índice y medio extendidos en "V", anular y meñique doblados. | `$SEQ,ROUTINE,TIJERA#` | Baile en zigzag dinámico en ejes diagonales cruzados. | 3200 ms |
+| 4 | **ROCA** | Estática | Puño completamente cerrado, todos los dedos flexionados. | `$SEQ,ROUTINE,ROCA#` | Centrado neutro de calibración ($q_1=90^\circ, q_2=90^\circ$). | 2000 ms |
+| 5 | **SWIPE** | Dinámica | Mano abierta recorriendo $>20\%$ de pantalla en $<0.50$ s. | `$SEQ,ROUTINE,SWIPE#` | Vaivén horizontal de negación ("no", $q_1 \in [60^\circ, 120^\circ]$). | 2100 ms |
+| 6 | **PAPEL** | Estática | Mano completamente extendida y abierta hacia la cámara. | `$SEQ,ROUTINE,PAPEL#` | Descenso a posición de reposo seguro ($q_1=90^\circ, q_2=60^\circ$). | 2000 ms |
 | 7 | **PPT** | Dinámica | Puño golpeando rítmicamente 3 veces la palma horizontal base. | `$SEQ,ROUTINE,PPT#` | Tres pulsos rítmicos de cabeceo hacia el frente. | 1800 ms |
 
 ---
@@ -172,7 +172,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 
 #### Postura 3: Tijera / Paz — Estática
 * **Descripción del movimiento:** Mano con dedos índice y medio separados en ángulo agudo mientras el pulgar retiene los dedos anular y meñique contra la palma.
-* **Respuesta en sOFla:** Rutina coreográfica `BAILE`: el robot recorre las diagonales opuestas $(\pm 20^\circ)$ a ritmo constante.
+* **Respuesta en sOFla:** Rutina `TIJERA` (baile en zigzag): el robot recorre las diagonales opuestas $(\pm 20^\circ)$ a ritmo constante.
 
 > **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_03_TIJERA_BAILE` *(formato .mp4 o .jpg)*
@@ -181,7 +181,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 
 #### Postura 4: Roca / Puño Cerrado — Estática
 * **Descripción del movimiento:** Puño completamente cerrado mirando hacia el sensor, sostenido durante 0.6 s sin desplazamiento angular.
-* **Respuesta en sOFla:** Rutina `CENTRAR`: Ambos actuadores se posicionan exactamente en el origen neutro $(90^\circ, 90^\circ)$ y sostienen posición para calibración de cero mecánico.
+* **Respuesta en sOFla:** Rutina `ROCA` (centrado): Ambos actuadores se posicionan exactamente en el origen neutro $(90^\circ, 90^\circ)$ y sostienen posición para calibración de cero mecánico.
 
 > **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_04_ROCA_HOME` *(formato .mp4 o .jpg)*
@@ -190,7 +190,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 
 #### Postura 5: Swipe / Deslizar la Mano — Dinámica
 * **Descripción del movimiento:** Mano extendida desplazándose con velocidad superior a $0.8\text{ m/s}$ de un extremo al otro de la imagen.
-* **Respuesta en sOFla:** Rutina `NEGAR`: El servo horizontal $q_1$ oscila rápidamente entre $65^\circ$ y $115^\circ$ emulando un ademán de desaprobación o negación ("no").
+* **Respuesta en sOFla:** Rutina `SWIPE` (negación): El servo horizontal $q_1$ oscila rápidamente entre $60^\circ$ y $120^\circ$ emulando un ademán de desaprobación o negación ("no").
 
 > **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_05_SWIPE_NEGAR` *(formato .mp4 o .jpg)*
@@ -199,7 +199,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 
 #### Postura 6: Papel / Mano Abierta — Estática
 * **Descripción del movimiento:** Palma abierta con los cinco dedos separados y orientados verticalmente hacia la cámara.
-* **Respuesta en sOFla:** Rutina `REPOSO`: El robot baja la cabeza a $q_2 = 60^\circ$ (postura de sueño/descanso para reducir consumo de corriente en los servomotores).
+* **Respuesta en sOFla:** Rutina `PAPEL` (reposo): El robot baja la cabeza a $q_2 = 60^\circ$ (postura de sueño/descanso para reducir consumo de corriente en los servomotores).
 
 > **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_06_PAPEL_REPOSO` *(formato .mp4 o .jpg)*
