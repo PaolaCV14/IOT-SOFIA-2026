@@ -657,7 +657,8 @@ class SofiaDashboard(QMainWindow):
             self.log_event("Reposo: comando REST enviado (90, 60).")
         elif mode == "Desreposo":
             self._update_joint_display(90, 120)
-            self._enviar_comando_rutina("DESREPOSO")
+            self.comm.send_angles(90, 120)
+            self.log_event("Desreposo: ángulos enviados (90, 120).")
 
     def _update_joint_display(self, q1, q2):
         """Actualiza etiquetas y posiciones de los sliders sin disparar senales recursivas."""

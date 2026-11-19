@@ -624,10 +624,10 @@ class ServerCallbacks : public BLEServerCallbacks
         seqRutina = -1;
 
         // Medida de seguridad: regresar servos a posición neutra HOME (90, 90)
-        // para evitar torques forzados por pérdida de señal.
+        // vía cola FreeRTOS para mantener todo el acceso I2C en loop().
         if (pcaDisponible)
         {
-            moverAmbos(90, 90);
+            encolarTrama("HOME", true);
         }
 
         Serial.println("Cliente BLE desconectado -> Servos asegurados en HOME");
@@ -645,6 +645,7 @@ void setup()
     Serial.println("=== SOFIA: BLE + PCA9685 (protocolo $SEQ,CMD#) ===");
 
     colaTramas = xQueueCreate(COLA_TRAMAS, sizeof(Trama));
+    ultimaRespuesta.reserve(FRAME_MAX_LEN);
 
     Wire.begin(SDA_PIN, SCL_PIN);
 
