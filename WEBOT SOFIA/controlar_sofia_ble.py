@@ -6,7 +6,8 @@ from bleak import BleakClient
 # ESP32-C3 + PCA9685
 # ==========================================================
 
-ESP32_BLE = "24:DC:C3:48:82:76"
+ESP32_BLE = "70:AF:09:15:23:42"
+# "24:DC:C3:48:82:76"
 
 # Servicio BLE UART y característica RX
 UART_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
