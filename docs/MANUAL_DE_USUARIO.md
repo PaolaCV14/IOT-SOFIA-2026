@@ -70,10 +70,10 @@ El sistema opera bajo una arquitectura desacoplada de **cinco capas** que enlaza
 | Componente | Función | Conexión / Parámetros |
 |---|---|---|
 | **ESP32-C3** | Microcontrolador maestro y servidor BLE (`ESP32-Servos`) | `SDA = GPIO 8`, `SCL = GPIO 9` |
-| **Adafruit PCA9685** | Driver PWM I2C de 16 canales a 50 Hz | Dirección I2C `0x40` |
+| **Adafruit PCA9685** | Driver PWM I2C de 16 canales a 50 Hz | Dirección `0x40` (`0x70` All Call), `VCC` lógico a **`3.3 V`** desde ESP32-C3, pin **`OE` libre o a `GND`** |
 | **Servo Horizontal ($q_1$, Yaw)** | Giro lateral izquierda ↔ derecha | Canal `14` del PCA9685 (`60°`–`120°`) |
 | **Servo Vertical ($q_2$, Pitch)** | Inclinación abajo ↔ arriba | Canal `15` del PCA9685 (`60°`–`120°`) |
-| **Fuente externa 5 V** | Alimentación exclusiva de potencia para servomotores | Conectada al bornero `V+` del PCA9685 (tierra común con ESP32-C3) |
+| **Fuente externa 5 V ($\ge 2\text{ A}$)** | Alimentación exclusiva de potencia para los 2 MG90S | Conectada al bornero `V+` del PCA9685 (**5 V, $\ge 2\text{ A}$**, tierra común con ESP32-C3) |
 
 ### 3.2 Software (Estación PC)
 | Módulo | Ubicación | Función principal |
@@ -162,15 +162,18 @@ Todas las rutinas se ejecutan localmente en el ESP32-C3 de forma no bloqueante. 
 ## 6. Consideraciones de Uso, Seguridad y Solución de Problemas
 
 ### 6.1 Consideraciones Mecánicas y Eléctricas
+
 * **Rango seguro:** nunca enviar ni forzar ángulos fuera de **`60°` a `120°`**. El firmware rechaza valores fuera de rango con `NACK,ERR_01` para evitar colisiones mecánicas o bloqueo (`stall`) de los MG90S.
-* **Alimentación:** alimentar los servos desde una fuente dedicada de 5 V en el PCA9685; no alimentarlos desde el regulador de 3.3 V ni desde el pin USB del ESP32-C3.
+* **Alimentación y lógica:** alimentar la potencia de los servos (`V+` del PCA9685) con una fuente externa de **`5 V` y al menos `2 A`** (para absorber picos de arranque de ambos servos), manteniendo **GND común** con el ESP32-C3. Conectar el pin lógico **`VCC` del PCA9685 a `3.3 V`** del ESP32-C3 y dejar el pin **`OE` (Output Enable) libre o conectado a `GND`** (si `OE` recibe `3.3 V`, desactiva todas las salidas PWM). No alimentar los servos desde el regulador de `3.3 V` ni desde el pin USB del ESP32-C3.
 * **Desconexión segura:** si el enlace BLE se pierde de forma abrupta, el ESP32 encola automáticamente `HOME` (`90°, 90°`) y vuelve a anunciarse para permitir reconexión automática.
 
 ### 6.2 Solución Rápida de Fallos
+
 | Síntoma | Causa probable | Acción recomendada |
 |---|---|---|
 | Badge `ESP32: RECONECTANDO` | ESP32 apagado o fuera de alcance BLE | Verificar alimentación del ESP32-C3 y esperar 2.5 s a que reconecte solo. |
-| Terminal muestra `ERR_05 (I2C_FAIL)` | PCA9685 desconectado o sin alimentación | Revisar cables `SDA=8`, `SCL=9`, GND común y dirección `0x40`. |
+| Terminal muestra `ERR_05 (I2C_FAIL)` o `PCA9685 NO RESPONDE` | Bus I²C desconectado, sin `VCC 3.3 V` o dirección incorrecta | Revisar `SDA=8`, `SCL=9`, `VCC=3.3 V`, `GND` común y `OE` libre/GND. Ejecutar un **escaneo I²C**; deben aparecer **`0x40`** y **`0x70`**. |
+| Los servos zumban, tiemblan o reinician el ESP32 | Fuente externa insuficiente (`< 2 A`) o servos conectados al USB/3.3 V del ESP32 | Usar fuente dedicada de **`5 V / >= 2 A`** en el bornero `V+` del PCA9685 con tierra común. |
 | Mensaje `[ CÁMARA DESCONECTADA ]` | Cámara desconectada u ocupada por otra app | Cerrar otras apps que usen webcam o reconectar el USB (reintenta cada 1.5 s). |
 | No dispara postura estática | Movimiento excesivo de muñeca (> 12°) o menos de 0.6 s | Mantener la mano quieta durante ~0.6 s frente a la cámara con buena iluminación. |
 
@@ -181,7 +184,8 @@ Todas las rutinas se ejecutan localmente en el ESP32-C3 de forma no bloqueante. 
 > **Carpeta oficial de evidencias en OneDrive (ITESO):**  
 > [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)
 
-En la carpeta se almacenan **7 clips individuales por postura** (15–30 s cada uno, mostrando usuario + GUI + robot físico) y las pruebas de tolerancia a fallos:
+En la carpeta se almacenan **10 archivos de evidencia** (**7 clips individuales por postura** de 15–30 s mostrando usuario + GUI + robot físico, y **3 clips de tolerancia a fallos y demostración integral**):
+
 1. `EVIDENCIA_01_SALUDO`
 2. `EVIDENCIA_02_CORAZON`
 3. `EVIDENCIA_03_TIJERA_BAILE`
@@ -189,4 +193,6 @@ En la carpeta se almacenan **7 clips individuales por postura** (15–30 s cada 
 5. `EVIDENCIA_05_SWIPE_NEGAR`
 6. `EVIDENCIA_06_PAPEL_REPOSO`
 7. `EVIDENCIA_07_PPT_RITMICO`
-8. `EVIDENCIA_08_RECUPERACION_CAMARA` / `EVIDENCIA_09_RECONEXION_BLE_ESP32` / `EVIDENCIA_10_VIDEO_DEMOSTRACION_COMPLETO`
+8. `EVIDENCIA_08_RECUPERACION_CAMARA`
+9. `EVIDENCIA_09_RECONEXION_BLE_ESP32`
+10. `EVIDENCIA_10_VIDEO_DEMOSTRACION_COMPLETO`
