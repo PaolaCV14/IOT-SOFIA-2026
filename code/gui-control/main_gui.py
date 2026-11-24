@@ -248,7 +248,8 @@ class SofiaDashboard(QMainWindow):
         row_combo.addWidget(QLabel("Modo:"))
         self.combo_mode = QComboBox()
         self.combo_mode.addItems([
-            "Seguimiento Automatico 3D",
+            "Seguimiento de mano",
+            "Reconocimiento de posturas",
             "Control Manual",
             "Calibracion (Home)",
             "Reposo",
@@ -460,25 +461,33 @@ class SofiaDashboard(QMainWindow):
         self.lbl_latency_badge.setText(f"Lat: {latency:.1f} ms")
         self.lbl_gesture_val.setText(gesto)
 
-        # Evaluar con el disparador de posturas (filtro temporal y estabilidad)
-        disparo = self.posture_trigger.actualizar(
-            gesto, bloqueado=self.rutina_esp32_activa
-        )
-        if disparo is not None:
-            postura, rutina = disparo
-            self.log_event(f"Postura confirmada: {postura} -> Disparando {rutina}")
-            self._enviar_comando_rutina(rutina)
+        # Esta modalidad reconoce posturas y dispara rutinas.
+        # En seguimiento de mano no se ejecutan rutinas gestuales.
+        if self.combo_mode.currentText() == "Reconocimiento de posturas":
+            disparo = self.posture_trigger.actualizar(
+                gesto, bloqueado=self.rutina_esp32_activa
+            )
+            if disparo is not None:
+                postura, rutina = disparo
+                self.log_event(
+                    f"Postura confirmada: {postura} -> Disparando {rutina}"
+                )
+                self._enviar_comando_rutina(rutina)
 
     @Slot(float, float)
     def _on_angles_ready(self, q1_raw, q2_raw):
         """Registra estabilidad de muñeca y despacha ángulos al robot o simulación."""
-        # Alimenta el clasificador para exigir muñeca quieta en posturas estáticas
-        self.posture_trigger.registrar_muneca(q1_raw, q2_raw)
+        modo = self.combo_mode.currentText()
+
+        # La estabilidad de muñeca solo es necesaria para reconocer posturas.
+        if modo == "Reconocimiento de posturas":
+            self.posture_trigger.registrar_muneca(q1_raw, q2_raw)
 
         if self.rutina_esp32_activa:
             return
 
-        if self.combo_mode.currentText() == "Seguimiento Automatico 3D":
+        # En esta modalidad se envían continuamente los ángulos de la mano.
+        if modo == "Seguimiento de mano":
             # Escalado de seguridad alrededor de 90 grados
             q1 = int(max(
                 ANGULO_MIN,
@@ -647,7 +656,14 @@ class SofiaDashboard(QMainWindow):
             return
 
         mode = self.combo_mode.currentText()
-        if mode == "Calibracion (Home)":
+
+        if mode == "Seguimiento de mano":
+            self.posture_trigger.reset()
+            self.log_event("Modo activo: seguimiento continuo de la mano (Q1 y Q2).")
+        elif mode == "Reconocimiento de posturas":
+            self.posture_trigger.reset()
+            self.log_event("Modo activo: reconocimiento de posturas y ejecución de rutinas.")
+        elif mode == "Calibracion (Home)":
             self._update_joint_display(90, 90)
             self.comm.send_control("HOME")
             self.log_event("Calibracion: comando HOME enviado (90, 90).")
