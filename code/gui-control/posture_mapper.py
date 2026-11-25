@@ -26,10 +26,10 @@ import unicodedata
 POSTURA_A_RUTINA = {
     "SALUDO": "SALUDO",
     "CORAZON": "CORAZON",
-    "TIJERA": "BAILE",
-    "SWIPE": "NEGAR",
-    "ROCA": "CENTRAR",
-    "PAPEL": "REPOSO",
+    "TIJERA": "TIJERA",
+    "SWIPE": "SWIPE",
+    "ROCA": "ROCA",
+    "PAPEL": "PAPEL",
     "PPT": "PPT",
 }
 

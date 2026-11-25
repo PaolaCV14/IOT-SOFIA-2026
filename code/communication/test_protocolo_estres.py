@@ -61,10 +61,10 @@ def ejecutar_pruebas():
     secuencia_posturas = [
         ("SALUDO", "HOLA! SALUDO", True, "SALUDO"),
         ("CORAZON", "CORAZON", False, "CORAZON"),
-        ("TIJERA", "TIJERA", False, "BAILE"),
-        ("ROCA", "ROCA", False, "CENTRAR"),
-        ("SWIPE", "SWIPE DERECHA", True, "NEGAR"),
-        ("PAPEL", "PAPEL", False, "REPOSO"),
+        ("TIJERA", "TIJERA", False, "TIJERA"),
+        ("ROCA", "ROCA", False, "ROCA"),
+        ("SWIPE", "SWIPE DERECHA", True, "SWIPE"),
+        ("PAPEL", "PAPEL", False, "PAPEL"),
         ("PPT", "¡LISTO PARA JUGAR PPT!", True, "PPT"),
     ]
 
@@ -179,15 +179,15 @@ def ejecutar_pruebas():
         if res is not None:
             d_estable = res
 
-    pasa_multi = (disparos_multi_falsos == 0 and d_estable == ("TIJERA", "BAILE"))
+    pasa_multi = (disparos_multi_falsos == 0 and d_estable == ("TIJERA", "TIJERA"))
     print(f"  [{'EXITOSA' if pasa_multi else 'FALLIDA'}] Rechazo de saltos entre personas y aceptación tras estabilización")
     registros.append({
         "Categoria": "ESTRES_MULTIPLES_USUARIOS",
         "Condicion_Operacion": "2 usuarios en cuadro; salto de 80° en muñeca seguido de estabilización",
         "Entrada_Gesto": "TIJERA_COMPETENCIA",
-        "Comando_Generado": "BAILE (únicamente al estabilizar)",
-        "Trama_TX": "$210,ROUTINE,BAILE#",
-        "Respuesta_RX": "$210,ACK,STARTED,BAILE#",
+        "Comando_Generado": "TIJERA (únicamente al estabilizar)",
+        "Trama_TX": "$210,ROUTINE,TIJERA#",
+        "Respuesta_RX": "$210,ACK,STARTED,TIJERA#",
         "Latencia_ms": "0.12",
         "Comportamiento_Robot": "No oscila bruscamente; ejecuta acción solo cuando el usuario se estabiliza",
         "Resultado": "EXITOSA" if pasa_multi else "FALLIDA"
@@ -224,15 +224,15 @@ def ejecutar_pruebas():
     trigger_luz.registrar_muneca(5.0, 5.1)
     d_luz_ok = trigger_luz.actualizar("TIJERA", bloqueado=False)
 
-    pasa_luz = (disparos_luz == 0 and d_luz_ok == ("TIJERA", "BAILE"))
+    pasa_luz = (disparos_luz == 0 and d_luz_ok == ("TIJERA", "TIJERA"))
     print(f"  [{'EXITOSA' if pasa_luz else 'FALLIDA'}] Resistencia a parpadeo por baja luz y recuperación automática")
     registros.append({
         "Categoria": "ESTRES_ILUMINACION_VARIABLE",
         "Condicion_Operacion": "Baja iluminación con 50% dropouts intercalados seguido de luz normal",
         "Entrada_Gesto": "TIJERA_PARPADEO",
-        "Comando_Generado": "BAILE (al recuperar señal continua)",
-        "Trama_TX": "$310,ROUTINE,BAILE#",
-        "Respuesta_RX": "$310,ACK,STARTED,BAILE#",
+        "Comando_Generado": "TIJERA (al recuperar señal continua)",
+        "Trama_TX": "$310,ROUTINE,TIJERA#",
+        "Respuesta_RX": "$310,ACK,STARTED,TIJERA#",
         "Latencia_ms": "0.10",
         "Comportamiento_Robot": "Ignora parpadeos lumínicos y ejecuta comando al restablecerse la visibilidad",
         "Resultado": "EXITOSA" if pasa_luz else "FALLIDA"

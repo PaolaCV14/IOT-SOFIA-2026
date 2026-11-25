@@ -1,280 +1,262 @@
 import asyncio
-from bleak import BleakClient
+from bleak import BleakClient, BleakScanner
 
 # ==========================================================
-# SOFIA - CONTROL COMPLETO DE SERVOS Y RUTINAS POR BLE
-# ESP32-C3 + PCA9685
+# SOFIA 2026 - CONTROL BLE
+# Compatible con el nuevo protocolo: $SEQ,CMD[,P1[,P2]]#
 # ==========================================================
 
-ESP32_BLE = "70:AF:09:15:23:42"
-# "24:DC:C3:48:82:76"
+DEVICE_NAME = "ESP32-Servos"
 
-# Servicio BLE UART y característica RX
 UART_SERVICE_UUID = "6e400001-b5a3-f393-e0a9-e50e24dcca9e"
-UART_WRITE_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"
+UART_WRITE_UUID = "6e400002-b5a3-f393-e0a9-e50e24dcca9e"  # RX
+UART_NOTIFY_UUID = "6e400003-b5a3-f393-e0a9-e50e24dcca9e"  # TX
 
-# Límites mecánicos
 ANGULO_MIN = 60
 ANGULO_MAX = 120
+TIMEOUT_RESPUESTA = 5.0
 
-# ==========================================================
-# COMANDOS DISPONIBLES
-# ==========================================================
+# Nombres reales de rutina en el firmware nuevo.
+RUTINAS = {
+    "SALUDO": "SALUDO",
+    "CORAZON": "CORAZON",
+    "TIJERA": "TIJERA",
+    "SWIPE": "SWIPE",
+    "PPT": "PPT",
+    "ROCA": "ROCA",
+    "PAPEL": "PAPEL",
+    # Alias que el propio firmware convierte:
+    "BAILE": "TIJERA",
+    "NEGAR": "SWIPE",
+    "CENTRAR": "ROCA",
+    "REPOSO": "PAPEL",
+}
 
-RUTINAS = [
-    "SALUDO",
-    "CORAZON",
-    "BAILE",
-    "NEGAR",
-    "PPT",
-    "CENTRAR",
-    "REPOSO",
-    "DESREPOSO"
-]
-
-COMANDOS_SIMPLES = [
-    "PING",
-    "HOME",
-    "REST",
-    "STOP",
-    "SCAN"
-]
+COMANDOS_SIMPLES = {"PING", "HOME", "REST", "STOP"}
 
 
-# ==========================================================
-# VALIDAR Y PREPARAR COMANDO
-# ==========================================================
-
-def preparar_comando(comando):
-
-    comando = comando.strip().upper()
-
-    if not comando:
+def preparar_comando(entrada):
+    """Devuelve (comando, parametros) o None si el formato no es valido."""
+    texto = entrada.strip().upper()
+    if not texto:
         return None
 
-    # ------------------------------------------------------
-    # 1. RUTINAS
-    # ------------------------------------------------------
+    if texto in RUTINAS:
+        return "ROUTINE", [RUTINAS[texto]]
 
-    if comando in RUTINAS:
-        return comando
+    if texto in COMANDOS_SIMPLES:
+        return texto, []
 
-    # ------------------------------------------------------
-    # 2. COMANDOS SIMPLES
-    # ------------------------------------------------------
+    partes = [p.strip() for p in texto.split(",")]
 
-    if comando in COMANDOS_SIMPLES:
-        return comando
-
-    # ------------------------------------------------------
-    # 3. CONTROL INDIVIDUAL Q1 / Q2
-    # ------------------------------------------------------
-
-    partes = comando.split(",")
-
-    if len(partes) == 2:
-
-        tipo = partes[0].strip()
-        valor = partes[1].strip()
-
-        if tipo in ("Q1", "Q2"):
-
-            try:
-                angulo = int(valor)
-
-                if not ANGULO_MIN <= angulo <= ANGULO_MAX:
-                    print(
-                        f"Error: el ángulo debe estar entre "
-                        f"{ANGULO_MIN} y {ANGULO_MAX}."
-                    )
-                    return None
-
-                return f"{tipo},{angulo}"
-
-            except ValueError:
-                print("Error: introduce un ángulo entero válido.")
-                return None
-
-        # --------------------------------------------------
-        # 4. MOVIMIENTO CONJUNTO
-        # --------------------------------------------------
-
-        try:
-            q1 = int(partes[0].strip())
-            q2 = int(partes[1].strip())
-
-            if not (
-                ANGULO_MIN <= q1 <= ANGULO_MAX
-                and ANGULO_MIN <= q2 <= ANGULO_MAX
-            ):
-                print(
-                    f"Error: ambos ángulos deben estar entre "
-                    f"{ANGULO_MIN} y {ANGULO_MAX}."
-                )
-                return None
-
-            return f"{q1},{q2}"
-
-        except ValueError:
-            print("Error: introduce dos ángulos enteros válidos.")
-            return None
-
-    # ------------------------------------------------------
-    # 5. COMANDO ANG
-    # ------------------------------------------------------
-
-    if comando.startswith("ANG,"):
-
-        valores = comando.split(",")
-
-        if len(valores) != 3:
+    if partes[0] == "ANG":
+        if len(partes) != 3:
             print("Formato correcto: ANG,90,90")
             return None
-
         try:
-            q1 = int(valores[1])
-            q2 = int(valores[2])
-
-            if not (
-                ANGULO_MIN <= q1 <= ANGULO_MAX
-                and ANGULO_MIN <= q2 <= ANGULO_MAX
-            ):
-                print("Error: los ángulos deben estar entre 60 y 120.")
-                return None
-
-            return f"ANG,{q1},{q2}"
-
+            q1, q2 = int(partes[1]), int(partes[2])
         except ValueError:
-            print("Error: introduce ángulos enteros válidos.")
+            print("Los angulos deben ser numeros enteros.")
             return None
+        if not (ANGULO_MIN <= q1 <= ANGULO_MAX and ANGULO_MIN <= q2 <= ANGULO_MAX):
+            print(f"Los angulos deben estar entre {ANGULO_MIN} y {ANGULO_MAX}.")
+            return None
+        return "ANG", [str(q1), str(q2)]
 
-    print("Comando desconocido.")
+    if len(partes) == 2 and partes[0] in ("Q1", "Q2"):
+        try:
+            angulo = int(partes[1])
+        except ValueError:
+            print("El angulo debe ser un numero entero.")
+            return None
+        if not ANGULO_MIN <= angulo <= ANGULO_MAX:
+            print(f"El angulo debe estar entre {ANGULO_MIN} y {ANGULO_MAX}.")
+            return None
+        return partes[0], [str(angulo)]
+
+    # También acepta el formato heredado "90,90", pero lo envía
+    # usando el protocolo nuevo con confirmación.
+    if len(partes) == 2:
+        try:
+            q1, q2 = int(partes[0]), int(partes[1])
+        except ValueError:
+            print("Introduce dos angulos enteros, por ejemplo 90,90.")
+            return None
+        if not (ANGULO_MIN <= q1 <= ANGULO_MAX and ANGULO_MIN <= q2 <= ANGULO_MAX):
+            print(f"Los angulos deben estar entre {ANGULO_MIN} y {ANGULO_MAX}.")
+            return None
+        return "ANG", [str(q1), str(q2)]
+
+    print("Comando desconocido o formato incorrecto.")
     return None
 
 
-# ==========================================================
-# MOSTRAR MENU
-# ==========================================================
+async def buscar_esp32():
+    print(f"\nBuscando '{DEVICE_NAME}' por BLE...")
+    dispositivos = await BleakScanner.discover(timeout=10.0)
+    for dispositivo in dispositivos:
+        if dispositivo.name == DEVICE_NAME:
+            print(f"[OK] Encontrado: {dispositivo.name} ({dispositivo.address})")
+            return dispositivo
+
+    print(f"[ERROR] No se encontro '{DEVICE_NAME}'. Dispositivos detectados:")
+    for dispositivo in dispositivos:
+        print(f"  {dispositivo.name or '(sin nombre)'} | {dispositivo.address}")
+    if not dispositivos:
+        print("  No se detectaron dispositivos BLE.")
+    return None
+
 
 def mostrar_menu():
-
-    print("\n" + "=" * 55)
-    print("           SOFIA - CONTROL BLE")
-    print("=" * 55)
-
+    print("\n" + "=" * 58)
+    print("                 SOFIA - CONTROL BLE")
+    print("=" * 58)
     print("\n[RUTINAS]")
-    print("  SALUDO      -> Ejecutar saludo")
-    print("  CORAZON     -> Ejecutar corazón")
-    print("  BAILE       -> Ejecutar baile")
-    print("  NEGAR       -> Movimiento de negación")
-    print("  PPT         -> Movimiento PPT")
-    print("  CENTRAR     -> Centrar servos")
-    print("  REPOSO      -> Posición de descanso")
-    print("  DESREPOSO   -> Posición opuesta al descanso")
-
+    print("  SALUDO / CORAZON")
+    print("  TIJERA (alias: BAILE)")
+    print("  SWIPE (alias: NEGAR)")
+    print("  PPT")
+    print("  ROCA (alias: CENTRAR)")
+    print("  PAPEL (alias: REPOSO)")
     print("\n[CONTROL DE SERVOS]")
-    print("  90,90       -> Mover ambos servos")
-    print("  Q1,75       -> Mover solamente Q1")
-    print("  Q2,105      -> Mover solamente Q2")
-    print("  ANG,90,90   -> Movimiento conjunto")
-
-    print("\n[CONTROL DEL SISTEMA]")
-    print("  PING        -> Comprobar comunicación")
-    print("  HOME        -> Posición neutra")
-    print("  REST        -> Posición de descanso")
-    print("  STOP        -> Cancelar rutina y liberar PWM")
-    print("  SCAN        -> Escanear bus I2C")
-
-    print("\n[SALIR]")
-    print("  salir       -> Desconectar BLE")
-
-    print("-" * 55)
-    print(f"Rango permitido: {ANGULO_MIN}-{ANGULO_MAX} grados")
-    print("=" * 55)
+    print("  90,90       -> mover ambos")
+    print("  ANG,90,90   -> mover ambos")
+    print("  Q1,75       -> mover Q1")
+    print("  Q2,105      -> mover Q2")
+    print("\n[SISTEMA]")
+    print("  PING        -> comprobar comunicacion")
+    print("  HOME        -> posicion (90,90)")
+    print("  REST        -> posicion (90,60)")
+    print("  STOP        -> cancelar rutina y liberar PWM")
+    print("  salir       -> desconectar")
+    print("\nRango permitido: 60 a 120 grados")
+    print("=" * 58)
 
 
-# ==========================================================
-# PROGRAMA PRINCIPAL
-# ==========================================================
+class ProtocoloSOFIA:
+    def __init__(self):
+        self.seq = 0
+        self.buffer_rx = ""
+        self.respuestas = asyncio.Queue()
 
-async def main():
+    def siguiente_seq(self):
+        self.seq = (self.seq + 1) % 65536
+        return self.seq
 
-    print("=" * 55)
-    print("       SOFIA: CONTROL DE SERVOS POR BLE")
-    print("=" * 55)
+    def notificacion(self, _sender, data):
+        """Reconstruye las tramas aunque BLE las entregue fragmentadas."""
+        fragmento = bytes(data).decode("utf-8", errors="ignore")
+        self.buffer_rx += fragmento
 
-    print(f"\nConectando con {ESP32_BLE}...")
+        while "$" in self.buffer_rx and "#" in self.buffer_rx:
+            inicio = self.buffer_rx.find("$")
+            fin = self.buffer_rx.find("#", inicio)
+            if fin < 0:
+                self.buffer_rx = self.buffer_rx[inicio:]
+                break
+            trama = self.buffer_rx[inicio:fin + 1]
+            self.buffer_rx = self.buffer_rx[fin + 1:]
+            print(f"\n[BLE RX] {trama}")
+            try:
+                self.respuestas.put_nowait(trama)
+            except asyncio.QueueFull:
+                pass
 
-    try:
+        # Evita que basura o fragmentos incompletos hagan crecer el buffer.
+        if len(self.buffer_rx) > 256:
+            self.buffer_rx = self.buffer_rx[-64:]
 
-        async with BleakClient(
-            ESP32_BLE,
-            timeout=15.0
-        ) as client:
+    async def enviar(self, client, comando, parametros):
+        seq = self.siguiente_seq()
+        campos = [str(seq), comando] + [str(p) for p in parametros]
+        trama = "$" + ",".join(campos) + "#"
 
-            if not client.is_connected:
-                print("No se pudo conectar al ESP32.")
+        await client.write_gatt_char(
+            UART_WRITE_UUID, trama.encode("utf-8"), response=False
+        )
+        print(f"[BLE TX] {trama}")
+
+        # Espera la respuesta correspondiente a este SEQ.
+        limite = asyncio.get_running_loop().time() + TIMEOUT_RESPUESTA
+        while True:
+            restante = limite - asyncio.get_running_loop().time()
+            if restante <= 0:
+                print("[AVISO] No llego ACK. Revisa la conexion y el monitor serial.")
                 return
 
-            print("\n[OK] Conectado correctamente a SOFIA.")
+            try:
+                respuesta = await asyncio.wait_for(self.respuestas.get(), timeout=restante)
+            except asyncio.TimeoutError:
+                print("[AVISO] Tiempo de espera agotado esperando respuesta.")
+                return
 
+            contenido = respuesta[1:-1].split(",", 2)
+            if not contenido:
+                continue
+
+            try:
+                seq_respuesta = int(contenido[0])
+            except ValueError:
+                continue
+
+            # Los eventos DONE de rutinas pueden llegar después del ACK.
+            if seq_respuesta != seq:
+                continue
+
+            cuerpo = ",".join(contenido[1:])
+            if cuerpo.startswith("NACK"):
+                print(f"[ERROR ESP32] {cuerpo}")
+            else:
+                print(f"[OK ESP32] {cuerpo}")
+            return
+
+
+async def main():
+    print("=" * 58)
+    print("             SOFIA 2026 - CONTROL BLE")
+    print("=" * 58)
+
+    dispositivo = await buscar_esp32()
+    if dispositivo is None:
+        print("\nNo se pudo localizar la ESP32. Verifica que este encendida.")
+        return
+
+    protocolo = ProtocoloSOFIA()
+    try:
+        async with BleakClient(dispositivo, timeout=15.0) as client:
+            if not client.is_connected:
+                print("[ERROR] No se pudo establecer la conexion.")
+                return
+
+            print("\n[OK] Conectado a SOFIA.")
+            # Es indispensable habilitar Notify para recibir ACK y DONE.
+            await client.start_notify(UART_NOTIFY_UUID, protocolo.notificacion)
             mostrar_menu()
 
             while True:
+                entrada = await asyncio.to_thread(input, "\nSOFIA > ")
+                entrada = entrada.strip()
 
-                comando = await asyncio.to_thread(
-                    input,
-                    "\nSOFIA > "
-                )
-
-                comando = comando.strip()
-
-                if not comando:
+                if entrada.lower() in ("salir", "exit", "quit"):
+                    print("Desconectando...")
+                    break
+                if not entrada:
                     continue
 
-                # Salir
-                if comando.lower() in (
-                    "salir",
-                    "exit",
-                    "quit"
-                ):
-
-                    print("\nDesconectando de SOFIA...")
-                    break
-
-                # Preparar comando
-                mensaje = preparar_comando(comando)
-
-                if mensaje is None:
+                comando = preparar_comando(entrada)
+                if comando is None:
                     continue
 
-                # Enviar por BLE
-                try:
+                nombre, parametros = comando
+                await protocolo.enviar(client, nombre, parametros)
 
-                    await client.write_gatt_char(
-                        UART_WRITE_UUID,
-                        mensaje.encode("utf-8"),
-                        response=False
-                    )
-
-                    print(f"[BLE TX] {mensaje}")
-
-                except Exception as error:
-
-                    print(f"[ERROR BLE] {error}")
-                    break
+            await client.stop_notify(UART_NOTIFY_UUID)
 
     except Exception as error:
+        print(f"\n[ERROR BLE] {error}")
 
-        print(f"\n[ERROR DE CONEXION] {error}")
+    print("\nConexion finalizada.")
 
-    print("\nConexión finalizada.")
-
-
-# ==========================================================
-# EJECUCION
-# ==========================================================
 
 if __name__ == "__main__":
-
     asyncio.run(main())
