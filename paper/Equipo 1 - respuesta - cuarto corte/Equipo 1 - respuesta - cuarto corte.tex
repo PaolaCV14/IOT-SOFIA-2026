@@ -1,0 +1,98 @@
+%=================================================================
+% Respuesta a los revisores -- Cuarto Corte (Final)
+% LabDST SOFIA, ITESO.
+%=================================================================
+\documentclass{LabDSTresponse}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\LabDSTpaper{"../Equipo 1 - cuarto corte/Equipo 1 - cuarto corte"}
+
+\begin{document}
+\LabDSTtitle{Fourth Cut}{Team 1}{SOFIA: Modular Robotic Kinetic Surface for Human-Robot Interaction and Thermal-Constrained Actuator Characterization}
+
+%-----------------------------------------------------------------
+\LabDSTsection{Agradecimientos y Cierre del Cuarto Corte}
+
+Los autores agradecen al editor y a los revisores por su evaluación detallada de la versión preliminar del tercer corte. En esta entrega final (\textbf{Cuarto Corte}) se atendieron íntegramente las 16 observaciones (\textbf{R1.1--R1.3}, \textbf{R2.1--R2.3}, \textbf{R3.1--R3.4} y \textbf{R4.1--R4.6}) manteniendo el formato oficial de la plantilla \texttt{IEEEtran.cls}, depurando cualquier cifra sin respaldo en los registros entregados, cerrando la protección térmica para seguimiento continuo y alineando los datos en \texttt{documents/} con los resultados reportados.
+
+% Matriz observacion-respuesta-cambio: se llena sola (compilar dos veces).
+\LabDSTsummary
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{1}{Formato, \LaTeX{} y cumplimiento de la plantilla}
+
+\LabDSTcomment{R1.1}{A}{Preamble, Table~\ref{tab:bom_sofia}, Table~\ref{tab:power_balance}, Fig.~\ref{fig:thermal_response}, and Fig.~\ref{fig:current_characterization}}
+{Para quedar en 11 páginas, el preámbulo redujo el interlineado (0.91), el tamaño de letra (9.5 pt) y los espacios de flotantes y ecuaciones; el PDF restaurado tiene 13 páginas y el máximo es 10. Sugerencia: no modifiquen el interlineado ni la letra, compacten la Tabla III, fusionen la Tabla VII con la Tabla VI y eliminen repeticiones entre texto y pies de figura.}
+{Se restauró íntegramente el formato original de \texttt{IEEEtran.cls}: se eliminaron del preámbulo \texttt{\textbackslash linespread\{0.91\}}, \texttt{\textbackslash fontsize\{9.5pt\}\{10.0pt\}} y los ajustes de \texttt{\textbackslash textfloatsep}/\texttt{\textbackslash abovedisplayskip}. Para recuperar espacio sin suprimir contenido técnico: (i) se compactaron las descripciones de Table~\ref{tab:bom_sofia} a un máximo de dos líneas por fila; (ii) se fusionó la especificación de cableado dentro de Table~\ref{tab:power_balance} (conservando ambas etiquetas \texttt{tab:power\_balance} y \texttt{tab:wiring\_harness}); y (iii) se acortaron los pies de Fig.~\ref{fig:thermal_response} y Fig.~\ref{fig:current_characterization} remitiendo los valores numéricos detallados a Section~\ref{sec:thermal_experiment}.}
+
+\LabDSTcomment{R1.2}{A}{Section~\ref{sec:system_architecture} (Mechanical Design), \\rln{ln:r3-10-smooth}, Fig.~\ref{fig:sofia_mechanical_design}, and Fig.~\ref{fig:maquina_estado_sofia}}
+{La Fig. 3 (CAD del módulo) y la Fig. 6 (máquina de estados de posturas) no se citan en el texto. Sugerencia: cítenlas donde se describen, diciendo qué debe mirar el lector en cada una.}
+{Se incorporaron ambas citas y sus explicaciones antes de aparecer: en \textit{Mechanical Design and Assembly} se citó Fig.~\ref{fig:sofia_mechanical_design}(a)--(b) describiendo la base estructural, el soporte gimbal, la faceta hexagonal y el montaje ortogonal de los dos MG90S; y en \\rln{ln:r3-10-smooth} se citó Fig.~\ref{fig:maquina_estado_sofia} explicando las transiciones de validación de \texttt{PostureTrigger}.}
+
+\LabDSTcomment{R1.3}{A}{Fig.~\ref{fig:sofia_simulation}, Fig.~\ref{fig:maquina_estado_sofia}, and Fig.~\ref{fig:modulo_fisico}}
+{Al tamaño impreso: los seis cuadros de la Fig. 5 son muy pequeños; el texto de la Fig. 6 no se lee; y la Fig. 11 está limitada a 1.8 cm de alto.}
+{Se corrigieron las tres figuras: (i) en Fig.~\ref{fig:sofia_simulation} se reemplazó la tira horizontal de seis cuadros por una cuadrícula de dos filas por tres columnas (\texttt{fig\_sim\_1.png}--\texttt{fig\_sim\_6.png}, cada una a \texttt{0.31\textbackslash textwidth}); (ii) se regeneró Fig.~\ref{fig:maquina_estado_sofia} como diagrama vectorial en \texttt{TikZ} análogo a Fig.~\ref{fig:firmware_fsm}; y (iii) en Fig.~\ref{fig:modulo_fisico} se eliminó la restricción \texttt{height=1.8cm}, escalándola a \texttt{width=0.72\textbackslash columnwidth,keepaspectratio}.}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{2}{Redacción científica e idioma}
+
+\LabDSTcomment{R2.1}{A}{\\Rln{ln:r1-5-pi}, \\rln{ln:concl}, and \\rln{ln:concl-runaway}}
+{Aparecen afirmaciones nuevas que exceden la evidencia: “100\% stress-test verification”, “a repeatable thermal signature” y “To ensure complete operational robustness”.}
+{Se moderaron las tres frases para reflejar exactamente el alcance de los registros: en \\rln{ln:r1-5-pi} se sustituyó por \textit{To address operational failure modes beyond thermal stalls}; en \\rln{ln:concl}--\\rln{ln:concl-runaway} se reemplazó \textit{repeatable thermal signature} por \textit{consistent heating trend across the performed trials}; y en el cierre de Section~\ref{sec:conclusions} se sustituyó \textit{100\% stress-test verification} por \textit{where all four injected protocol faults were rejected in a single run}.}
+
+\LabDSTcomment{R2.2}{A}{\\Rln{ln:abs-tau}, \\rln{ln:trial2-ss}, and \\rln{ln:disc-degr}}
+{Se usa “inflection peak” para $70.21\,^\circ\text{C}$, que es el máximo medido al retirar el bloqueo, no un punto de inflexión.}
+{Se reemplazó \textit{inflection peak} en \\rln{ln:abs-tau} (Abstract), \\rln{ln:trial2-ss} (Section~\ref{sec:thermal_experiment}) y \\rln{ln:disc-degr} (Section~\ref{sec:discussion}) por \textit{peak temperature at stall release} y \textit{maximum measured temperature}.}
+
+\LabDSTcomment{R2.3}{A}{Section~\ref{sec:discussion} and Section~\ref{sec:conclusions}}
+{Discussion introduce el presupuesto de $\approx \$158\text{ USD}$ (sin costos en el BOM) y frecuencias de inFORM/Transform que no están en Results; Conclusions repite valores de latencia y reconocimiento.}
+{Se eliminó el presupuesto de $\$158\text{ USD}$ y las cifras nuevas de inFORM/Transform en Section~\ref{sec:discussion}, remitiendo directamente a Table~\ref{tab:benchmarking} y Section~\ref{sec:functional_performance}. Asimismo, en Section~\ref{sec:conclusions} se retiraron las cifras de latencia y reconocimiento no respaldadas (R4.1), resumiendo únicamente los hallazgos verificados en Section~\ref{sec:results}.}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{3}{Contenido técnico: Methods y Design and Implementation}
+
+\LabDSTcomment{R3.1}{A}{\\Rlns{ln:wd}{ln:wd-torque} and Table~\ref{tab:risk_matrix}}
+{La protección en dos niveles deja dos huecos: el temporizador de 15 s solo aplica si el comando permanece sin actualizar (no cubre seguimiento a 5--30 Hz), y $\bar{I}_{\text{bank}} > 3.5\text{ A}$ no dispara con 4 servos bloqueados en reposo ($3.485\text{ A}$).}
+{Se cerraron ambos huecos en \\rln{ln:wd}--\\rln{ln:wd-torque} y Table~\ref{tab:risk_matrix}:
+\LabDSTquote{Second, to cover both static holding and continuous tracking, the $15\text{ s}$ protection window is triggered by sustained near-static error ($|q_{\text{cmd}} - q_{\text{cmd,prev}}| \le 2^\circ$ for $\Delta t > 15\text{ s}$ at $q_j^{\text{servo}} \neq 90^\circ$)... the bank fault threshold is set to $\bar{I}_{\text{bank}} > 3.40\text{ A}$ sustained for $> 2.0\text{ s}$, which detects $\ge 4$ stalled servos at rest ($3.48\text{ A}$) and $\ge 2$ stalled servos during active tracking ($3.62\text{ A}$).}}
+
+\LabDSTcomment{R3.2}{A}{\\Rln{ln:tm-bb} and \\rln{ln:disc-lim}}
+{Las pendientes de calentamiento varían un factor de 4 entre ensayos ($0.0505$ a $0.2143\,^\circ\text{C/s}$, dando $C_{\text{th}} = 80.6$ o $19.0\text{ J/}^\circ\text{C}$) y el texto lo atribuye sin demostrarlo a “tighter thermal coupling and enclosure heat retention”.}
+{En \\rln{ln:tm-bb} y \\rln{ln:disc-lim} se eliminó dicha atribución no demostrada y se reportaron explícitamente las condiciones iniciales y de voltaje de los tres ensayos, presentando el rango empírico $\beta \in [0.0505, 0.2143]\,^\circ\text{C/s}$ ($C_{\text{th}} \in [19.0, 80.6]\text{ J/}^\circ\text{C}$) debido a variables de banco no controladas entre sesiones (contacto LM35, caída de tensión, $T_0$ y ejemplar), manteniendo el peor caso para el diseño de seguridad.}
+
+\LabDSTcomment{R3.3}{A}{\\Rln{ln:servo-exp}}
+{El par requerido pasa de $0.042\text{ kgf}\cdot\text{cm}$ estático a $\tau_{\text{req}} \approx 0.45\text{ kgf}\cdot\text{cm}$ sin mostrar el cálculo.}
+{En \\rln{ln:servo-exp} se incorporó la derivación explícita $\tau_{\text{req}} = J\alpha + m_f g r_{\text{cg}} + \tau_{\text{fric}}$: para un perfil triangular de $60^\circ$ ($1.047\text{ rad}$) en $t_s = 0.10\text{ s}$, $\alpha = 4\Delta q / t_s^2 \approx 419\text{ rad/s}^2$; con inercia estimada del CAD $J \approx 1.36\times 10^{-5}\text{ kg}\cdot\text{m}^2$, $J\alpha \approx 0.058\text{ kgf}\cdot\text{cm}$, más $m_f g r_{\text{cg}} = 0.042\text{ kgf}\cdot\text{cm}$ y una envolvente conservadora de fricción del gimbal impreso ($\tau_{\text{fric}} \approx 0.35\text{ kgf}\cdot\text{cm}$), totalizando $\tau_{\text{req}} \approx 0.45\text{ kgf}\cdot\text{cm}$.}
+
+\LabDSTcomment{R3.4}{A}{Table~\ref{tab:power_balance}}
+{La rama de 22 AWG indica $0.35\text{ m}$ pero $37.1\text{ m}\Omega$ corresponde a $0.70\text{ m}$ ida y vuelta.}
+{En Table~\ref{tab:power_balance} (bloque de cableado) se corrigió la longitud de la rama a \texttt{0.70~m RT} (ida y vuelta de $2 \times 0.35\text{ m}$) y el trayecto total peor caso a \texttt{2.20~m RT}, quedando consistente con $37.1\text{ m}\Omega$ y $\Delta V = 0.064\text{ V}$.}
+
+%-----------------------------------------------------------------
+\LabDSTreviewer{4}{Metodología D-Lab, resultados y validación}
+
+\LabDSTcomment{R4.1}{A}{\\Rln{ln:obj-vis}, \\rln{ln:r4-2-perf}, Table~\ref{tab:benchmarking}, Table~\ref{tab:sofia_log_validation}, \\rln{ln:r4-2-matrix}, and \\rln{ln:concl}}
+{La Sección IV-C reporta $\tau_{\text{cmd}} = 43.1 \pm 5.6\text{ ms}$ ($N=100$) y $137/140$ ($97.9\%$) con un archivo \texttt{registro\_estres\_errores.csv} que no existe en la entrega ni en el repositorio.}
+{Se eliminaron todas las cifras y referencias sin respaldo en los registros (\texttt{43.1 ms}, \texttt{137/140}, \texttt{registro\_estres\_errores.csv}) en Table~\ref{tab:benchmarking}, \\rln{ln:obj-vis}, \\rln{ln:r4-2-perf}, Table~\ref{tab:sofia_log_validation}, \\rln{ln:r4-2-matrix} y \\rln{ln:concl}. En su lugar, Section~\ref{sec:functional_performance} y Table~\ref{tab:sofia_log_validation} reportan únicamente lo reconstruible con \texttt{test\_protocolo\_estres.py}, \texttt{registro\_pruebas\_ciclo.csv} y \texttt{registro\_eventos.csv}: una corrida exitosa por cada una de las 7 posturas unificadas (\texttt{SALUDO}, \texttt{CORAZON}, \texttt{TIJERA}, \texttt{ROCA}, \texttt{SWIPE}, \texttt{PAPEL}, \texttt{PPT}, con $\tau_{\text{logic}} \le 0.12\text{ ms}$), $0$ disparos falsos en 60 transiciones a $20\text{ Hz}$, rechazo de salto multi-usuario ($80^\circ$), inmunidad a $50\%$ de pérdida lumínica y rechazo tipificado (\texttt{ERR\_01}--\texttt{ERR\_03}) de las 4 fallas de protocolo inyectadas; la instrumentación estadística $N=100$ de RTT BLE y $N=20$/gesto se declara explícitamente como trabajo pendiente.}
+
+\LabDSTcomment{R4.2}{A}{\\Rln{ln:tm-bb} and \\rln{ln:concl-runaway}}
+{La conclusión afirma que la firma térmica acota el tiempo seguro a $\Delta t \le 15\text{ s}$, cuando con la peor pendiente el servo tarda $\approx 180\text{ s}$ en llegar a $60\,^\circ\text{C}$.}
+{En \\rln{ln:tm-bb} y \\rln{ln:concl-runaway} se separó explícitamente el resultado medido de la decisión de diseño: con la peor pendiente medida ($\bar{\beta}_1 = 0.2143\,^\circ\text{C/s}$) el actuador tardaría $\approx 180\text{ s}$ desde ambiente en alcanzar $T_{\text{safe}} = 60^\circ\text{C}$; se adopta un temporizador de $\Delta t = 15\text{ s}$ (margen de seguridad de $12\times$, limitando la elevación a $\Delta T \le 3.2^\circ\text{C}$) para absorber la dispersión de $4\times$ entre ensayos (R3.2).}
+
+\LabDSTcomment{R4.3}{A}{\\Rln{ln:r4-2-sim}, Table~\ref{tab:sofia_log_validation}, and \\rln{ln:concl}}
+{El $\text{MAE} = 0.00^\circ$ dentro del cono evalúa la cinemática inversa contra su propio modelo directo; no valida el hardware físico.}
+{En \\rln{ln:r4-2-sim} y Table~\ref{tab:sofia_log_validation} se aclaró que $\text{MAE} = 0.00^\circ$ dentro del cono $\pm 30^\circ$ verifica la consistencia algebraica de la implementación (\textit{Sim. Implementation}), mientras que el dato informativo en simulación es el error bajo saturación en barrido amplio ($\text{MAE} = 3.17^\circ$, $\text{RMSE} = 5.34^\circ$), reiterando que el apuntado físico real queda pendiente de la medición óptica a $60\text{ FPS}$.}
+
+\LabDSTcomment{R4.4}{A}{\\Rln{ln:obj-therm} and \\Rln{ln:obj-kin}}
+{El objetivo 2 fija como meta el valor medido ($\bar{\beta}_1 = 0.214$, $R^2 \ge 0.99$) y el objetivo 4 fija $\text{MAE} \le 3.5^\circ$ justo arriba del $3.17^\circ$ medido.}
+{Se reescribió \\rln{ln:obj-therm} como criterio previo de caracterización ($R^2 \ge 0.95$ y derivar un temporizador que mantenga $T_s \le 60^\circ\text{C}$), y en \\rln{ln:obj-kin} se justificó el umbral $\text{MAE} \le 3.5^\circ$ como margen por debajo del umbral perceptual de desalineación visual de $5^\circ$ a $1\text{ m}$ de distancia.}
+
+\LabDSTcomment{R4.5}{A}{\\Rln{ln:da}}
+{El repositorio \texttt{bernardoorozco/IOT-SOFIA-2026} no es accesible, \texttt{v0.3.0} apunta a otro commit, y los videos están en un OneDrive personal con nombre de estudiante.}
+{En \\rln{ln:da} se unificó la referencia a un único repositorio público (\url{https://github.com/PaolaCV14/IOT-SOFIA-2026}, rama \texttt{main}, etiqueta final \texttt{v0.4.0}) y se retiró la liga personal de OneDrive, referenciando únicamente los registros y bitácoras alojados dentro del repositorio.}
+
+\LabDSTcomment{R4.6}{A}{Table~\ref{tab:compliance}}
+{Varias filas se marcan “Compliant” solo con hoja de datos sin medición del prototipo.}
+{Se incorporó la columna \textbf{Evid.} en Table~\ref{tab:compliance} clasificando cada especificación explícitamente como \texttt{Datasheet}, \texttt{Measured}, \texttt{Meas.+DS} o \texttt{Pending}.}
+
+\end{document}
