@@ -156,7 +156,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 * **Descripción del movimiento:** El usuario levanta la mano abierta a la altura del rostro y la sacude de un lado a otro. El detector exige al menos 3 cruces de dirección horizontal consecutivos.
 * **Respuesta en sOFla:** El cabezal efectúa 3 cabeceos verticales amplios simulando una reverencia de bienvenida.
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_01_SALUDO` *(formato .mp4 o .jpg)*
 
 ---
@@ -165,7 +165,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 * **Descripción del movimiento:** Se unen ambas manos doblando los pulgares e índices para formar un corazón cerrado. Requiere que ambas manos permanezcan estables en cuadro durante al menos 0.6 s.
 * **Respuesta en sOFla:** Los servomotores se mueven coordinadamente en cuadratura de fase, describiendo un movimiento circular continuo de apreciación.
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_02_CORAZON` *(formato .mp4 o .jpg)*
 
 ---
@@ -174,7 +174,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 * **Descripción del movimiento:** Mano con dedos índice y medio separados en ángulo agudo mientras el pulgar retiene los dedos anular y meñique contra la palma.
 * **Respuesta en sOFla:** Rutina `TIJERA` (baile en zigzag): el robot recorre las diagonales opuestas $(\pm 20^\circ)$ a ritmo constante.
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_03_TIJERA_BAILE` *(formato .mp4 o .jpg)*
 
 ---
@@ -183,7 +183,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 * **Descripción del movimiento:** Puño completamente cerrado mirando hacia el sensor, sostenido durante 0.6 s sin desplazamiento angular.
 * **Respuesta en sOFla:** Rutina `ROCA` (centrado): Ambos actuadores se posicionan exactamente en el origen neutro $(90^\circ, 90^\circ)$ y sostienen posición para calibración de cero mecánico.
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_04_ROCA_HOME` *(formato .mp4 o .jpg)*
 
 ---
@@ -192,7 +192,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 * **Descripción del movimiento:** Mano extendida desplazándose con velocidad superior a $0.8\text{ m/s}$ de un extremo al otro de la imagen.
 * **Respuesta en sOFla:** Rutina `SWIPE` (negación): El servo horizontal $q_1$ oscila rápidamente entre $60^\circ$ y $120^\circ$ emulando un ademán de desaprobación o negación ("no").
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_05_SWIPE_NEGAR` *(formato .mp4 o .jpg)*
 
 ---
@@ -201,7 +201,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 * **Descripción del movimiento:** Palma abierta con los cinco dedos separados y orientados verticalmente hacia la cámara.
 * **Respuesta en sOFla:** Rutina `PAPEL` (reposo): El robot baja la cabeza a $q_2 = 60^\circ$ (postura de sueño/descanso para reducir consumo de corriente en los servomotores).
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_06_PAPEL_REPOSO` *(formato .mp4 o .jpg)*
 
 ---
@@ -210,7 +210,7 @@ Se implementó el ciclo de reconocimiento y accionamiento para **7 posturas** (s
 * **Descripción del movimiento:** Una mano extendida plana como yunque horizontal y la otra mano en puño golpeando tres veces consecutivas con intervalos rítmicos entre 0.25 y 0.9 segundos.
 * **Respuesta en sOFla:** Rutina `PPT`: El robot realiza tres pulsos mecánicos sincrónicos hacia adelante preparándose para la partida interactiva.
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_07_PPT_RITMICO` *(formato .mp4 o .jpg)*
 
 ---
@@ -228,7 +228,7 @@ A continuación se presenta la bitácora técnica de anomalías identificadas du
   3. Reintento no bloqueante de apertura con `cv2.VideoCapture` cada 1.5 segundos. Al reinsertar el cable USB, el stream se recupera solo sin reiniciar el programa.
   4. Emisión de `worker_finished` para sincronizar el estado visual de los botones de la interfaz.
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_08_RECUPERACION_CAMARA` *(formato .mp4 o .jpg)*
 
 ---
@@ -241,7 +241,7 @@ A continuación se presenta la bitácora técnica de anomalías identificadas du
   2. **En Host (`ble_sender.py`):** Bucle asíncrono con **reconexión automática con backoff (2.5 s)**. El botón de la GUI cambia a color ámbar (`Reconectando (N)...`) y el badge muestra `ESP32: RECONECTANDO`. Al volver la señal, la sesión se restablece limpiamente.
   3. **Latido Preventivo (Heartbeat):** Envío automático de `PING` cada 4.0 s de silencio para detectar caídas de señal sin esperar a que el usuario mueva la mano.
 
-> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> **Repositorio de Evidencia en la Nube:** [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_09_RECONEXION_BLE_ESP32` *(formato .mp4 o .jpg)*
 
 ---
@@ -319,7 +319,7 @@ La validación del sistema fue ejecutada mediante la suite automatizada [code/co
 Para verificar el funcionamiento físico del robot sOFla coordinado con la interfaz gráfica y los mecanismos de tolerancia a fallos, se preparó un registro audiovisual demostrativo centralizado en el almacenamiento en la nube institucional (OneDrive ITESO).
 
 > **Repositorio Oficial de Evidencias en la Nube (OneDrive ITESO):**  
-> Carpeta Compartida: [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)  
+> Carpeta Compartida: [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://github.com/PaolaCV14/IOT-SOFIA-2026/tree/main/docs/experimental-data)  
 > **Archivo a consultar en la carpeta:** `EVIDENCIA_10_VIDEO_DEMOSTRACION_COMPLETO` *(formato .mp4)*
 
 ### Índice de Archivos Multimedia en el Repositorio:
