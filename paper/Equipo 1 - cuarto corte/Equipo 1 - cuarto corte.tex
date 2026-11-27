@@ -36,7 +36,7 @@
 	
 	%=================================================================
 	\begin{abstract}
-		Modular robotic systems leverage repeatable electromechanical units to enable flexible, scalable, and reconfigurable architectures. In interactive human-robot installations, spatial tracking of human body posture and gestures provides intuitive stimulus-response dynamics. \linelabel{ln:abs}This paper presents the modular design, end-to-end physical integration, and experimental validation of SOFIA, an interactive kinetic surface comprising sixteen electromechanical units, each providing two rotational degrees of freedom actuated by commercial MG90S servomotors. While commercial servomotors encapsulate internal closed-loop position control via pulse-width modulation (PWM), persistent angular errors caused by mechanical stalls, external disturbances, or fabrication tolerances induce thermal degradation and excessive power consumption. \linelabel{ln:abs-inv}To investigate actuator reliability under persistent position error conditions, this work formulates an experimental characterization protocol assessing the electrothermal response of an MG90S under mechanical stall. Using an LM35 precision temperature sensor and an INA219 current monitor across separate bench sessions, continuous stall draws $\bar{I}_{\text{stall}} = 861.8 \pm 181.4\text{ mA}$ ($\bar{P} = 4.07\text{ W}$ in current logging), \linelabel{ln:abs-tau}while thermal stall testing reveals a worst-case mean heating rate of $\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$ ($R^2 = 0.993$; initial $60\text{ s}$ slope $0.111\,^\circ\text{C/s}$) in Trial~1 and a peak temperature at stall release of $70.21^\circ\text{C}$ in extended testing (Trial~2). \linelabel{ln:abs-claim}Furthermore, a MediaPipe 3D gesture recognition pipeline is integrated with the physical ESP32-C3 prototype via a fault-tolerant bidirectional BLE protocol (\texttt{\$SEQ,CMD\#}) supporting seven interactive postures, automatic hardware reconnection, and stress-tested immunity against rapid transition chattering, multi-user spatial conflict, and variable illumination.
+		Modular robotic systems leverage repeatable electromechanical units to enable flexible, scalable, and reconfigurable architectures. In interactive human-robot installations, spatial tracking of human body posture and gestures provides intuitive stimulus-response dynamics. \linelabel{ln:abs}This paper presents the modular design, end-to-end physical integration, and experimental validation of SOFIA, an interactive kinetic surface comprising sixteen electromechanical units, each providing two rotational degrees of freedom actuated by commercial MG90S servomotors. While commercial servomotors encapsulate internal closed-loop position control via pulse-width modulation (PWM), persistent angular errors caused by mechanical stalls, external disturbances, or fabrication tolerances induce thermal degradation and excessive power consumption. \linelabel{ln:abs-inv}To investigate actuator reliability under persistent position error conditions, this work formulates an experimental characterization protocol assessing the electrothermal response of an MG90S under mechanical stall. Using an LM35 precision temperature sensor and an INA219 current monitor across separate bench sessions, continuous stall draws $\bar{I}_{\text{stall}} = 861.8 \pm 181.4\text{ mA}$ ($\bar{P} = 4.07\text{ W}$ in current logging), \linelabel{ln:abs-tau}while thermal stall testing reveals a worst-case mean heating rate of $\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$ ($R^2 = 0.993$; initial $60\text{ s}$ slope $0.111\,^\circ\text{C/s}$) in Trial~1 and a peak temperature at stall release of $70.21^\circ\text{C}$ in extended testing (Trial~2). \linelabel{ln:abs-claim}Furthermore, a MediaPipe 3D gesture recognition pipeline is integrated with the physical ESP32-C3 prototype via a fault-tolerant bidirectional BLE protocol (\texttt{\$SEQ,CMD\#}) supporting seven interactive postures, automatic hardware reconnection, and single-run immunity checks against rapid transition chattering, multi-user spatial conflict, and variable illumination.
 	\end{abstract}
 	
 	\begin{IEEEkeywords}
@@ -100,8 +100,9 @@
 		\label{tab:functional_matrix}
 		\scriptsize
 		\setlength{\tabcolsep}{2pt}
-		\renewcommand{\arraystretch}{0.92}
-		\begin{tabular}{@{}p{1.2cm} p{1.8cm} p{1.35cm} p{1.45cm} p{1.85cm}@{}}
+		\renewcommand{\arraystretch}{0.82}
+		\resizebox{\columnwidth}{!}{%
+		\begin{tabular}{@{}p{1.35cm} p{2.05cm} p{1.65cm} p{1.75cm} p{2.15cm}@{}}
 			\toprule
 			\textbf{Subsystem} & \textbf{Function} & \textbf{Input} & \textbf{Output} & \textbf{Limitation} \\
 			\midrule
@@ -111,7 +112,8 @@
 			Kinematic Core & Planar honeycomb articulation & Dual servo shaft torque & Spatial facet tilt & Angular range limits ($19.3^\circ$--$70.2^\circ$) \\
 			Power / Thermal & Regulated current delivery & 5.0~V DC bus & Electrical power & Joule dissipation, no active cooling \\
 			\bottomrule
-		\end{tabular}
+		\end{tabular}%
+		}
 	\end{table}
 	
 	\begin{table*}[!t]
@@ -119,8 +121,9 @@
 		\caption{Bill of Materials Summary for the SOFIA 16-Module Robotic Surface}
 		\label{tab:bom_sofia}
 		\scriptsize
-		\renewcommand{\arraystretch}{0.86}
-		\begin{tabular}{p{3.2cm} c c p{5.0cm} p{2.8cm} p{2.5cm}}
+		\setlength{\tabcolsep}{3pt}
+		\renewcommand{\arraystretch}{0.82}
+		\begin{tabular}{@{}p{2.6cm} c c p{5.9cm} p{2.3cm} p{2.1cm}@{}}
 			\toprule
 			\textbf{Component} & \textbf{Unit} & \textbf{Sys.} & \textbf{Technical Description} & \textbf{Manufacturer} & \textbf{Location} \\
 			\midrule
@@ -233,19 +236,20 @@
 		\caption{Component Technical Specifications and System Requirements Compliance Assessment}
 		\label{tab:compliance}
 		\scriptsize
-		\renewcommand{\arraystretch}{0.86}
-		\begin{tabular}{p{1.7cm} p{2.3cm} p{2.9cm} p{3.4cm} c c p{3.1cm}}
+		\setlength{\tabcolsep}{3pt}
+		\renewcommand{\arraystretch}{0.84}
+		\begin{tabular}{@{}p{1.35cm} p{2.05cm} p{3.35cm} p{4.2cm} c c p{3.5cm}@{}}
 			\toprule
 			\textbf{Component} & \textbf{Parameter} & \textbf{Nominal / Measured Value} & \textbf{System Justification (Requirement)} & \textbf{Evid.} & \textbf{Status} & \textbf{Verification Source} \\
 			\midrule
-			\multicolumn{7}{l}{\textbf{ESP32-C3 Master Microcontroller (Espressif Systems)}} \\
+			\multicolumn{7}{@{}l}{\textbf{ESP32-C3 Master Microcontroller (Espressif Systems)}} \\
 			ESP32-C3 & Logic Rail \& Temp. & $3.3\text{ V}$ ($\ge 0.5\text{ A}$), $-40\text{ to }+85^\circ\text{C}$ & \texttt{REQ-PWR}, \texttt{REQ-ENV}: Core/radio margin & Datasheet & Compliant & Datasheet v2.4, Sec. 1.2, 5.2 \\
-			ESP32-C3 & RF Peak \& GPIO I/O & $276\text{--}335\text{ mA}$ peak; $3.3\text{ V}$ I$^2$C/boot & \texttt{REQ-COM}, \texttt{REQ-CTL}: Stable RF \& I$^2$C boot & Datasheet & Compliant & Datasheet v2.4, Sec. 3.1, 5.4--5.6 \\
-			ESP32-C3 & Wireless Link & 2.4~GHz BLE 5.0 GATT & \texttt{REQ-COM}: Framed link ($200\text{ ms}$ timeout) & Pending & Pending & Framing in \texttt{registro\_pruebas\_ciclo.csv}; BLE RTT log pending \\
+			ESP32-C3 & RF Peak \& GPIO & $276\text{--}335\text{ mA}$ peak; $3.3\text{ V}$ I$^2$C/boot & \texttt{REQ-COM}, \texttt{REQ-CTL}: Stable RF \& I$^2$C boot & Datasheet & Compliant & Datasheet v2.4, Sec. 3.1, 5.4--5.6 \\
+			ESP32-C3 & Wireless Link & 2.4~GHz BLE 5.0 GATT & \texttt{REQ-COM}: Framed link ($200\text{ ms}$ timeout) & Pending & Pending & Framing in CSV; BLE RTT pending \\
 			\midrule
-			\multicolumn{7}{l}{\textbf{MG90S Metal-Gear Micro Servomotor (TowerPro)}} \\
-			MG90S & Supply \& Packaging & 4.8--6.0~V; $22.5\times 12\times 35.5\text{ mm}$, $13.4\text{ g}$ & \texttt{REQ-PWR}, \texttt{REQ-MEC}: 5.0~V rail \& fit & Datasheet & Compliant & Datasheet, TowerPro, p. 1--2 \\
-			MG90S & Stall Torque & $1.8\text{ kgf}\cdot\text{cm}$ ($4.8\text{ V}$), $2.2$ ($6.0\text{ V}$) & \texttt{REQ-MEC}: $>4\times$ dynamic load ($0.45\text{ kgf}\cdot\text{cm}$) & Datasheet & Compliant & Datasheet, p. 1 \& CAD calc \\
+			\multicolumn{7}{@{}l}{\textbf{MG90S Metal-Gear Micro Servomotor (TowerPro)}} \\
+			MG90S & Supply \& Size & 4.8--6.0~V; $22.5\times 12\times 35.5\text{ mm}$, $13.4\text{ g}$ & \texttt{REQ-PWR}, \texttt{REQ-MEC}: 5.0~V rail \& fit & Datasheet & Compliant & Datasheet, TowerPro, p. 1--2 \\
+			MG90S & Stall Torque & $1.8\text{ kgf}\cdot\text{cm}$ ($4.8\text{ V}$), $2.2$ ($6.0\text{ V}$) & \texttt{REQ-MEC}: $>4\times$ load ($0.45\text{ kgf}\cdot\text{cm}$) & Datasheet & Compliant & Datasheet, p. 1 \& CAD calc \\
 			MG90S & Speed \& PWM & $0.10\text{ s}/60^\circ$; $50\text{ Hz}$ ($1.0\text{--}2.0\text{ ms}$) & \texttt{REQ-CTL}: Nominal slew $\le 100\text{ ms}$ & Datasheet & Compliant & Datasheet, TowerPro, p. 1--2 \\
 			MG90S & Dead Band & $5\,\mu\text{s}$ ($I_{\text{quiesc}} = 3.12\text{ mA}$) & \texttt{REQ-CTL}: Quiescent hold & Meas.+DS & Compliant & \texttt{datos\_5grados.csv} \\
 			MG90S & Evaluated Angle & Raw $[19.3^\circ, 70.2^\circ]$; cmd $[60^\circ, 120^\circ]$ & \texttt{REQ-MEC}: $\pm 30^\circ$ travel around $90^\circ$ & Measured & Compliant & \texttt{servo\_characterization.xlsx} \\
@@ -253,7 +257,7 @@
 			MG90S & Stall Current & $861.8 \pm 181.4\text{ mA}$ ($39\text{--}311\text{ s}$) & \texttt{REQ-PWR}: PSU sizing ($20\text{ A}$) & Measured & Compliant & \texttt{datos\_CHIDOS\_DE\_FORZADO.csv} \\
 			MG90S & Thermal Limit & Safe limit $T_{\text{safe}} \le 60^\circ\text{C}$ & \texttt{REQ-SAF}: Dwell timeout ($\Delta t \le 15\text{ s}$) & Pending & Pending & Firmware dwell; cut-off pending \\
 			\midrule
-			\multicolumn{7}{l}{\textbf{PCA9685 16-Channel 12-Bit PWM Controller (NXP Semiconductors / UNIT Electronics)}} \\
+			\multicolumn{7}{@{}l}{\textbf{PCA9685 16-Channel 12-Bit PWM Controller (NXP Semiconductors / UNIT Electronics)}} \\
 			PCA9685 & Logic, $V^+$ \& Temp. & $3.3\text{ V }\text{V}_{\text{CC}}$, ext. $5.0\text{ V }\text{V}^+$, $-40\text{--}85^\circ\text{C}$ & \texttt{REQ-PWR}, \texttt{REQ-ENV}: Isolated servo rail & Datasheet & Compliant & Datasheet Rev. 4, Table 13--14 \\
 			PCA9685 & PWM \& I$^2$C Bus & 12-bit ($\approx 0.04^\circ$); $400\text{ kHz}$ (\texttt{0x40}, \texttt{0x41}) & \texttt{REQ-CTL}, \texttt{REQ-COM}: Dual-driver bus & Datasheet & Compliant & Datasheet Rev. 4, Sec. 1--2, 7.1 \\
 			PCA9685 & Channel Cap. & 16 independent PWM outputs & \texttt{REQ-CTL}: 1 module tested; 32-ch PCB & Pending & Pending & 2-ch verified; 32-ch PCB pending \\
@@ -272,7 +276,7 @@
 		\label{tab:wiring_harness}
 		\scriptsize
 		\setlength{\tabcolsep}{2pt}
-		\renewcommand{\arraystretch}{0.90}
+		\renewcommand{\arraystretch}{0.82}
 		\resizebox{\columnwidth}{!}{%
 		\begin{tabular}{@{}p{2.3cm} c c c p{2.3cm}@{}}
 			\toprule
@@ -439,11 +443,11 @@
 	\begin{figure}[!t]
 		\centering
 		\subfloat[3D assembly.]{
-			\includegraphics[width=0.40\columnwidth,keepaspectratio]{figures/sofia_solid.png}
+			\includegraphics[width=0.35\columnwidth,keepaspectratio]{figures/sofia_solid.png}
 		}
 		\hfill
 		\subfloat[Exploded view.]{
-			\includegraphics[width=0.40\columnwidth,keepaspectratio]{figures/sofia_exploded.png}
+			\includegraphics[width=0.35\columnwidth,keepaspectratio]{figures/sofia_exploded.png}
 		}
 		\caption{SOFIA module 2-DOF CAD assembly and exploded structural views.}
 		\label{fig:sofia_mechanical_design}
@@ -520,9 +524,9 @@
 	
 	\begin{figure*}[!t]
 		\centering
-		\subfloat[$t_1$: target left-up.]{\includegraphics[width=0.31\textwidth,keepaspectratio]{figures/fig_sim_1.png}}\hfill
-		\subfloat[$t_3$: target right-up.]{\includegraphics[width=0.31\textwidth,keepaspectratio]{figures/fig_sim_3.png}}\hfill
-		\subfloat[$t_5$: lower-center tilt.]{\includegraphics[width=0.31\textwidth,keepaspectratio]{figures/fig_sim_5.png}}
+		\subfloat[$t_1$: target left-up.]{\includegraphics[width=0.22\textwidth,keepaspectratio]{figures/fig_sim_1.png}}\hfill
+		\subfloat[$t_3$: target right-up.]{\includegraphics[width=0.22\textwidth,keepaspectratio]{figures/fig_sim_3.png}}\hfill
+		\subfloat[$t_5$: lower-center tilt.]{\includegraphics[width=0.22\textwidth,keepaspectratio]{figures/fig_sim_5.png}}
 		\caption{Representative frames of the SOFIA 16-module kinematic tracking simulation across target waypoints $\mathbf{p}(t_1), \mathbf{p}(t_3), \mathbf{p}(t_5)$, showing the coordinate triad $(X,Y,Z)$ and facet reorientation.}
 		\label{fig:sofia_simulation}
 	\end{figure*}
@@ -542,13 +546,13 @@
 			]
 			\node[idle] (idle) at (0, 0) {\textbf{1. TRACKING}\\Stream \texttt{ANG} ($5\text{ Hz}$)\\EMA $\alpha=0.35$};
 			\node[hold] (hold) at (4.3, 0) {\textbf{2. STATIC HOLD}\\Timer $\ge 0.6\text{ s}$\\Wrist $\Delta q \le 12^\circ$};
-			\node[trig] (trig) at (4.3, -1.30) {\textbf{3. DISPATCH}\\Send \texttt{ROUTINE}\\Lock \texttt{ANG} stream};
-			\node[cool] (cool) at (0, -1.30) {\textbf{4. COOLDOWN}\\Wait \texttt{EVT,DONE}\\$1.0\text{ s}$ refractory};
+			\node[trig] (trig) at (4.3, -1.55) {\textbf{3. DISPATCH}\\Send \texttt{ROUTINE}\\Lock \texttt{ANG} stream};
+			\node[cool] (cool) at (0, -1.55) {\textbf{4. COOLDOWN}\\Wait \texttt{EVT,DONE}\\$1.0\text{ s}$ refractory};
 			
 			\draw[trans] ([yshift=3pt]idle.east) -- node[above] {Static label} ([yshift=3pt]hold.west);
 			\draw[trans] ([yshift=-3pt]hold.west) -- node[below] {$\Delta q > 12^\circ$ / lost} ([yshift=-3pt]idle.east);
 			\draw[trans] (hold.south) -- node[right] {Hold $\ge 0.6\text{ s}$} (trig.north);
-			\draw[trans] (idle.south east) -- node[above, sloped] {Dynamic edge} (trig.north west);
+			\draw[trans] (idle.south east) -- node[pos=0.65, above, sloped] {Dynamic edge} (trig.north west);
 			\draw[trans] (trig.west) -- node[below] {\texttt{ACK,STARTED}} (cool.east);
 			\draw[trans] (cool.north) -- node[left] {Timer $\ge 1.0\text{ s}$} (idle.south);
 		\end{tikzpicture}
@@ -574,17 +578,17 @@
 			]
 			\node[idle] (idle) at (0, 0) {\textbf{1. IDLE / HOME}\\Wait on \texttt{colaTramas}\\$q_j^{\text{servo}} = (90^\circ, 90^\circ)$};
 			\node[trk] (trk) at (4.3, 0) {\textbf{2. TRACKING}\\Apply \texttt{ANG,q1,q2}\\Emit \texttt{ACK,OK}};
-			\node[rot] (rot) at (0, -1.28) {\textbf{3. ROUTINE}\\\texttt{millis()} step table\\Lock \texttt{ANG} (\texttt{ERR\_04})};
-			\node[flt] (flt) at (4.3, -1.28) {\textbf{4. FAULT / SAFE}\\BLE drop / \texttt{STOP}\\Home $(90^\circ,90^\circ)$ / Off};
+			\node[rot] (rot) at (0, -1.55) {\textbf{3. ROUTINE}\\\texttt{millis()} step table\\Lock \texttt{ANG} (\texttt{ERR\_04})};
+			\node[flt] (flt) at (4.3, -1.55) {\textbf{4. FAULT / SAFE}\\BLE drop / \texttt{STOP}\\Home $(90^\circ,90^\circ)$ / Off};
 			
 			\draw[trans] ([yshift=3pt]idle.east) -- node[above] {\texttt{ANG} ($60^\circ\text{--}120^\circ$)} ([yshift=3pt]trk.west);
 			\draw[trans] ([yshift=-3pt]trk.west) -- node[below] {\texttt{HOME} / \texttt{REST}} ([yshift=-3pt]idle.east);
 			\draw[trans] (idle.south) -- node[left] {\texttt{ROUTINE}} (rot.north);
-			\draw[trans] (trk.south west) -- node[above, sloped] {\texttt{ROUTINE}} (rot.north east);
+			\draw[trans] (trk.south west) -- node[pos=0.24, above, sloped] {\texttt{ROUTINE}} (rot.north east);
 			\draw[trans] ([xshift=6pt]rot.north) -- node[right] {\texttt{EVT,DONE}} ([xshift=6pt]idle.south);
 			\draw[trans] (trk.south) -- node[right] {BLE drop / \texttt{STOP}} (flt.north);
 			\draw[trans] (rot.east) -- node[below] {BLE drop / \texttt{STOP}} (flt.west);
-			\draw[trans] (flt.north west) -- node[below, sloped] {Reconnect} (idle.south east);
+			\draw[trans] (flt.north west) -- node[pos=0.24, below, sloped] {Reconnect} (idle.south east);
 		\end{tikzpicture}
 		\caption{ESP32-C3 firmware finite-state machine (\texttt{modulo\_sofia.ino}) governing mutual exclusion between tracking, choreographic routines, and fail-safe recovery.}
 		\label{fig:firmware_fsm}
@@ -597,48 +601,49 @@
 		\caption{Incremental Subsystem Integration and Verification Log}
 		\label{tab:integration_increments}
 		\scriptsize
-		\setlength{\tabcolsep}{2.2pt}
-		\renewcommand{\arraystretch}{0.88}
-		\begin{tabular}{@{}l c p{2.1cm} p{2.25cm} p{1.4cm}@{}}
+		\setlength{\tabcolsep}{2pt}
+		\renewcommand{\arraystretch}{0.84}
+		\resizebox{\columnwidth}{!}{%
+		\begin{tabular}{@{}l c p{2.35cm} p{2.55cm} l@{}}
 			\toprule
 			\textbf{Inc.} & \textbf{Date} & \textbf{Integrated Subsystems} & \textbf{Verification \& Outcome} & \textbf{Commit / Log} \\
 			\midrule
-			\textbf{1} & Sep~28 & Single MG90S + ESP32 + LM35/INA219 bench & Stall heating ($\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$) \& $20\text{ Hz}$ current logs & \texttt{9369fa0} / \texttt{servo\_char.} \\
-			\textbf{2} & Oct~05 & 2-DOF module + PCA9685 (\texttt{0x40}) + Unity 16-cell IK & Closed-form IK ($\text{MAE} = 0.00^\circ$ in $\pm 30^\circ$) \& I$^2$C PWM sweep & \texttt{bcc9a52} (\texttt{v0.2.0}) \\
-			\textbf{3} & Oct~15 & MediaPipe 3D vision + unframed BLE (\texttt{SALUDO}/\texttt{CORAZON}) & Vision-BLE pipeline; identified race condition \& $3\text{ s}$ lock bug & \texttt{7a790a3} / \texttt{e0a0c9e} \\
-			\textbf{4} & Nov~25 & Framed \texttt{\$SEQ,CMD\#} BLE + FreeRTOS FSM + 7 routines & 7/7 postures, 4/4 NACKs (\texttt{registro\_pruebas\_ciclo.csv}), auto-recovery & \texttt{main} (\texttt{v0.4.0}) \\
-			\textbf{5} & Pending & 4-layer PCB + $2\times$ PCA9685 + 32 servos + $60\text{ FPS}$ cam & Gerber files in fabrication; array \& optical test scheduled & \texttt{hardware/pcb/} (Pending) \\
+			\textbf{1} & Sep~28 & Single MG90S + ESP32 + LM35/INA219 & Stall ($\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$) \& $20\text{ Hz}$ current & \texttt{9369fa0} / \texttt{servo\_char.} \\
+			\textbf{2} & Oct~05 & 2-DOF + PCA9685 (\texttt{0x40}) + Unity IK & IK ($\text{MAE}=0.00^\circ$ in $\pm 30^\circ$) \& PWM sweep & \texttt{bcc9a52} (\texttt{v0.2.0}) \\
+			\textbf{3} & Oct~15 & MediaPipe + unframed BLE (\texttt{SALUDO}) & Vision-BLE; found race \& $3\text{ s}$ lock bug & \texttt{7a790a3} / \texttt{e0a0c9e} \\
+			\textbf{4} & Nov~25 & Framed BLE + FSM + 7 routines & $7/7$ postures, $4/4$ NACKs, auto-recovery & \texttt{main} (\texttt{v0.4.0}) \\
+			\textbf{5} & Pend. & 4-layer PCB + $2\times$PCA9685 + 32 servos & Gerbers in fab; array \& $60\text{ FPS}$ test pending & \texttt{hardware/pcb/} \\
 			\bottomrule
-		\end{tabular}
+		\end{tabular}%
+		}
 	\end{table}
 	
 	
-	\begin{figure*}[!t]
+	\begin{figure}[!t]
 		\centering
-		\subfloat[Electrical schematic of the ESP32-C3, dual PCA9685, and power distribution tiers.]{
-			\includegraphics[width=0.52\textwidth,height=2.5cm,keepaspectratio]
+		\subfloat[Electrical schematic.]{
+			\includegraphics[width=0.48\columnwidth,height=1.6cm,keepaspectratio]
 			{figures/sofia_schematic.png}
 		}\hfill
-		\subfloat[Routed PCB layout submitted for fabrication.]{
-			\includegraphics[width=0.43\textwidth,height=2.5cm,keepaspectratio]
+		\subfloat[4-layer PCB layout.]{
+			\includegraphics[width=0.46\columnwidth,height=1.6cm,keepaspectratio]
 			{figures/sofia_pcb_layout.png}
 		}
-		\caption{SOFIA custom PCB design shown at full two-column width: (a) electrical schematic and
-			(b) layout submitted for fabrication.}
+		\caption{SOFIA custom 4-layer PCB: (a) electrical schematic and (b) layout submitted for fabrication.}
 		\label{fig:sofia_pcb_design}
-	\end{figure*}
+	\end{figure}
 	
 	\begin{figure*}[!t]
 		\centering
-		\includegraphics[width=0.90\textwidth,height=2.8cm,keepaspectratio]{figures/fig_thermal_response}
+		\includegraphics[width=0.90\textwidth,height=1.95cm,keepaspectratio]{figures/fig_thermal_response}
 		\caption{Experimental thermal characterization of the MG90S servomotor under persistent stall ($1\text{ Hz}$ LM35 telemetry) with bottom residual panels: (a) Trial~1 continuous heating to $64.84^\circ\text{C}$; and (b) Trial~2 extended stall window ($t_{\text{DAQ}} \in [1053.1, 1445.1]\text{ s}$) with descriptive NLLS fit and subsequent cooling.}
 		\label{fig:thermal_response}
 	\end{figure*}
 	
 	\begin{figure*}[!t]
 		\centering
-		\includegraphics[width=0.92\textwidth,height=2.4cm,keepaspectratio]{figures/fig_current_characterization}
-		\caption{Experimental supply current $I(t)$ of the MG90S actuator at $20\text{ Hz}$ on the $5.0\text{ V}$ bus: (a) small-step/noise run (\texttt{datos\_5grados.csv}); (b) manual sweeps (\texttt{datos\_901.csv}); and (c) persistent stall (\texttt{datos\_CHIDOS\_DE\_FORZADO.csv}; plot legend shows the $>300\text{ mA}$ stall mean $918.4\text{ mA}$, while $t \in [39, 311]\text{ s}$ averages $861.8\text{ mA}$).}
+		\includegraphics[width=0.92\textwidth,height=1.75cm,keepaspectratio]{figures/fig_current_characterization}
+		\caption{Experimental supply current $I(t)$ of the MG90S actuator at $20\text{ Hz}$ on the $5.0\text{ V}$ bus: (a) noise and $14^\circ$ step ($69^\circ \to 55^\circ$, \texttt{datos\_5grados.csv}); (b) manual sweeps (\texttt{datos\_901.csv}); and (c) persistent stall (\texttt{datos\_CHIDOS\_DE\_FORZADO.csv}; $t \in [39, 311]\text{ s}$ mean $861.8\text{ mA}$).}
 		\label{fig:characterization_6panels}
 		\label{fig:current_characterization}
 	\end{figure*}
@@ -685,9 +690,9 @@
 	\subsection{Thermal Protection and Reliability Risk Mitigation}
 	\label{sec:risk_mitigation}
 	
-	Based\linelabel{ln:wd}\linelabel{ln:r3-6-wd} on the worst-case empirical heating rate ($\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$) established in Section~\ref{sec:thermal_modeling} and the unified thermal safety ceiling $T_{\text{safe}} = 60^\circ\text{C}$ (set below the $65^\circ\text{C}$ polymer softening threshold), a two-tier protection architecture compatible with the declared hardware is implemented.
+	Based\linelabel{ln:wd}\linelabel{ln:r3-6-wd} on the worst-case empirical heating rate ($\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$) established in Section~\ref{sec:thermal_modeling} and the unified thermal safety ceiling $T_{\text{safe}} = 60^\circ\text{C}$ (set below the $65^\circ\text{C}$ polymer softening threshold), a two-tier protection architecture is defined: command-layer clamping, \texttt{STOP}/HOME dwell, and disconnect recovery are verified in firmware, whereas closed-loop \texttt{INA219} hardware cut-off remains \textit{Pending}.
 	
-	\textit{Command-driven channel saturation and timeout limiting.} Because two rail-level INA219 sensors measure aggregate bank current and cannot isolate individual servo channels—and normal slewing produces $573\text{--}583\text{ mA}$ inrush peaks—per-channel protection is enforced in the command layer. All angles are clamped to $q_j^{\text{servo}} \in [60^\circ, 120^\circ]$ (\linelabel{ln:wd-sat}$q_j \in [-30^\circ, +30^\circ]$, Table~\ref{tab:compliance}), and sustained near-static dwell ($|q_{\text{cmd}} - q_{\text{cmd,prev}}| \le 2^\circ$ for $\Delta t > 15\text{ s}$ at $q_j^{\text{servo}} \neq 90^\circ$) or BLE disconnect issues \texttt{STOP} (\texttt{pwm.setPWM(ch, 0, 4096)}) or returns to HOME $(90^\circ, 90^\circ)$. To also cover a stalled servo while the target varies $>2^\circ$, the full-array PCB design pairs the $15\text{ s}$ timer with sustained bank-current elevation above baseline ($I_{\text{bank}} > I_{\text{base}} + 0.5\text{ A}$ for $>15\text{ s}$).
+	\textit{Command-driven channel saturation and timeout limiting (Option A, verified in firmware).} Because two rail-level INA219 sensors measure aggregate bank current and cannot isolate individual servo channels—and normal slewing produces $573\text{--}583\text{ mA}$ inrush peaks—per-channel protection is enforced in the command layer. All angles are clamped to $q_j^{\text{servo}} \in [60^\circ, 120^\circ]$ (\linelabel{ln:wd-sat}$q_j \in [-30^\circ, +30^\circ]$, Table~\ref{tab:compliance}), and any sustained near-static dwell ($|q_{\text{cmd}} - q_{\text{cmd,prev}}| \le 2^\circ$ for $\Delta t > 15\text{ s}$, including neutral $90^\circ$ where mechanical stall can also occur) or BLE disconnect issues \texttt{STOP} (\texttt{pwm.setPWM(ch, 0, 4096)}) to cut motor drive; any subsequent command $|\Delta q| > 2^\circ$ immediately re-engages PWM. To also cover a stalled servo while the target varies $>2^\circ$, the full-array PCB design provisions a hardware extension (\textit{Option B, Pending}) pairing the $15\text{ s}$ timer with sustained bank-current elevation above baseline ($I_{\text{bank}} > I_{\text{base}} + 0.5\text{ A}$ for $>15\text{ s}$).
 	
 	\textit{Bank-level overcurrent monitoring.} Each INA219 sensor ($10\text{ m}\Omega$ shunt, $16\text{ A}$ range) monitors a 16-servo PCA9685 bank. To reject $<100\text{ ms}$ inrush spikes, a bank fault trips at $\bar{I}_{\text{bank}} > 3.40\text{ A}$ sustained for $> 2.0\text{ s}$, de-asserting the PCA9685 \texttt{OE} pin. Under quiescent ($3.12\text{ mA}$) or mean tracking ($5.18\text{ mA}$) baselines, this threshold detects $\ge 4$ simultaneous stalls ($3.48\text{--}3.51\text{ A}$), whereas 1--2 stalled servos during normal tracking ($\approx 0.9\text{--}1.8\text{ A}$) are not isolated by an aggregate $3.40\text{ A}$ trip and rely on the command/current-elevation timer. Closed-loop INA219 thermal cut-off testing remains scheduled for the full array (\textit{Pending} in Table~\ref{tab:compliance}\linelabel{ln:wd-torque}).
 	
@@ -760,23 +765,23 @@
 	
 	\subsection{Kinematic Tracking Simulation and Orientation Error}
 	\label{sec:results_simulation}
-	\linelabel{ln:sim}\linelabel{ln:r4-2-sim}To verify the analytical kinematic implementation, a dynamic tracking simulation of the 16-module SOFIA robotic honeycomb array ($4 \times 4$ grid, $6.5\text{ cm}$ inter-module pitch) was conducted in a virtual 3D environment \linelabel{ln:sim-unity}using the Unity engine~\cite{unity2023engine}. \linelabel{ln:sim-ik}For each module $m_i$, the inverse kinematics procedure (\linelabel{ln:sim-alg}Algorithm~\ref{alg:sofia_ik}, Eq.~\eqref{eq:ik_closed_form}) computes $(q_1,q_2)$ toward the moving target $\mathbf{p}(t) \in \mathbb{R}^3$ and enforces the $\pm 30^\circ$ ($q_j^{\text{servo}} \in [60^\circ, 120^\circ]$) saturation boundaries. Figure~\ref{fig:sofia_simulation} \linelabel{ln:sim-fig}shows three representative frames across target waypoints $\mathbf{p}(t_1), \mathbf{p}(t_3), \mathbf{p}(t_5)$. Evaluating the closed-form inverse kinematics against its own forward model across all $16$ modules over $200$ steps ($10\text{ s}$ at $20\text{ Hz}$), trajectories within the $\pm 30^\circ$ unsaturated cone ($\pm 10\text{ cm}$ at $z = 45\text{ cm}$) yield $\text{MAE} = 0.00^\circ$ ($\varepsilon_\psi \le 10^{-6\,\circ}$), confirming exact algorithmic implementation rather than physical shaft accuracy; across wide-angle sweeps ($\pm 25\text{ cm}$ at $z = 35\text{ cm}$) where peripheral modules encounter the $\pm 30^\circ$ safety clamp, the informative clamped simulation error is $\text{MAE} = 3.17^\circ \pm 4.31^\circ$ ($\text{RMSE} = 5.34^\circ$). Physical pointing validation requires the $60\text{ FPS}$ optical test marked \textit{Pending}.
+	\linelabel{ln:sim}\linelabel{ln:r4-2-sim}A dynamic tracking simulation of the 16-module SOFIA array ($4 \times 4$ grid, $6.5\text{ cm}$ pitch) was conducted in Unity~\cite{unity2023engine}. \linelabel{ln:sim-ik}Each module $m_i$ solves \linelabel{ln:sim-alg}Algorithm~\ref{alg:sofia_ik} (\eqref{eq:ik_closed_form}) toward moving target $\mathbf{p}(t) \in \mathbb{R}^3$ within $\pm 30^\circ$ ($q_j^{\text{servo}} \in [60^\circ, 120^\circ]$) bounds (\linelabel{ln:sim-fig}Fig.~\ref{fig:sofia_simulation}). Over $200$ steps ($10\text{ s}$ at $20\text{ Hz}$), trajectories inside the $\pm 30^\circ$ cone ($\pm 10\text{ cm}$ at $z = 45\text{ cm}$) yield $\text{MAE} = 0.00^\circ$ ($\varepsilon_\psi \le 10^{-6\,\circ}$), verifying algebraic consistency rather than physical accuracy; wide-angle sweeps ($\pm 25\text{ cm}$ at $z = 35\text{ cm}$) encountering the $\pm 30^\circ$ clamp yield $\text{MAE} = 3.17^\circ \pm 4.31^\circ$ ($\text{RMSE} = 5.34^\circ$). Physical pointing requires the \textit{Pending} $60\text{ FPS}$ optical test.
 	
 	\subsection{Physical Prototype Functional, Stress, and Protocol Validation}
 	\label{sec:physical_validation}
 	\label{sec:functional_performance}
 	
-	\linelabel{ln:r4-2-perf}End-to-end functional and stress validation of the integrated vision, bidirectional BLE communication, and actuation pipeline was conducted on the physical ESP32-C3 demonstrator (Fig.~\ref{fig:modulo_fisico}). The bundled test suite (\texttt{test\_protocolo\_estres.py}, exported to \texttt{registro\_pruebas\_ciclo.csv}) and GUI session log (\texttt{registro\_eventos.csv}) verify deterministic triggering across a single successful pass of all seven unified 1-to-1 postures and routines: \texttt{SALUDO} ($3000\text{ ms}$, Fig.~\ref{fig:sofia_saludo}), \texttt{CORAZON} ($2000\text{ ms}$), \texttt{TIJERA} ($3200\text{ ms}$), \texttt{ROCA} ($2000\text{ ms}$), \texttt{SWIPE} ($2100\text{ ms}$), \texttt{PAPEL} ($2000\text{ ms}$), and \texttt{PPT} ($1800\text{ ms}$), with mutual exclusion enforced via firmware \texttt{EVT,DONE} notifications.
+	\linelabel{ln:r4-2-perf}End-to-end validation on the physical ESP32-C3 demonstrator (Fig.~\ref{fig:modulo_fisico}) via \texttt{test\_protocolo\_estres.py} (\texttt{registro\_pruebas\_ciclo.csv}) and \texttt{registro\_eventos.csv} verified a single pass of all seven postures: \texttt{SALUDO} ($3000\text{ ms}$, Fig.~\ref{fig:sofia_saludo}), \texttt{CORAZON} ($2000\text{ ms}$), \texttt{TIJERA} ($3200\text{ ms}$), \texttt{ROCA} ($2000\text{ ms}$), \texttt{SWIPE} ($2100\text{ ms}$), \texttt{PAPEL} ($2000\text{ ms}$), and \texttt{PPT} ($1800\text{ ms}$), with \texttt{EVT,DONE} mutual exclusion.
 	
-	In \texttt{registro\_pruebas\_ciclo.csv}, host-side decision and frame-construction latency $\tau_{\text{logic}}$ spans $0.00\text{--}0.12\text{ ms}$ across the 7-posture cycle and fault-injection tests, while the chattering ($60$ transitions at $20\text{ Hz}$), multi-user ($80^\circ$ wrist jump), and lighting-dropout ($50\%$ missing frames) runs produced $0$ false triggers, and all four injected protocol faults were rejected with typed \texttt{NACK}s (\texttt{ERR\_01}--\texttt{ERR\_03}, Table~\ref{tab:sofia_log_validation}). Statistical multi-trial gesture accuracy ($N=20$/gesture) and per-frame BLE GATT round-trip latency logging ($N=100$ frames) remain scheduled alongside the $60\text{ FPS}$ optical shaft benchmark.
+	In \texttt{registro\_pruebas\_ciclo.csv}, host logic latency $\tau_{\text{logic}}$ spans $0.00\text{--}0.12\text{ ms}$; chattering ($60$ transitions at $20\text{ Hz}$), multi-user ($80^\circ$ jump), and lighting-dropout ($50\%$ missing frames) runs yielded $0$ false triggers, and all four injected faults returned typed \texttt{NACK}s (\texttt{ERR\_01}--\texttt{ERR\_03}, Table~\ref{tab:sofia_log_validation}). Multi-trial accuracy ($N=20$/gesture), BLE GATT RTT ($N=100$), and $60\text{ FPS}$ optical benchmarking remain \textit{Pending}.
 	
 	\begin{figure}[!t]
 		\centering
-		\subfloat[Physical module.]{\includegraphics[width=0.31\columnwidth,keepaspectratio]{figures/modulo_fisico.png}\label{fig:modulo_fisico}}
+		\subfloat[Physical module.]{\includegraphics[width=0.23\columnwidth,keepaspectratio]{figures/modulo_fisico.png}\label{fig:modulo_fisico}}
 		\hfill
-		\subfloat[\texttt{SALUDO} start.]{\includegraphics[width=0.31\columnwidth,keepaspectratio]{figures/sofia_saludo1.png}\label{fig:sofia_saludo}}
+		\subfloat[\texttt{SALUDO} start.]{\includegraphics[width=0.23\columnwidth,keepaspectratio]{figures/sofia_saludo1.png}\label{fig:sofia_saludo}}
 		\hfill
-		\subfloat[\texttt{SALUDO} peak.]{\includegraphics[width=0.31\columnwidth,keepaspectratio]{figures/sofia_saludo3.png}}
+		\subfloat[\texttt{SALUDO} peak.]{\includegraphics[width=0.23\columnwidth,keepaspectratio]{figures/sofia_saludo3.png}}
 		\caption{Physical SOFIA module and representative \texttt{SALUDO} routine execution.}
 	\end{figure}
 	
@@ -794,7 +799,7 @@
 			\midrule
 			\textbf{7-Posture Cycle} & Single pass: \texttt{SALUDO}..\texttt{PPT} & $7/7$ routines triggered ($\tau_{\text{logic}} \le 0.12\text{ ms}$) \\
 			\textbf{Sim. Implementation} & 16 modules, $200$ steps ($\pm 30^\circ$ / clamped) & $\text{MAE} = 0.00^\circ$ (in-cone) / $3.17^\circ$ (wide) \\
-			\textbf{Rapid Chattering} & 60 transitions at $20\text{ Hz}$ ($<0.6\text{ s}$ hold) & $0$ false triggers ($100\%$ rejection) \\
+			\textbf{Rapid Chattering} & 60 transitions at $20\text{ Hz}$ ($<0.6\text{ s}$ hold) & $0$ false triggers (single 60-transition run) \\
 			\textbf{Multi-User Jump} & 2 users; $80^\circ$ wrist jump ($\Delta q > 12^\circ$) & Jump rejected; fires on stabilization \\
 			\textbf{Lighting Dropout} & $50\%$ dropouts ($<50\text{ lux}$ / glare) & 12-frame grace hold prevents reset \\
 			\textbf{Protocol \& Link} & Out-of-range ($50^\circ,130^\circ$), bad cmd/fmt & 4/4 typed \texttt{NACK} (\texttt{ERR\_01--03}); auto-HOME \\
@@ -806,7 +811,7 @@
 	\subsection{System Requirements Compliance Synthesis}
 	\label{sec:compliance_synthesis}
 	
-	\linelabel{ln:r4-2-matrix}Cross-referencing the experimental boundary, performance, and functional results against the six system requirement categories defined in Table~\ref{tab:system_requirements} and detailed per component in Table~\ref{tab:compliance} confirms that $10$ of the $14$ consolidated verification specifications are satisfied in the current Build \& Validate cut (classified by evidence type as Datasheet, Measured, or Meas.+DS): power rail regulation and harness drop ($\Delta V = 0.187\text{ V} \le 0.25\text{ V}$, \texttt{REQ-PWR}), mechanical torque margin ($>4\times$ over $\tau_{\text{req}} = 0.45\text{ kgf}\cdot\text{cm}$) and collision-free $\pm 30^\circ$ workspace (\texttt{REQ-MEC}), framed BLE telemetry and 7-posture stress immunity (\texttt{REQ-COM}), and command-dwell / disconnect fail-safe homing (\texttt{REQ-CTL}, \texttt{REQ-SAF}). The remaining three items—external $60\text{ FPS}$ optical shaft settling verification, closed-loop thermal cut-off testing under active stall, and 32-channel assembly on the custom 4-layer PCB—are transparently tracked as \textit{Pending} in Table~\ref{tab:compliance} and Table~\ref{tab:integration_increments}.
+	\linelabel{ln:r4-2-matrix}Cross-referencing the experimental boundary, performance, and functional results against the six system requirement categories defined in Table~\ref{tab:system_requirements} and detailed per component in Table~\ref{tab:compliance} confirms that $10$ of the $14$ consolidated verification specifications are satisfied in the current Build \& Validate cut (classified by evidence type as Datasheet, Measured, or Meas.+DS): power rail regulation and harness drop ($\Delta V = 0.187\text{ V} \le 0.25\text{ V}$, \texttt{REQ-PWR}), mechanical torque margin ($>4\times$ over $\tau_{\text{req}} = 0.45\text{ kgf}\cdot\text{cm}$) and collision-free $\pm 30^\circ$ workspace (\texttt{REQ-MEC}), 7-posture stress immunity (\texttt{REQ-CTL}), and single-module I$^2$C/PWM control, while BLE framing/error-rejection (\texttt{REQ-COM}) and command-dwell/disconnect homing (\texttt{REQ-SAF}) are partially verified. The remaining four items—BLE GATT RTT logging, external $60\text{ FPS}$ optical shaft settling verification, closed-loop INA219 thermal cut-off testing under active stall, and 32-channel assembly on the custom 4-layer PCB—are transparently tracked as \textit{Pending} in Table~\ref{tab:compliance} and Table~\ref{tab:integration_increments}.
 	
 	%=================================================================
 	\section{Discussion}
@@ -815,9 +820,9 @@
 	\subsection{Technical Discussion of Results and Failure Analysis}
 	\label{sec:disc_technical}
 	
-	Across\linelabel{ln:disc}\linelabel{ln:disc-bb} small-step ($5^\circ$), manual ramp ($90^\circ$), and mechanical stall regimes, the $20\text{ Hz}$ current logs are consistent with a dead-band controller ($I_{\text{quiesc}} = 3.12\text{ mA}$), though $\ge 5\text{ kHz}$ H-bridge probing is needed to distinguish bang-bang from proportional PWM control. Under sustained stall ($\bar{I}_{\text{stall}} = 861.8\text{ mA}$, $\bar{P} = 4.07\text{ W}$, $\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$), \linelabel{ln:disc-degr}casing temperature reached a peak temperature at stall release of $70.21^\circ\text{C}$, exceeding the $65^\circ\text{C}$ gear-retainer softening threshold; enforcing a $\Delta t > 15\text{ s}$ dwell timeout (\texttt{STOP}/HOME) limits excursion to $\Delta T \le 3.2^\circ\text{C}$.
+	Across\linelabel{ln:disc}\linelabel{ln:disc-bb} small-step, manual-ramp, and stall regimes, the $20\text{ Hz}$ current logs are consistent with dead-band control, though $\ge 5\text{ kHz}$ H-bridge probing is needed to distinguish bang-bang from proportional PWM control. Under sustained stall, \linelabel{ln:disc-degr}casing temperature reached $70.21^\circ\text{C}$ at stall release, exceeding the $65^\circ\text{C}$ gear-retainer softening threshold; enforcing a $\Delta t > 15\text{ s}$ dwell timeout (\texttt{STOP}) limits rise to $\le 3.2^\circ\text{C}$.
 	
-	\linelabel{ln:disc-incidents}Seven integration failure modes were mitigated in the prototype: (i) USB camera disconnects (15-frame detector, $1.5\text{ s}$ retry); (ii) BLE drops (firmware auto-HOME, $2.5\text{ s}$ reconnect, $4.0\text{ s}$ \texttt{PING}); (iii) delayed ACKs (\texttt{SEQ} deduplication); (iv) gesture chattering ($0.6\text{ s}$ hold, $1.0\text{ s}$ cooldown); (v) multi-user $80^\circ$ wrist jumps ($\le 12^\circ$ variance bound, $D < 0.12$ bimanual check); (vi) lighting flicker ($<50\text{ lux}$, 12--16 frame hold, EMA $\alpha = 0.35$); and (vii) unhandled exceptions (global \texttt{sys.excepthook} CSV logger).
+	\linelabel{ln:disc-incidents}Seven integration failure modes were mitigated: (i) USB camera drops (15-frame detector, $1.5\text{ s}$ retry); (ii) BLE drops (auto-HOME, $2.5\text{ s}$ reconnect, $4.0\text{ s}$ \texttt{PING}); (iii) delayed ACKs (\texttt{SEQ} deduplication); (iv) chattering ($0.6\text{ s}$ hold, $1.0\text{ s}$ cooldown); (v) multi-user jumps ($\le 12^\circ$ variance, $D < 0.12$); (vi) lighting flicker ($<50\text{ lux}$, 12--16 frame hold, EMA $\alpha = 0.35$); and (vii) exceptions (\texttt{sys.excepthook} CSV logger).
 	
 	\subsection{Comparison Against Literature and Benchmarking}
 	\label{sec:disc_comparison}
@@ -827,28 +832,17 @@
 	\subsection{Limitations, Threats to Validity, and Replicability}
 	\label{sec:disc_limitations}
 	
-	\linelabel{ln:disc-lim}Three limitations bound this study: (1) the external LM35 measures casing rather than internal winding temperature; (2) safe test truncation ($t \ll \tau_T$) leaves $(\Delta T_\infty, \tau_T)$ collinear, making $C_{\text{th}} \in [19.0, 80.6]\,\text{J/}^\circ\text{C}$ a macroscopic bound; and (3) closed-loop hardware validation used a single breadboarded 2-DOF unit while 16-module coordination ran in Unity pending 4-layer PCB assembly. \linelabel{ln:disc-rep}All CAD, KiCad, firmware, Python code, and raw CSV logs are released for replicability; future work adds Kelvin winding sensing, full 32-servo PCB assembly, RS-485/Modbus daisy-chaining, and closed-loop INA219 cut-off.
+	\linelabel{ln:disc-lim}Three limitations bound this study: (1) the LM35 measures external casing rather than internal winding temperature; (2) safe test truncation ($t \ll \tau_T$) leaves $(\Delta T_\infty, \tau_T)$ collinear, making $C_{\text{th}} \in [19.0, 80.6]\,\text{J/}^\circ\text{C}$ a macroscopic bound; and (3) hardware validation used a single 2-DOF unit while 16-module coordination ran in Unity pending PCB assembly. \linelabel{ln:disc-rep}All CAD, KiCad, firmware, Python, and CSV logs are released; future work adds winding sensing, 32-servo PCB assembly, RS-485, and closed-loop INA219 cut-off.
 	
 	%=================================================================
 	\section{Conclusions}
 	\label{sec:conclusions}
 	
-	This paper\linelabel{ln:concl} presented the modular design, electrothermal
-	actuator characterization, and end-to-end physical integration of SOFIA, an
-	interactive kinetic surface comprising sixteen 2-DOF robotic units. Regarding
-	the guiding research question posed in Section~\ref{sec:introduction},
-	experimental results indicate that persistent position error
-	in an MG90S servomotor drives its internal controller into
-	continuous H-bridge saturation ($\bar{I}_{\text{stall}} = 861.8 \pm 181.4\,\text{mA}$,
-	$\bar{P} = 4.07 \pm 0.81\,\text{W}$),
-	producing a consistent heating trend across the performed trials with a worst-case heating slope of
-	$\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$ ($R^2 = 0.993$) and a peak measured
-	casing temperature of \linelabel{ln:concl-runaway}$70.21^\circ\text{C}$.
-	This heating trend shows that under the measured worst-case slope ($\bar{\beta}_1 = 0.2143\,^\circ\text{C/s}$), a stalled actuator requires $\approx 180\text{ s}$ from ambient to reach $T_{\text{safe}} = 60^\circ\text{C}$; to absorb the $4\times$ inter-trial dispersion, we adopt a $\Delta t \le 15\,\text{s}$ dwell timeout—a $12\times$ design margin limiting temperature rise to $\Delta T \le 3.2^\circ\text{C}$—before PWM suspension is triggered to prevent thermoplastic gear-retainer degradation above $65^\circ\text{C}$.
+	This paper\linelabel{ln:concl} presented the design, electrothermal characterization, and physical integration of SOFIA, a 16-unit 2-DOF kinetic surface. Addressing Section~\ref{sec:introduction}, persistent position error in an MG90S servo drives continuous H-bridge saturation ($\bar{I}_{\text{stall}} = 861.8 \pm 181.4\,\text{mA}$, $\bar{P} = 4.07 \pm 0.81\,\text{W}$),
+	revealing sustained Joule heating with a $4\times$ inter-trial rate dispersion, a worst-case slope of
+	$\bar{\beta}_1 = 0.214\,^\circ\text{C/s}$ ($R^2 = 0.993$), and a peak casing temperature of \linelabel{ln:concl-runaway}$70.21^\circ\text{C}$ ($\approx 180\text{ s}$ to $T_{\text{safe}} = 60^\circ\text{C}$ from ambient). To absorb the $4\times$ dispersion, a $\Delta t \le 15\,\text{s}$ dwell timeout ($12\times$ margin, $\Delta T \le 3.2^\circ\text{C}$) suspends PWM before gear-retainer degradation above $65^\circ\text{C}$.
 	
-	The concrete contributions of this work encompass: (i) an empirical electrothermal and current-regime model establishing safe operating envelopes for COTS servomotors under stall; (ii) a closed-form 2-DOF analytical inverse kinematics formulation verified across a 16-module virtual array ($\text{MAE} = 3.17^\circ$ under $\pm 30^\circ$ wide-sweep clamping); and (iii) a fault-tolerant physical prototype integrating 30~FPS MediaPipe 3D perception, a seven-posture finite-state machine, and a framed bidirectional BLE protocol (\texttt{\$SEQ,CMD\#}) with automatic hardware recovery, where all seven posture triggers and all four injected protocol faults were verified in \texttt{registro\_pruebas\_ciclo.csv}. Future work will scale physical assembly to
-	the full 32-actuator custom PCB array with distributed current-feedback
-	watchdog protection and $60\text{ FPS}$ optical ground-truth benchmarking.
+	Contributions encompass: (i) an empirical electrothermal/current envelope for COTS servos under stall; (ii) closed-form 2-DOF analytical IK verified across 16 virtual modules ($\text{MAE} = 3.17^\circ$ under $\pm 30^\circ$ clamping); and (iii) a fault-tolerant prototype integrating a MediaPipe 3D pipeline designed for 30~FPS, a seven-posture FSM, and framed BLE (\texttt{\$SEQ,CMD\#}) with automatic recovery ($7/7$ triggers and $4/4$ injected faults verified in \texttt{registro\_pruebas\_ciclo.csv}). Future work scales to the 32-actuator PCB with closed-loop INA219 cut-off and $60\text{ FPS}$ optical benchmarking.
 	
 	%=================================================================
 	\section*{Declarations and Acknowledgments}
@@ -863,28 +857,12 @@
 	All authors approved the final manuscript.
 	
 	\noindent\textbf{Data Availability:} \linelabel{ln:da}
-	All raw experimental characterization files (\texttt{servo\_characterization.xlsx},
-	\texttt{datos\_5grados.csv}, \texttt{datos\_901.csv},
-	\texttt{datos\_CHIDOS\_DE\_FORZADO.csv}, \texttt{registro\_pruebas\_ciclo.csv},
-	and \texttt{registro\_eventos.csv}) are bundled inside the
-	manuscript package under \texttt{documents/} (referenced via relative paths
-	\texttt{../documents/} by the figure-generation scripts in \texttt{algorithms/})
-	and mirrored in \texttt{docs/experimental-data/}. The complete source code,
-	CAD/PCB files, and project engineering documentation
-	(\texttt{docs/EVIDENCIA\_PRUEBAS\_Y\_MANEJO\_ERRORES.md} and \texttt{docs/MANUAL\_DE\_USUARIO.md})
-	are openly available in the single public repository \url{https://github.com/PaolaCV14/IOT-SOFIA-2026}
-	under release tag \texttt{v0.4.0} (\texttt{main} branch, Fourth Cut final commit).
+	All raw logs (\texttt{servo\_characterization.xlsx}, \texttt{datos\_5grados.csv}, \texttt{datos\_901.csv}, \texttt{datos\_CHIDOS\_DE\_FORZADO.csv}, \texttt{registro\_pruebas\_ciclo.csv}, \texttt{registro\_eventos.csv}) are bundled in \texttt{documents/} and mirrored in \texttt{docs/experimental-data/}. Code, CAD/PCB files, and docs (\texttt{EVIDENCIA\_PRUEBAS\_Y\_MANEJO\_ERRORES.md}, \texttt{MANUAL\_DE\_USUARIO.md}) are publicly archived at \url{https://github.com/PaolaCV14/IOT-SOFIA-2026} (tag \texttt{v0.4.0}, \texttt{main}).
 	
 	\noindent\textbf{Acknowledgment:} \linelabel{ln:ack}
-	The authors thank the Department of Electronics, Systems and Informatics
-	(DESI) and the Laboratory of Technological Solutions Development (LabDST)
-	at ITESO University for providing laboratory instrumentation, electronic
-	equipment, and technical support.
+	We thank DESI and LabDST at ITESO University for instrumentation and technical support.
 	
-	\noindent\textbf{Declaration of Generative AI:} During\linelabel{ln:ai-decl} the preparation of this manuscript and software repository (October--November 2026), the authors
-	used Claude (Anthropic) and Gemini (Google) for English grammatical proofreading, \LaTeX{} typesetting, plotting script formatting, technical consistency checks, and firmware/Python debugging assistance. All technical content, experimental data, and conclusions
-	were verified and edited by the authors, who take full responsibility for the
-	work.
+	\noindent\textbf{Declaration of Generative AI:} \linelabel{ln:ai-decl}Claude (Anthropic) and Gemini (Google) assisted with English proofreading, \LaTeX{} formatting, plotting scripts, and debugging (Oct--Nov 2026). All technical content, data, and conclusions were verified by the authors, who take full responsibility.
 	
 	\noindent\textbf{Conflicts of Interest:} \linelabel{ln:coi}
 	The authors declare no conflicts of interest.

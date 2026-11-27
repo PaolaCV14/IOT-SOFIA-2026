@@ -52,7 +52,7 @@ fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(7.1, 2.35), dpi=300)
 
 # (a) 5 deg
 ax1.plot(t5, i5, color='#1f77b4', lw=1.2, label=r'$I(t)$')
-ax1.set_title(r'(a) Small Step ($e = 5^\circ$)', fontweight='bold')
+ax1.set_title(r'(a) Noise & $14^\circ$ Step ($69^\circ\to 55^\circ$)', fontweight='bold')
 ax1.set_xlabel(r'Time $t$ ($\mathrm{s}$)')
 ax1.set_ylabel(r'Current ($\mathrm{mA}$)')
 ax1.set_xlim([0, 25])
@@ -91,7 +91,7 @@ ax3.set_xlabel(r'Time $t$ ($\mathrm{s}$)')
 ax3.set_ylabel(r'Current ($\mathrm{mA}$)')
 ax3.set_xlim([0, 430])
 ax3.set_ylim([0, 2000])
-ax3.axhline(918.4, color='darkred', linestyle='--', lw=1.2, label=r'Mean: $918.4\,\mathrm{mA}$')
+ax3.axhline(861.8, color='darkred', linestyle='--', lw=1.2, label=r'Mean ($39\text{--}311\,\mathrm{s}$): $861.8\,\mathrm{mA}$')
 maxs_idx = int(np.argmax(is_mA))
 ax3.scatter([ts[maxs_idx]], [is_mA[maxs_idx]], color='darkred', s=22, zorder=5)
 ax3.annotate(rf'Surge: {is_mA[maxs_idx]:.0f} mA', xy=(ts[maxs_idx], is_mA[maxs_idx]),

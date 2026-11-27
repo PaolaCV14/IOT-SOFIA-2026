@@ -30,7 +30,7 @@ EXCEL_PATH = os.path.abspath(
     os.path.join(os.path.dirname(__file__), "../documents/servo_characterization.xlsx")
 )
 OUTPUT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../figures"))
-RESP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../Equipo 1 - respuesta - tercer corte/figures"))
+RESP_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../Equipo 1 - respuesta - cuarto corte/figures"))
 
 wb = openpyxl.load_workbook(EXCEL_PATH, data_only=True)
 
@@ -111,7 +111,7 @@ ax1.plot(t1_rel[mask60], T0_60 + beta_init60 * t1_rel[mask60], color='#0284c7', 
          label=rf'Initial $0\text{{--}}60\,\mathrm{{s}}$ ($\beta_0 = {beta_init60:.3f}\,^\circ\mathrm{{C/s}}$)')
 ax1.scatter([t1_rel[-1]], [temp1[-1]], color='#900C3F', s=30, zorder=5,
             label=rf'Peak $T_{{\max}} = {temp1[-1]:.2f}\,^\circ\mathrm{{C}}$')
-ax1.set_title(r'(a) Trial 1: Stall Heating & Linear Rates', fontweight='bold')
+ax1.set_title(r'(a) Trial 1: Stall Heating', fontweight='bold')
 ax1.set_ylabel(r'Temperature ($^\circ\mathrm{C}$)')
 ax1.set_xlim([0, 235])
 ax1.set_ylim([18, 70])
@@ -131,12 +131,12 @@ ax1_res.text(0.04, 0.74, rf'OLS RMSE $= {rmse1:.2f}\,^\circ\mathrm{{C}}$',
 # --- (b) Trial 2 ---
 ax2.plot(t2, temp2, color='#0275d8', lw=1.5, label=r'Measured $T_s(t)$')
 ax2.plot(t2[idx_start:idx_peak2 + 1], temp2_nlls, color='#1f2937', linestyle='--', lw=1.4,
-         label=rf'NLLS Fit ($\tau_T={tau_T_fit:.0f}\pm{ci95[1]:.0f}\,\mathrm{{s}}$, $R^2={r2_2:.3f}$)')
+         label=rf'NLLS fit (descriptive, $R^2={r2_2:.3f}$)')
 ax2.scatter([t2[idx_peak2]], [temp2[idx_peak2]], color='#003366', s=30, zorder=5,
-            label=rf'Inflection Peak $T_{{\max}} = {temp2[idx_peak2]:.2f}\,^\circ\mathrm{{C}}$')
+            label=rf'Peak at stall release ($T_{{\max}} = {temp2[idx_peak2]:.2f}\,^\circ\mathrm{{C}}$)')
 ax2.axvline(t2[idx_start], color='gray', linestyle=':', lw=1.0)
 ax2.axvline(t2[idx_peak2], color='gray', linestyle=':', lw=1.0)
-ax2.set_title(r'(b) Trial 2: Stall Window ($1053\text{--}1445\,\mathrm{s}$) & Cooling', fontweight='bold')
+ax2.set_title(r'(b) Trial 2: Stall & Cooling', fontweight='bold')
 ax2.set_ylabel(r'Temperature ($^\circ\mathrm{C}$)')
 ax2.set_xlim([965, 1665])
 ax2.set_ylim([18, 75])
