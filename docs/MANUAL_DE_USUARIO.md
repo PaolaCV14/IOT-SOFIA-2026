@@ -181,10 +181,7 @@ Todas las rutinas se ejecutan localmente en el ESP32-C3 de forma no bloqueante. 
 
 ## 7. Evidencia en Video de Pruebas Integrales
 
-> **Carpeta oficial de evidencias en OneDrive (ITESO):**  
-> [EVIDENCIA_PRUEBAS_Y_MANEJO_DE_ERRORES](https://iteso01-my.sharepoint.com/:f:/r/personal/bernardo_orozco_iteso_mx/_layouts/15/onedrive.aspx?id=%2Fpersonal%2Fbernardo%5Forozco%5Fiteso%5Fmx%2FDocuments%2FEVIDENCIA%5FPRUEBAS%5FY%5FMANEJO%5FDE%5FERRORES&share=cgpQ%5Fc3q%2DIRlTp4mHJuUddyvEgUCUTLs0cgR5tQS59cMol0fDQ)
-
-En la carpeta se almacenan **10 archivos de evidencia** (**7 clips individuales por postura** de 15–30 s mostrando usuario + GUI + robot físico, y **3 clips de tolerancia a fallos y demostración integral**):
+Los registros de pruebas y la bitácora técnica se encuentran en `docs/experimental-data/` y `docs/EVIDENCIA_PRUEBAS_Y_MANEJO_ERRORES.md`. Los archivos multimedia de validación se entregan por separado siguiendo esta nomenclatura estándar (**7 clips individuales por postura** de 15–30 s mostrando usuario + GUI + robot físico, y **3 clips de tolerancia a fallos y demostración integral**):
 
 1. `EVIDENCIA_01_SALUDO`
 2. `EVIDENCIA_02_CORAZON`
